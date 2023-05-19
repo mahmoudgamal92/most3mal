@@ -1,11 +1,20 @@
 {
   "expo": {
-    "name": "most3mal",
+    "name": "most3mal App",
     "slug": "most3mal",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/app_logo.png",
     "userInterfaceStyle": "light",
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ],
+      "expo-localization"
+    ],
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -15,16 +24,28 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mahmoud2391997.most3mal"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/app_logo.png",
+        "backgroundColor": "#ebecf0"
+      },
+      "package": "com.mahmoud2391997.most3mal",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBBLZBMSzik4p9Yn3q2pW_EqOZin6aBQc8"
+        }
       }
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "93c3d751-1f61-49a7-81dc-620139dfb77e"
+      }
     }
   }
 }
