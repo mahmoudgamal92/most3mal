@@ -1,0 +1,52 @@
+{
+    "address": null,
+    "auction_number": "2403",
+    "city": null,
+    "city_id": 1,
+    "created_at": "2023-09-24 21:26:57",
+    "details": "وصف المزاد",
+    "duration": 7,
+    "end_date": "2023-10-01 21:26:57",
+    "id": 71,
+    "images": "auction/95771695580017.jpeg",
+    "main_image": "auction/95771695580017.jpeg",
+    "offers": [
+        {
+            "amount": 546555,
+            "auction_id": 71,
+            "created_at": "2023-09-26 23:58:21",
+            "id": 42,
+            "updated_at": "2023-09-26 23:58:21",
+            "user_id": 162
+        }
+    ],
+    "start_date": "2023-09-24 21:26:57",
+    "state": null,
+    "state_id": 2,
+    "status": "active",
+    "time": 1696184817,
+    "title": "مزاد تجريبي",
+    "updated_at": "2023-09-24 21:26:57",
+    "user": {
+        "about": null,
+        "address": "Fyygeesfg",
+        "admin_theme": null,
+        "agent_type": null,
+        "api_token": "euPltNthzUF8XiVfXNk9y8VHpjRuerFUYVUVYUNtyhWtMnpiw8xMVhWuOMtj",
+        "created_at": "2023-09-24 20:57:49",
+        "current_balance": 300,
+        "email": "admin@admin.com",
+        "id": 162,
+        "identy_id": "26874888",
+        "image": "agents/46251695760556.jpeg",
+        "lang": null,
+        "name": "Mahmoud Gamal Mahmoud",
+        "phone": "0543458787",
+        "status": "active",
+        "type": "user",
+        "updated_at": "2023-09-26 23:35:56",
+        "verification": "no",
+        "whats_app": null
+    },
+    "user_id": 162
+}
