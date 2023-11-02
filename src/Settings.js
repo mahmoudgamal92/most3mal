@@ -200,7 +200,7 @@ export default function ProfilePage({ route, navigation }) {
                         marginHorizontal: 30,
                     }}
                 >
-                    مستعمل جميع الحقوق محفوظه 2022
+                  مستعمل.كوم 2024
                 </Text>
             </View>
         </View>

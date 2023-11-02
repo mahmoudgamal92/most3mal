@@ -69,7 +69,7 @@ export default function EditProfile({ route, navigation }) {
                 if (responseJson.status == true) {
                     setLoading(false);
                     alert("تم تعديل الحساب بنجاح");
-                    navigation.navigate("ProfilePage");
+                    navigation.goBack();
                 } else {
                     alert("حدث خطأ ما");
                     setLoading(false);

@@ -121,7 +121,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 20,
-    marginTop: 20
+    marginTop: 20,
+    marginBottom:50
   },
   btnText: {
     fontSize: 15,

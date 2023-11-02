@@ -28,7 +28,11 @@ export default function AuctionDetails({ route, navigation }) {
     const { item } = route.params;
     const [user_id, setUserID] = useState(null);
     const [input_modal, setInputModal] = useState(false);
+    const [report_modal, setReportModal] = useState(false);
+
     const [amount, setAmount] = useState("");
+    const [problem, setProblem] = useState("");
+
     const [buttonLoading, setButtonLoading] = useState(false);
     const [data, setData] = useState([]);
     const [offers, setOffers] = useState([]);
@@ -112,6 +116,11 @@ export default function AuctionDetails({ route, navigation }) {
     };
 
 
+
+    const reportProblem = () => {
+        alert("تم ارسال مشكلتك للإدارة بنجاح , سيتم التواصل معك في اقرب وقت ");
+        setReportModal(!report_modal);
+    }
 
     function toEnglishNumber(strNum) {
         const arabicNumbers = "٠١٢٣٤٥٦٧٨٩".split("");
@@ -444,7 +453,37 @@ export default function AuctionDetails({ route, navigation }) {
                         )} />
                 </ScrollView>
 
-                {item.user.id == user_id ? null :
+                {item.user.id == user_id ? 
+                
+                <View style={{
+                    flexDirection: "row",
+                    backgroundColor: "#FFF",
+                    justifyContent: "space-between",
+                    position: "absolute",
+                    bottom: 10,
+                    width: "100%",
+                    paddingHorizontal: 10
+                }}>
+
+                    <View style={{ width: "20%", }}>
+                        <TouchableOpacity style={{ width: 60, height: 60, backgroundColor: "#4BAE52", alignItems: "center", justifyContent: "center", borderRadius: 10 }}>
+                            <AntDesign name="sharealt" size={24} color="#FFF" />
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={{ width: "80%" }}>
+                        <TouchableOpacity 
+                          onPress={() => setReportModal(!input_modal)}
+                        style={{ width: "100%", height: 60, backgroundColor: "#FE5722", alignItems: "center", justifyContent: "center", borderRadius: 10 }}>
+                            <Text style={{ color: "#FFF", fontFamily: "Bold", fontSize: 18 }}>
+                                الإبلاغ عن مشكلة
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+
+       
+                </View>
+                :
                     <View style={{
                         flexDirection: "row",
                         backgroundColor: "#FFF",
@@ -462,13 +501,16 @@ export default function AuctionDetails({ route, navigation }) {
                         </View>
 
                         <View style={{ width: "60%" }}>
-                            <TouchableOpacity style={{ width: "100%", height: 60, backgroundColor: "#FE5722", alignItems: "center", justifyContent: "center", borderRadius: 10 }}>
+                            <TouchableOpacity 
+                            onPress={() => setReportModal(!input_modal)}
+                            style={{ width: "100%", height: 60, backgroundColor: "#FE5722", alignItems: "center", justifyContent: "center", borderRadius: 10 }}>
                                 <Text style={{ color: "#FFF", fontFamily: "Bold", fontSize: 18 }}>
                                     الإبلاغ عن مشكلة
                                 </Text>
                             </TouchableOpacity>
                         </View>
 
+                       
                         <View style={{ width: "20%", alignItems: "flex-end" }}>
                             <TouchableOpacity
                                 onPress={() => _openChat()}
@@ -484,7 +526,10 @@ export default function AuctionDetails({ route, navigation }) {
                             </TouchableOpacity>
                         </View>
                     </View>
-                }
+
+}
+
+             
             </View>
 
             <Modal transparent={true} animationType="slide" visible={input_modal}>
@@ -587,6 +632,109 @@ export default function AuctionDetails({ route, navigation }) {
                     </View>
                 </View>
             </Modal>
+
+
+
+            <Modal transparent={true} animationType="slide" visible={report_modal}>
+                <View style={styles.centeredView}>
+                    <View style={[styles.modalView, { width: "90%", marginVertical: 100 }]}>
+                        <View
+                            style={{
+                                backgroundColor: "#41A2D8",
+                                width: 60,
+                                height: 60,
+                                marginTop: -20,
+                                alignItems: "center",
+                                justifyContent: "center",
+                                borderRadius: 30,
+                                borderWidth: 1,
+                                borderColor: "#FFF"
+                            }}
+                        >
+                            <Feather name="alert-triangle" size={24} color="#FFF" />
+                        </View>
+
+                        <TouchableOpacity
+                            style={{
+                                width: "100%",
+                                alignItems: "flex-end",
+                                paddingHorizontal: 20,
+                                marginVertical: -25,
+                                zIndex: 1000
+                            }}
+                            onPress={() => setReportModal(!report_modal)}
+                        >
+                            <FontAwesome name="close" size={30} color="grey" />
+                        </TouchableOpacity>
+
+                        <View style={{ width: "100%", padding: 20 }}>
+                            <View style={{ width: "100%", marginTop: 10 }}>
+                                <Text
+                                    style={{
+                                        fontFamily: "Bold",
+                                        color: "#051A3A",
+                                        marginBottom: 10
+                                    }}
+                                >
+                                   أدخل وصف المشكلة التي تواجهها
+                                </Text>
+                                <TextInput
+                                    onChangeText={value => setProblem(value)}
+                                    style={{
+                                        backgroundColor: "#FFF",
+                                        height: 160,
+                                        marginBottom: 20,
+                                        paddingHorizontal: 10,
+                                        borderRadius: 20,
+                                        borderWidth: 1,
+                                        borderColor: "#DDDDDD",
+                                        width: "100%",
+                                        fontFamily: "Regular",
+                                        textAlign: "right"
+                                    }}
+                                />
+                            </View>
+
+                            <View style={{}}>
+                                <TouchableOpacity
+                                    onPress={() => reportProblem()}
+                                    style={{
+                                        backgroundColor: "#41A2D8",
+                                        paddingVertical: 15,
+                                        borderRadius: 20,
+                                        width: "100%",
+                                        marginBottom: 20
+                                    }}
+                                >
+                                    {buttonLoading == false
+                                        ? <View
+                                            style={{
+                                                flexDirection: "row",
+                                                alignItems: "center",
+                                                justifyContent: "center"
+                                            }}
+                                        >
+                                            <Text
+                                                style={{
+                                                    color: "white",
+                                                    textAlign: "center",
+                                                    fontFamily: "Bold",
+                                                    marginHorizontal: 10
+                                                }}
+                                            >
+                                                ارسال
+                                            </Text>
+                                            <Ionicons name="send" size={24} color="#FFF" />
+                                        </View>
+                                        : <ActivityIndicator size="large" color={"#FFF"} />}
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
+
         </SafeAreaView>
     );
 };

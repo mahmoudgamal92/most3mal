@@ -131,7 +131,7 @@ export default function CatSelect({ route, navigation }) {
                     ماذا تريد أن تبيع أو تعلن؟
                 </Text>
 
-                <View style={{ width: "80%", height: "77%" }}>
+                <View style={{ width: "80%", height: "75%" }}>
                     <FlatList
                         data={data}
                         keyExtractor={item => item.id}
@@ -173,7 +173,7 @@ export default function CatSelect({ route, navigation }) {
                     />
                 </View>
 
-                <View style={{ paddingHorizontal: 20, width: "100%" }}>
+                <View style={{ paddingHorizontal: 20, width: "100%",marginBottom:50}}>
                     <TouchableOpacity 
                     onPress={() => proceedToInsertion(depart_id,current_item)}
                     style={styles.primaryBtn}>

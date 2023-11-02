@@ -7,6 +7,8 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+
 import {
     FontAwesome,
     Feather,
@@ -16,7 +18,9 @@ import {
     SimpleLineIcons
 } from '@expo/vector-icons';
 import styles from "../constants/style";
-export default function ProfilePage({ route, navigation }) {
+export default function ProfilePage({ route }) {
+    const navigation = useNavigation();
+
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
 
