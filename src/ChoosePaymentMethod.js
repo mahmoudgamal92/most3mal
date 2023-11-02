@@ -19,6 +19,7 @@ export default function ChoosePaymentMethod({ route, navigation }) {
     const [loading, setLoading] = useState(false);
     const [selected_id, setSelectedId] = useState([]);
     const [user_id , setUserID] = useState([]);
+    const {invoice_value} = route.params;
     const data = [
         {
             id: "1",
@@ -80,7 +81,7 @@ export default function ChoosePaymentMethod({ route, navigation }) {
 
     const _proceedPayment = async () => {
         setLoading(true);
-        let url = "http://mestamal.com/mahmoud/payment/payment.php?user_id="+user_id;
+        let url = "http://mestamal.com/mahmoud/payment/payment.php?user_id="+user_id+"&invoice_value="+invoice_value;
         try {
             fetch(url, {
                 method: "GET",

@@ -23,6 +23,8 @@ export default function MyWallet({ route, navigation }) {
     const [data, setData] = useState([]);
     const [payments, setPayments] = useState([]);
     const [input_modal, setInputModal] = React.useState(false);
+    const [charge_modal, setChargeModal] = React.useState(false);
+
     const [buttonLoading, setButtonLoading] = React.useState(false);
     const [amount, setAmount] = useState("0");
 
@@ -237,7 +239,7 @@ export default function MyWallet({ route, navigation }) {
                     <View style={{ width: "50%", paddingHorizontal: 10, }}>
 
                         <TouchableOpacity
-                            onPress={() => navigation.navigate("ChoosePaymentMethod")}
+                            onPress={() => setChargeModal(!charge_modal)}
                             style={{ width: "100%", height: 50, backgroundColor: "#FFF", borderRadius: 30, alignItems: "center", justifyContent: "center" }}>
                             <Text style={{ fontFamily: "Bold", color: "#34ace0", fontSize: 20 }}>
                                 شحن الرصيد
@@ -275,7 +277,7 @@ export default function MyWallet({ route, navigation }) {
                 </Text>
 
                 <FlatList
-                    data={payments}
+                    data={payments.reverse()}
                     showsVerticalScrollIndicator={false}
                     ListEmptyComponent={handleEmptyProp()}
                     keyExtractor={(item, index) => index.toString()}
@@ -435,6 +437,128 @@ export default function MyWallet({ route, navigation }) {
                             <View style={{}}>
                                 <TouchableOpacity
                                     onPress={() => orderWithdraw()}
+                                    style={{
+                                        backgroundColor: "#41A2D8",
+                                        paddingVertical: 15,
+                                        borderRadius: 20,
+                                        width: "100%",
+                                        marginBottom: 20
+                                    }}
+                                >
+                                    {buttonLoading == false
+                                        ? <View
+                                            style={{
+                                                flexDirection: "row-reverse",
+                                                alignItems: "center",
+                                                justifyContent: "center"
+                                            }}
+                                        >
+                                            <Text
+                                                style={{
+                                                    color: "white",
+                                                    textAlign: "center",
+                                                    fontFamily: "Bold",
+                                                    marginHorizontal: 10
+                                                }}
+                                            >
+                                                سحب
+                                            </Text>
+                                            <Ionicons name="send" size={24} color="#FFF" />
+                                        </View>
+                                        : <ActivityIndicator size="large" color={"#FFF"} />}
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
+
+
+
+            
+            <Modal transparent={true} animationType="slide" visible={charge_modal}>
+                <View style={styles.centeredView}>
+                    <View style={[styles.modalView, { width: "90%", marginVertical: 100 }]}>
+                        <View
+                            style={{
+                                backgroundColor: "#41A2D8",
+                                width: 60,
+                                height: 60,
+                                marginTop: -20,
+                                alignItems: "center",
+                                justifyContent: "center",
+                                borderRadius: 30,
+                                borderWidth: 1,
+                                borderColor: "#FFF"
+                            }}
+                        >
+                            <MaterialIcons name="attach-money" size={24} color="#FFF" />
+                        </View>
+
+                        <TouchableOpacity
+                            style={{
+                                width: "100%",
+                                alignItems: "flex-end",
+                                paddingHorizontal: 20,
+                                marginVertical: -25,
+                                zIndex: 1000
+                            }}
+                            onPress={() => setChargeModal(!charge_modal)}
+                        >
+                            <FontAwesome name="close" size={30} color="grey" />
+                        </TouchableOpacity>
+
+                        <View style={{ height: 250, width: "100%", padding: 20 }}>
+                            <View style={{ width: "100%", marginTop: 10 }}>
+                                <View>
+                                    <Text
+                                        style={{
+                                            fontFamily: "Bold",
+                                            color: "#051A3A",
+                                            marginBottom: 10
+                                        }}
+                                    >
+                                        شحن الرصيد
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            fontFamily: "Regular",
+                                            color: "#051A3A",
+                                            marginBottom: 10,
+                                            fontSize: 12,
+                                            color: "red"
+                                        }}
+                                    >
+                                        أدخ المبلغ المراد شحنة 
+                                    </Text>
+
+                                </View>
+
+                                <TextInput
+                                    onChangeText={value => setAmount(value)}
+                                    placeholder="أدخل  المبلغ المراد شحنة"
+                                    keyboardType="numeric"
+                                    style={{
+                                        backgroundColor: "#FFF",
+                                        height: 60,
+                                        marginBottom: 20,
+                                        paddingHorizontal: 10,
+                                        borderRadius: 20,
+                                        borderWidth: 1,
+                                        borderColor: "#41A2D8",
+                                        width: "100%",
+                                        fontFamily: "Regular",
+                                        textAlign: "right"
+                                    }}
+                                />
+                            </View>
+
+                            <View style={{}}>
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate("ChoosePaymentMethod",{
+                                        invoice_value : amount
+                                    })}
                                     style={{
                                         backgroundColor: "#41A2D8",
                                         paddingVertical: 15,

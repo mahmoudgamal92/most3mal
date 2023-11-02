@@ -8,7 +8,7 @@ import {
     TextInput,
 } from "react-native";
 import React, { useState } from "react";
-import {Feather} from '@expo/vector-icons';
+import {Feather,MaterialIcons} from '@expo/vector-icons';
 import styles from "../constants/style";
 export default function AddAuction({ route, navigation }) {
 
@@ -31,7 +31,6 @@ export default function AddAuction({ route, navigation }) {
                     "Content-type": "multipart/form-data;",
                     "Accept-Encoding": "gzip, deflate, br",
                     Connection: "keep-alive",
-                    Authorization: "Bearer uKhB88R1ElIZHPXTZPRfIbPFkBtLA1JnVZiM8agSpB9agH5fFUx3C8euCDhj"
                 },
                 body: formData
             })
