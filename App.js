@@ -76,7 +76,7 @@ export default function App() {
   if (!fontsLoaded) {
     return null;
   }
-
+//ruriyrud
 
   const ContactFunc = () => {
     Linking.openURL('mailto:support@example.com');
