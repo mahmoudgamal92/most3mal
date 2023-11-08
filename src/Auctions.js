@@ -12,7 +12,8 @@ import {
     Entypo,
     Feather,
     AntDesign,
-    MaterialIcons
+    MaterialIcons,
+    MaterialCommunityIcons
 } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
@@ -199,6 +200,29 @@ export default function HomePage({ route, navigation }) {
                  <Entypo name="plus" size={24} color="#FFF" />
                 <Text style={{ fontFamily: "Bold", color: "#FFF",marginHorizontal:5}}>
                     إضافة مزاد 
+                </Text>
+            </TouchableOpacity>
+
+
+
+            
+            <TouchableOpacity
+                onPress={() => navigation.navigate("MyBids")}
+                style={{
+                    width: 120,
+                    height: 50,
+                    borderRadius: 30,
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    backgroundColor: '#34ace0',
+                    position: 'absolute',
+                    bottom: 20,
+                    left: 20,
+                }}>
+             <MaterialCommunityIcons name="clipboard-list-outline" size={24} color="#FFF" />
+                <Text style={{ fontFamily: "Bold", color: "#FFF",marginHorizontal:5}}>
+                    عروضي
                 </Text>
             </TouchableOpacity>
 

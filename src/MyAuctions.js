@@ -32,8 +32,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import toastConfig from "./../constants/Toast";
 
-
-export default function HomePage({ route, navigation }) {
+export default function MyAuctions({ route, navigation }) {
 
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -66,7 +65,7 @@ export default function HomePage({ route, navigation }) {
             })
                 .then(response => response.json())
                 .then(json => {
-                    setData(json);
+                     setData(json);
                     setLoading(false);
                     //alert(JSON.stringify(json));
                 })
@@ -208,9 +207,9 @@ export default function HomePage({ route, navigation }) {
                     renderItem={({ item }) => (
 
                         <TouchableOpacity
-                            onPress={() => navigation.navigate("MyAuction", {
-                                item: item
-                            })}
+                        onPress={() => navigation.navigate("AuctionDetails",{
+                            item:item
+                        })}
                             style={{
                                 flexDirection: "row-reverse",
                                 borderColor: "#DDDDDD",

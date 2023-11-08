@@ -39,7 +39,7 @@ import ForgotPwd from "./src/ForgotPwd";
 
 import DepartSelect from "./src/Add/DepartSelect";
 import OfferInfo from "./src/OfferInfo";
-
+import MyBids from "./src/MyBids";
 import CatSelect from "./src/Add/CatSelect";
 import SubCatSelect from "./src/Add/SubCatSelect";
 import CreateCar from "./src/Add/CreateCar";
@@ -51,13 +51,14 @@ import MyAuction from "./src/MyAuction";
 import MyOrders from "./src/MyOrders";
 import Settings from "./src/Settings";
 import CountDown from "./src/CountDown";
-
+import AuctionOfferInfo from "./src/AuctionOfferInfo";
 import SearchResult from "./src/SearchResult";
 import PrivacyPolicy from "./src/PrivacyPolicy";
 import HowWorks from "./src/HowWorks";
 import EditProfile from "./src/EditProfile";
 import PaymentSuccess from "./src/PaymentSuccess";
 import PaymentErorr from "./src/PaymentErorr";
+import EditAdd from "./src/Add/Edit";
 
 export default function App() {
   I18nManager.forceRTL(true);
@@ -76,7 +77,6 @@ export default function App() {
   if (!fontsLoaded) {
     return null;
   }
-//ruriyrud
 
   const ContactFunc = () => {
     Linking.openURL('mailto:support@example.com');
@@ -518,8 +518,9 @@ export default function App() {
         <HomeStack.Screen name="PaymentSuccess" component={PaymentSuccess} />
         <HomeStack.Screen name="PaymentErorr" component={PaymentErorr} />
         <HomeStack.Screen name="OfferInfo" component={OfferInfo}/>
-
-
+        <HomeStack.Screen name="AuctionOfferInfo" component={AuctionOfferInfo} />
+        <HomeStack.Screen name="MyBids" component={MyBids}/>
+        <HomeStack.Screen name="EditAdd" component={EditAdd}/>
       </HomeStack.Navigator>
     </NavigationContainer>
   );

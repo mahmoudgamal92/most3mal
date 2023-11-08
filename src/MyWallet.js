@@ -34,6 +34,14 @@ export default function MyWallet({ route, navigation }) {
     }, []);
 
 
+
+    const _proceedToPayment = () => {
+        setChargeModal(false);
+        setInputModal(false);
+        navigation.navigate("ChoosePaymentMethod",{
+            invoice_value : amount
+        })
+    }
     const getProfile = async () => {
         const user_token = await AsyncStorage.getItem("user_token");
         fetch("https://mestamal.com/api/user/profile", {
@@ -556,9 +564,7 @@ export default function MyWallet({ route, navigation }) {
 
                             <View style={{}}>
                                 <TouchableOpacity
-                                    onPress={() => navigation.navigate("ChoosePaymentMethod",{
-                                        invoice_value : amount
-                                    })}
+                                    onPress={() => _proceedToPayment()}
                                     style={{
                                         backgroundColor: "#41A2D8",
                                         paddingVertical: 15,

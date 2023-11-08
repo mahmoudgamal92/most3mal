@@ -15,6 +15,7 @@ import { StatusBar } from "expo-status-bar";
 import { FontAwesome5, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from "../constants/style";
+import Checkbox from 'expo-checkbox';
 
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import toastConfig from "./../constants/Toast";
@@ -25,10 +26,11 @@ export default function SignUp({ route, navigation }) {
   const [password, setPassword] = useState("");
   const [confirm_password, setConfitmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isChecked, setChecked] = useState(false);
 
 
   const registerUser = () => {
-    if (name == "" || phone == "" || email == "" || password == "" || confirm_password == "") {
+    if (name == "" || phone == "" || email == "" || password == "" || confirm_password == "" || isChecked == false) {
       alert("الرجاء ملئ جميع الحقول");
       return;
     }
@@ -164,6 +166,32 @@ export default function SignUp({ route, navigation }) {
             secureTextEntry={true}
             placeholder="تأكيد كلمة المرور" />
         </View>
+
+        <View style={{
+          width:"100%",
+          flexDirection:"row",
+          paddingHorizontal:10,
+          paddingVertical:10,
+          justifyContent:"flex-start",
+          alignItems:"center"
+        }}>
+
+        <Checkbox 
+         value={isChecked} onValueChange={setChecked}
+        style={{
+          padding:10,
+          margin:10,
+
+        }}
+         />
+
+        <Text style={{
+          fontFamily:"Bold",
+          color:"grey"
+        }}>
+          الموافقة علي الشروط و الأحكام
+        </Text>
+      </View>
 
         <TouchableOpacity style={styles.primaryBtn}
           onPress={() => registerUser()}>
