@@ -122,9 +122,6 @@ export default function CatSelect({ route, navigation }) {
                 </TouchableOpacity>
 
             </View>
-
-
-
             <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
 
                 <Text style={{ fontFamily: "Bold", textAlign: "center", fontSize: 18, marginVertical: 25 }}>
