@@ -373,7 +373,6 @@ export default function Create({ route , navigation }) {
                         </View>
                     </View>
 
-
                     <TouchableOpacity style={styles.primaryBtn}
                         onPress={() => NewAdd()}>
 
