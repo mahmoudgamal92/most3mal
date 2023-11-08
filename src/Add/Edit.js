@@ -22,21 +22,22 @@ import toastConfig from "./../../constants/Toast";
 import { KeyboardAvoidingView } from "react-native";
 
 export default function Create({ route , navigation }) {
+
+    const {item} = route.params;
+
     const [image, setImage] = useState(null);
     const [imageURI, setImageURI] = useState(null);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState("");
     const [coords, setCoords] = useState("");
-
     const [state , setState] = useState("");
     const [city , setCity] = useState("");
-
     const [latitude, setLatitude] = useState(24.7136);
     const [longitude, setLongitude] = useState(46.6753);
-
     const [loading, setLoading] = useState(false);
     const mapRef = useRef(null);
+
 
     useEffect(() => {
         _retrieveData();
@@ -168,9 +169,8 @@ export default function Create({ route , navigation }) {
              >
 
 
-                <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 20 }}>
-
-                    إضافة إعلان
+                <Text style={{ fontFamily: "Regular", color: "#FFF", fontSize:16 }}>
+                  {item.title}
                 </Text>
 
 
@@ -211,8 +211,8 @@ export default function Create({ route , navigation }) {
                         <TouchableOpacity
                             onPress={() => pickImage()}
                             style={styles.imgUploadContainer}>
-                            <Image style={styles.imgUploadIcon}
-                                source={require("./../../assets/camera.png")} />
+                            <Image style={{ width: "100%", height: "100%", borderRadius: 50, borderWidth: 2, borderColor: "#34ace0", resizeMode: "contain" }}
+                            source={{ uri: "https://mestamal.com/uploads/" + item.main_image }} />
                         </TouchableOpacity>
 
                     }
@@ -226,7 +226,9 @@ export default function Create({ route , navigation }) {
                     <View style={styles.inputContainer}>
                         <TextInput style={styles.newAddinput}
                             onChangeText={text => setTitle(text)}
-                            placeholder="أدخل عنوان الإعلان" />
+                            placeholder="أدخل عنوان الإعلان" 
+                            defaultValue={item.title}
+                            />
                     </View>
 
 
@@ -243,6 +245,8 @@ export default function Create({ route , navigation }) {
                         <TextInput style={styles.newAddTextArea}
                             onChangeText={text => setDescription(text)}
                             placeholder="أدخل وصف الإعلان"
+                            defaultValue={item.details}
+
                             multiline={true}
                         />
                     </View>
@@ -261,8 +265,7 @@ export default function Create({ route , navigation }) {
                         <TextInput style={styles.newAddinput}
                             onChangeText={text => setPrice(toEnglishNumber(text))}
                             placeholder="أدخل سعر الإعلان"
-                            keyboardType="numeric"
-                            maxLength={10}
+                            defaultValue={item.price.toString()}
                         />
                     </View>
 
@@ -278,6 +281,8 @@ export default function Create({ route , navigation }) {
                         <TextInput style={styles.newAddinput}
                             onChangeText={text =>setState(text)}
                             placeholder="أدخل المنطقة"
+                            defaultValue={item.address.split(",")[0].toString()}
+
                         />
                     </View>
 
@@ -294,6 +299,7 @@ export default function Create({ route , navigation }) {
                         <TextInput style={styles.newAddinput}
                             onChangeText={text => setCity(text)}
                             placeholder="أدخل المدينة"
+                            defaultValue={item.address.split(",")[1].toString()}
                         />
                     </View>
 
@@ -374,7 +380,7 @@ export default function Create({ route , navigation }) {
                         {loading == true ?
                             <ActivityIndicator size={40} color="#FFF" />
                             :
-                            <Text style={styles.btnText}>إنشاء الإعلان</Text>
+                            <Text style={styles.btnText}>تعديل الإعلان </Text>
                         }
 
                     </TouchableOpacity>

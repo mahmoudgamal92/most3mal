@@ -226,7 +226,9 @@ export default function MyAdds({ route, navigation }) {
                                     <AntDesign name="delete" size={30} color="red" />
                                 </TouchableOpacity>
 
-                                <TouchableOpacity>
+                                <TouchableOpacity onPress={() => navigation.navigate("EditAdd",{
+                                    item : item
+                                })}>
                                     <FontAwesome5 name="edit" size={30} color="#34ace0" />
                                 </TouchableOpacity>
 
