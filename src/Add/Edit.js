@@ -46,6 +46,12 @@ export default function Create({ route , navigation }) {
 
      const _retrieveData = async () => {
         try {
+            setTitle(item.title);
+            setDescription(item.details);
+            setPrice(item.price);
+            setState("iuiyr");
+            setCity("uiui");
+            setCoords("479575.75957,895.580")
             const location = await AsyncStorage.getItem('current_location');
             if (location !== null) {
                 // We have data!!
@@ -86,30 +92,27 @@ export default function Create({ route , navigation }) {
         const user_token = await AsyncStorage.getItem("user_token");
         setLoading(true);
         let formData = new FormData();
+        formData.append("action","update");
+        formData.append("id", item.id);
         formData.append("title", title);
         formData.append("details", description);
         formData.append("price", price);
-        formData.append("Category", "");
-        formData.append("subcat", 4);
         formData.append("address", state + "," + city);
         formData.append("coords", coords);
-        formData.append("country_id", 2);
-        formData.append("city_id", 1);
-        formData.append("images[]", image);
-        fetch("https://mestamal.com/api/ad/create", {
+        fetch("https://mestamal.com/mahmoud/api/custom/ad.php", {
             method: "POST",
-            headers: {
-                Authorization: "Bearer " + user_token
-            },
             body: formData
         })
         .then(response => response.json())
         .then(json => {
-            if (json.status == true) {
-                alert("تم اضافة الإعلان بنجاح")
-                navigation.pop(3);
+            if (json.success == true) 
+            {
+                alert(json.message);
+                setLoading(false);
+                navigation.goBack();
             }
-            else {
+            else 
+            {
                 alert("هناك خطأ في إضافة الإعلان")
             }
         }
