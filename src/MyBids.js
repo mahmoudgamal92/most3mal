@@ -67,6 +67,40 @@ export default function MyOrders({ route, navigation }) {
         }
     };
 
+    
+    const updateOrder = async () => {
+        if(amount !== "0" && current_item !== "0")
+        {
+        try {
+            fetch("https://mestamal.com/mahmoud/api/api.php/records/offers/" + current_item, {
+                method: "PUT",
+                headers: {
+                    Accept: "*/*",
+                    "Content-type": "multipart/form-data;",
+                    "Accept-Encoding": "gzip, deflate, br",
+                },
+                body : JSON.stringify({
+                    amount : amount
+                })
+            })
+                .then(response => response.json())
+                .then(responseJson => {
+                    setInputModal(false);
+                    alert("تم تعديل العرض بنجاح");
+                    _retrieveData();
+                });
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    else {
+        alert("لابد من إضافة السعر");
+    }
+    };
+
+
     const deleteOrder = async (id) => {
         try {
             fetch("https://mestamal.com/mahmoud/api/api.php/records/offers/" + id, {
