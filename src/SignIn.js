@@ -1,10 +1,7 @@
 import {
-  Animated,
   Image,
-  SafeAreaView,
   Text,
   View,
-  StyleSheet,
   StatusBar,
   TouchableOpacity,
   ActivityIndicator,
@@ -17,7 +14,7 @@ import { FontAwesome5, Feather, MaterialCommunityIcons, AntDesign, Entypo } from
 import styles from "../constants/style";
 import Constants from "expo-constants";
 
-import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+import Toast from 'react-native-toast-message';
 import toastConfig from "./../constants/Toast";
 import { KeyboardAvoidingView } from "react-native";
 
