@@ -122,13 +122,15 @@ export default function CatSelect({ route, navigation }) {
                 </TouchableOpacity>
 
             </View>
+
+
             <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
 
                 <Text style={{ fontFamily: "Bold", textAlign: "center", fontSize: 18, marginVertical: 25 }}>
                     ماذا تريد أن تبيع أو تعلن؟
                 </Text>
 
-                <View style={{ width: "80%", height: "75%" }}>
+                <View style={{ width: "80%", flex:1 }}>
                     <FlatList
                         data={data}
                         keyExtractor={item => item.id}
@@ -170,7 +172,7 @@ export default function CatSelect({ route, navigation }) {
                     />
                 </View>
 
-                <View style={{ paddingHorizontal: 20, width: "100%",marginBottom:50}}>
+                <View style={{ paddingHorizontal: 20, width: "100%"}}>
                     <TouchableOpacity 
                     onPress={() => proceedToInsertion(depart_id,current_item)}
                     style={styles.primaryBtn}>

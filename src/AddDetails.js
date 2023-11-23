@@ -879,7 +879,8 @@ const AddDetail = ({ route, navigation }) => {
                             color: "grey"
                           }}
                         >
-                          {moment(item.created_at).format("MMM Do YY")}
+                          {item.created_at}
+                          {/* {moment().format("MMM Do YY")} */}
                         </Text>
                       </View>
                     </View>
