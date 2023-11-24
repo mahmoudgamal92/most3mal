@@ -513,6 +513,25 @@ export default function OrderInfo({ route, navigation }) {
 
                     </TouchableOpacity>
                 </View>
+                
+
+
+                {orderInfo.status == "delivering" && orderInfo.user_id == user_id ?
+                    <View style={{
+                        flexDirection: "row-reverse",
+                        width: "100%",
+                        paddingHorizontal: 20,
+                        justifyContent: "space-between",
+                    }}>
+                       
+                            <Text style={{fontFamily:"Bold", color:"#000"}}>
+                                دفع المبلغ
+                            </Text>
+                         
+                    </View>
+                    :
+                    null
+                }
 
 
                 {orderInfo.status == "pending" && orderInfo.user_id == user_id ?
