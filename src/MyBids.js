@@ -24,7 +24,6 @@ import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from '@react-navigation/native';
 import moment from 'moment';
-
 export default function MyOrders({ route, navigation }) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);

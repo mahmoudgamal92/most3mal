@@ -152,9 +152,7 @@ export default function AuctionOfferInfo({ route, navigation }) {
 
 
     const acceptOrder = async (offer_id) => {
-        const user_token = await AsyncStorage.getItem("user_token");
-        const user_id = await AsyncStorage.getItem("user_id");
-        let url = "https://mestamal.com/mahmoud/api/api.php/records/item_offers/" + offer_id;
+        let url = "https://mestamal.com/mahmoud/api/api.php/records/offers/" + offer_id;
         const body = JSON.stringify({
             "status": "delivered",
         });
@@ -172,9 +170,10 @@ export default function AuctionOfferInfo({ route, navigation }) {
             })
                 .then(response => response.json())
                 .then(json => {
-                    SetdeliverModal(false);
-                    alert("تم إستلام الطلب  بنجاح");
-                    _retrieveData();
+                   //alert(JSON.stringify(json));
+                   SetdeliverModal(false);
+                   alert("تم إستلام الطلب  بنجاح");
+                   _retrieveData();
                 })
                 .catch(error => console.error(error));
         } catch (error) {
@@ -510,7 +509,26 @@ export default function AuctionOfferInfo({ route, navigation }) {
                     </TouchableOpacity>
                 </View>
 
-                {/* <Text>{orderInfo.status}</Text> */}
+              
+                {orderInfo.status == "delivering" && itemSeller.id == user_id ?
+                    <View style={{
+                        width: "100%",
+                        paddingHorizontal: 20,
+                        paddingVertical: 10,
+                        marginVertical: 20,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: 'green'
+                    }}>
+
+                        <Text style={{ fontFamily: "Bold", color: "#FFF" }}>
+                            تم شحن الرصيد وايداعه في حسابنا
+                        </Text>
+
+                    </View>
+                    :
+                    null
+                }
 
                 {orderInfo.status == "pending" && orderInfo.user_id == user_id ?
                     <View style={{
@@ -711,10 +729,7 @@ export default function AuctionOfferInfo({ route, navigation }) {
                                     }}>
                                         عزيزي مستخدم مستعمل .كوم في حال الضغط على استلام الطلب فأنت تتحمل المسؤوليه كامله عن استلامكم المنتج او الخدمه في وضعها السليم بعد فحصكم لها وتوافق على تحرير المبلغ من قبل منصة مستعمل . كوم لحساب البائع أو مقدم الخدمه ولا تتحمل منصة مستعمل . كوم ادنى مسؤوليه تجاه ذلك ..
                                     </Text>
-                                    
-                                    {/* <Text style={{ color: "red", fontFamily: "Bold" }}>
-                                        جاري العمل علي تحويل الرصيد لحساب البائع
-                                    </Text> */}
+                                  
                                 </View>
 
                                 <TouchableOpacity
