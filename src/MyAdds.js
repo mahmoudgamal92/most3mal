@@ -210,9 +210,7 @@ export default function MyAdds({ route, navigation }) {
 
                                 <TouchableOpacity
                                     onPress={() => {
-
-                                        Alert.alert('تأكيد الحذف!', 'هل أنت متأكد من حذف هذاالإعلان', [
-
+                                        Alert.alert('تأكيد التعطيل!', 'هل أنت متأكد من تعطيل هذاالإعلان', [
                                             {
                                                 text: 'Cancel',
                                                 onPress: () => console.log('Cancel Pressed'),
@@ -223,7 +221,7 @@ export default function MyAdds({ route, navigation }) {
 
                                     }}
                                 >
-                                    <AntDesign name="delete" size={30} color="red" />
+                       <Entypo name="eye-with-line" size={30} color="red" />
                                 </TouchableOpacity>
 
                                 <TouchableOpacity onPress={() => navigation.navigate("EditAdd",{

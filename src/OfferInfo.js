@@ -11,7 +11,7 @@ import {
     ActivityIndicator,
     ScrollView
 } from "react-native";
-import { Feather, MaterialIcons, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, MaterialIcons, FontAwesome5, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -30,6 +30,9 @@ export default function OrderInfo({ route, navigation }) {
     const [user_id, setUserID] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [deliver_modal, SetdeliverModal] = useState(false);
+    const [chat_loading, setChatLoading] = useState(false);
+
+    
 
 
     useEffect(() => {
@@ -146,8 +149,55 @@ export default function OrderInfo({ route, navigation }) {
     }
 
 
+    const _openChat = async (user_id, user_name) => {
+        const user_token = await AsyncStorage.getItem("user_token");
+        setChatLoading(true);
+        let url = "https://mestamal.com/api/contact/" + user_id;
+        try {
+            fetch(url, {
+                method: "GET",
+                headers: {
+                    Accept: "*/*",
+                    "Content-type": "multipart/form-data;",
+                    "cache-control": "no-cache",
+                    "Accept-Encoding": "gzip, deflate, br",
+                    Connection: "keep-alive",
+                    Authorization: "Bearer " + user_token
+                }
+            })
+                .then(response => response.json())
+                .then(json => {
+                    if (json.status == true) {
+                        setChatLoading(false);
+                        navigation.navigate("ChatScreen", {
+                            chat_id: user_id,
+                            user_name: user_name
+                        });
+                    } else {
+                        setChatLoading(false);
+                        alert(json.msg);
+                    }
+                })
+                .catch(error => console.error(error));
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
-    
+
+
+    const _navigateChat = async () => {
+        const user_id = await AsyncStorage.getItem("user_id");
+
+        if (user_id == orderClient.id) {
+            _openChat(itemSeller.id, itemSeller.name);
+        }
+        else if (user_id == itemSeller.id) {
+            _openChat(orderClient.id, orderClient.name);
+        }
+
+    }
+
 
 
 
@@ -390,6 +440,25 @@ export default function OrderInfo({ route, navigation }) {
                             {moment(orderInfo.created_at).format("MMM Do YY")}
                         </Text>
 
+                        <TouchableOpacity
+                            onPress={() => _navigateChat()}
+                            style={{
+                                backgroundColor: "#41A2D8",
+                                paddingHorizontal: 10,
+                                width: 100,
+                                paddingVertical: 5,
+                                borderRadius: 5,
+                                marginVertical: 5,
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }}>
+                            <Text style={{ color: "#FFF", fontFamily: "Bold", marginHorizontal: 5 }}>
+                                محادثة
+                            </Text>
+                            <Ionicons name="chatbox-ellipses-sharp" size={24} color="#FFF" />
+                        </TouchableOpacity>
+
 
                     </View>
                 </TouchableOpacity>
@@ -458,7 +527,10 @@ export default function OrderInfo({ route, navigation }) {
                                     style={{ marginHorizontal: 5 }} />
                             </View>
                             <Text style={{ fontFamily: "Bold", color: "#000", marginVertical: 10 }}>
-                                تاريخ  العرض :   {orderInfo.created_at}
+                               
+                               
+                                تاريخ  العرض :   
+                                {moment(orderInfo.created_at).format("MMM Do YY")}
                             </Text>
 
                         </View>
@@ -513,7 +585,7 @@ export default function OrderInfo({ route, navigation }) {
 
                     </TouchableOpacity>
                 </View>
-                
+
 
 
                 {orderInfo.status == "delivering" && orderInfo.user_id == user_id ?
@@ -523,16 +595,34 @@ export default function OrderInfo({ route, navigation }) {
                         paddingHorizontal: 20,
                         justifyContent: "space-between",
                     }}>
-                       
-                            <Text style={{fontFamily:"Bold", color:"#000"}}>
-                                دفع المبلغ
-                            </Text>
-                         
+
+                        <Text style={{ fontFamily: "Bold", color: "#000" }}>
+                            دفع المبلغ
+                        </Text>
+
                     </View>
                     :
                     null
                 }
 
+
+
+                  {orderInfo.status == "delivering" && itemSeller.id == user_id ?
+                    <View style={{
+                        width: "100%",
+                        paddingHorizontal: 20,
+                        justifyContent: "center",
+                        alignItems:"center"
+                    }}>
+
+                        <Text style={{ fontFamily: "Bold", color: "#000" }}>
+                        Balance Charged success
+                        </Text>
+
+                    </View>
+                    :
+                    null
+                }
 
                 {orderInfo.status == "pending" && orderInfo.user_id == user_id ?
                     <View style={{
@@ -734,14 +824,14 @@ export default function OrderInfo({ route, navigation }) {
                                     }}>
                                         عزيزي مستخدم مستعمل .كوم في حال الضغط على استلام الطلب فأنت تتحمل المسؤوليه كامله عن استلامكم المنتج او الخدمه في وضعها السليم بعد فحصكم لها وتوافق على تحرير المبلغ من قبل منصة مستعمل . كوم لحساب البائع أو مقدم الخدمه ولا تتحمل منصة مستعمل . كوم ادنى مسؤوليه تجاه ذلك ..
                                     </Text>
-                                    
+
                                     {/* <Text style={{ color: "red", fontFamily: "Bold" }}>
                                         جاري العمل علي تحويل الرصيد لحساب البائع
                                     </Text> */}
                                 </View>
 
                                 <TouchableOpacity
-                                  onPress={() => acceptOrder(orderInfo.id)}
+                                    onPress={() => acceptOrder(orderInfo.id)}
                                     style={{
                                         flexDirection: "row-reverse",
                                         backgroundColor: "#41A2D8",

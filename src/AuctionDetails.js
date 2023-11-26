@@ -82,6 +82,50 @@ export default function AuctionDetails({ route, navigation }) {
     return [days, hours, minutes, seconds];
   };
 
+
+
+  const render_order = (val) => {
+    switch (val) {
+      case "waiting":
+        return {
+          color: "#54B7D3",
+          text: "بانتظار قبول العرض"
+        };
+
+      case "declined":
+        return {
+          color: "red",
+          text: "مرفوض من البائع "
+        };
+
+
+      case "pending":
+        return {
+          color: "grey",
+          text: "بإنتظار شحن الرصيد"
+        };
+
+
+      case "delivering":
+        return {
+          color: "green",
+          text: "جاري توصيل الطلب "
+        };
+
+      case "delivered":
+        return {
+          color: "green",
+          text: "تم توصيل الطلب "
+        };
+
+      default:
+        return {
+          color: "#119fbf",
+          text: "حالة غير معروفة"
+        };
+
+    }
+  };
   const _retrieveData = async () => {
     const user_token = await AsyncStorage.getItem("user_token");
     const user_id = await AsyncStorage.getItem("user_id");
@@ -153,72 +197,72 @@ export default function AuctionDetails({ route, navigation }) {
     const user_id = await AsyncStorage.getItem("user_id");
     let url = "https://mestamal.com/mahmoud/api/api.php/records/offers/" + offer_id;
     const body = JSON.stringify({
-        "status": "pending",
+      "status": "pending",
     });
     try {
-        fetch(url, {
-            method: "PUT",
-            headers: {
-                Accept: "*/*",
-                "Content-type": "multipart/form-data;",
-                "cache-control": "no-cache",
-                "Accept-Encoding": "gzip, deflate, br",
-                Connection: "keep-alive",
-            },
-            body: body
+      fetch(url, {
+        method: "PUT",
+        headers: {
+          Accept: "*/*",
+          "Content-type": "multipart/form-data;",
+          "cache-control": "no-cache",
+          "Accept-Encoding": "gzip, deflate, br",
+          Connection: "keep-alive",
+        },
+        body: body
+      })
+        .then(response => response.json())
+        .then(json => {
+          setInputModal(false);
+          alert("تم قبول العرض ");
+          navigation.navigate("AuctionOfferInfo", {
+            "offer_id": offer_id
+          })
         })
-            .then(response => response.json())
-            .then(json => {
-                setInputModal(false);
-                alert("تم قبول العرض ");
-                navigation.navigate("AuctionOfferInfo", {
-                    "offer_id": offer_id
-                })
-            })
-            .catch(error => console.error(error));
+        .catch(error => console.error(error));
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-};
+  };
 
-  
+
   const _openChat = async (user_id, user_name) => {
     const user_token = await AsyncStorage.getItem("user_token");
     //setLoading(true);
     let url = "https://mestamal.com/api/contact/" + user_id;
     try {
-        fetch(url, {
-            method: "GET",
-            headers: {
-                Accept: "*/*",
-                "Content-type": "multipart/form-data;",
-                "cache-control": "no-cache",
-                "Accept-Encoding": "gzip, deflate, br",
-                Connection: "keep-alive",
-                Authorization: "Bearer " + user_token
-            }
-        })
-            .then(response => response.json())
-            .then(json => {
-                if (json.status == true) {
-                    //setLoading(false);
-                    navigation.navigate("ChatScreen",
-                        {
-                            chat_id: user_id,
-                            user_name: user_name,
-                        });
-                }
-                else {
-                    //setLoading(false);
-                    alert(json.msg);
+      fetch(url, {
+        method: "GET",
+        headers: {
+          Accept: "*/*",
+          "Content-type": "multipart/form-data;",
+          "cache-control": "no-cache",
+          "Accept-Encoding": "gzip, deflate, br",
+          Connection: "keep-alive",
+          Authorization: "Bearer " + user_token
+        }
+      })
+        .then(response => response.json())
+        .then(json => {
+          if (json.status == true) {
+            //setLoading(false);
+            navigation.navigate("ChatScreen",
+              {
+                chat_id: user_id,
+                user_name: user_name,
+              });
+          }
+          else {
+            //setLoading(false);
+            alert(json.msg);
 
-                }
-            })
-            .catch(error => console.error(error));
+          }
+        })
+        .catch(error => console.error(error));
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-};
+  };
 
 
 
@@ -323,7 +367,7 @@ export default function AuctionDetails({ route, navigation }) {
     }
   };
 
- 
+
   return (
     <SafeAreaView style={{ flex: 1, paddingTop: Constants.statusBarHeight }}>
       <StatusBar backgroundColor="#34ace0" />
@@ -398,38 +442,38 @@ export default function AuctionDetails({ route, navigation }) {
         >
           {item.user_id == user_id
             ? <TouchableOpacity
-                style={{
-                  backgroundColor: "#34ace0",
-                  width: 150,
-                  height: 40,
-                  borderRadius: 10,
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}
+              style={{
+                backgroundColor: "#34ace0",
+                width: 150,
+                height: 40,
+                borderRadius: 10,
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              <Text
+                style={{ fontFamily: "Bold", color: "#FFF", fontSize: 18 }}
               >
-                <Text
-                  style={{ fontFamily: "Bold", color: "#FFF", fontSize: 18 }}
-                >
-                  مزاد شخصي
-                </Text>
-              </TouchableOpacity>
+                مزاد شخصي
+              </Text>
+            </TouchableOpacity>
             : <TouchableOpacity
-                onPress={() => setInputModal(true)}
-                style={{
-                  backgroundColor: "#34ace0",
-                  width: 150,
-                  height: 40,
-                  borderRadius: 10,
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}
+              onPress={() => setInputModal(true)}
+              style={{
+                backgroundColor: "#34ace0",
+                width: 150,
+                height: 40,
+                borderRadius: 10,
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              <Text
+                style={{ fontFamily: "Bold", color: "#FFF", fontSize: 18 }}
               >
-                <Text
-                  style={{ fontFamily: "Bold", color: "#FFF", fontSize: 18 }}
-                >
-                  أضف عرض
-                </Text>
-              </TouchableOpacity>}
+                أضف عرض
+              </Text>
+            </TouchableOpacity>}
 
           <View
             style={{
@@ -526,6 +570,7 @@ export default function AuctionDetails({ route, navigation }) {
             data={offers}
             keyExtractor={item => item.id}
             renderItem={({ item }) =>
+
               <View
                 style={{
                   width: "100%",
@@ -552,6 +597,8 @@ export default function AuctionDetails({ route, navigation }) {
                     elevation: 9
                   }}
                 >
+
+
                   <View
                     style={{
                       flexDirection: "row",
@@ -605,62 +652,132 @@ export default function AuctionDetails({ route, navigation }) {
                   </View>
 
                   {route.params.item.user_id == user_id
-                    ? <View
-                        style={{
-                          width: "100%",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent:"center",
-                          marginVertical:10
-                        }}
-                      >
-                        <TouchableOpacity
-                        onPress={() => _acceptOffer(item.id)}
-                         style={{
-                            height: 40,
-                            width:120,
-                            backgroundColor: "#4BAE52",
+                    ?
+                    <View
+                      style={{
+                        width: "100%",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        marginVertical: 10
+                      }}
+                     >
+
+                      {item.status == "waiting" ?
+                        <View
+                          style={{
+                            width: "100%",
+                            flexDirection: "row",
                             alignItems: "center",
                             justifyContent: "center",
-                            borderRadius: 10,
-                            marginHorizontal:5,
-                            flexDirection:"row"
-                          }}
-                        >
-                          
-                          <Text style={{
-                            fontFamily:"Regular",
-                            color:"#FFFF"
+                            marginVertical: 10
                           }}>
-                            موافقة</Text>
+
+                          <TouchableOpacity
+                            onPress={() => _acceptOffer(item.id)}
+                            style={{
+                              height: 40,
+                              width: 120,
+                              backgroundColor: "#4BAE52",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              borderRadius: 10,
+                              marginHorizontal: 5,
+                              flexDirection: "row"
+                            }}
+                          >
+
+                            <Text style={{
+                              fontFamily: "Regular",
+                              color: "#FFFF"
+                            }}>
+                              موافقة
+                            </Text>
                             <Feather name="check-square" size={24} color="#FFF" />
-                        </TouchableOpacity>
+                          </TouchableOpacity>
 
-                        <TouchableOpacity
-                        onPress={() => _openChat(item.user_id,item.user.name)}
-                         style={{
-                            height: 40,
-                            width:120,
-                            backgroundColor: "#FE5722",
+                          <TouchableOpacity
+                            onPress={() => _openChat(item.user_id, item.user.name)}
+                            style={{
+                              height: 40,
+                              width: 120,
+                              backgroundColor: "#FE5722",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              borderRadius: 10,
+                              marginHorizontal: 5,
+                              flexDirection: "row"
+                            }}
+                          >
+                            <Text style={{
+                              fontFamily: "Regular",
+                              color: "#FFFF"
+                            }}>
+                              محادثة
+                            </Text>
+                            <Ionicons name="chatbubble-ellipses" size={24} color="#FFF" />
+                          </TouchableOpacity>
+
+
+                        </View>
+                        :
+
+                        <View
+                          style={{
+                            flexDirection: "row",
                             alignItems: "center",
                             justifyContent: "center",
-                            borderRadius: 10,
-                            marginHorizontal:5,
-                            flexDirection:"row"
+                            width:"100%"
+
                           }}
                         >
-                          <Text style={{
-                            fontFamily:"Regular",
-                            color:"#FFFF"
+
+                          <View style={{
+                            backgroundColor: render_order(item.status).color,
+                            height: 40,
+                              width: 120,
+                              alignItems: "center",
+                              justifyContent: "center",
+                              borderRadius: 10,
+                              marginHorizontal: 5,
+                              flexDirection: "row"
                           }}>
-                            محادثة
-                          </Text>
-                          <Ionicons name="chatbubble-ellipses" size={24} color="#FFF" />
-                        </TouchableOpacity>
+                            <Text style={{
+                              fontFamily: "Regular",
+                              color: "#FFF"
+                            }}>
+                              {render_order(item.status).text}
+                            </Text>
+                          </View>
 
 
-                        <View />
-                      </View>
+                          <TouchableOpacity
+                              onPress={() => navigation.navigate("AuctionOfferInfo", {
+                                "offer_id": item.id
+                              })}
+                            style={{
+                              height: 40,
+                              width: 120,
+                              backgroundColor: "green",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              borderRadius: 10,
+                              marginHorizontal: 5,
+                              flexDirection: "row"
+                            }}
+                          >
+                            <Text style={{
+                              fontFamily: "Regular",
+                              color: "#FFFF",
+                              marginHorizontal:5
+                            }}>
+                            عرض
+                            </Text>
+                            <AntDesign name="eye" size={24} color="#FFF" />
+                          </TouchableOpacity>
+                        </View>
+                      }
+                    </View>
                     : null}
                 </View>
               </View>}
@@ -669,113 +786,113 @@ export default function AuctionDetails({ route, navigation }) {
 
         {item.user_id == user_id
           ? <View
-              style={{
-                flexDirection: "row",
-                backgroundColor: "#FFF",
-                justifyContent: "space-between",
-                position: "absolute",
-                bottom: 10,
-                width: "100%",
-                paddingHorizontal: 10
-              }}
-            >
-              <View style={{ width: "20%" }}>
-                <TouchableOpacity
-                  style={{
-                    width: 60,
-                    height: 60,
-                    backgroundColor: "#4BAE52",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 10
-                  }}
-                >
-                  <AntDesign name="sharealt" size={24} color="#FFF" />
-                </TouchableOpacity>
-              </View>
-
-              <View style={{ width: "80%" }}>
-                <TouchableOpacity
-                  onPress={() => setReportModal(!input_modal)}
-                  style={{
-                    width: "100%",
-                    height: 60,
-                    backgroundColor: "#FE5722",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 10
-                  }}
-                >
-                  <Text
-                    style={{ color: "#FFF", fontFamily: "Bold", fontSize: 18 }}
-                  >
-                    الإبلاغ عن مشكلة
-                  </Text>
-                </TouchableOpacity>
-              </View>
+            style={{
+              flexDirection: "row",
+              backgroundColor: "#FFF",
+              justifyContent: "space-between",
+              position: "absolute",
+              bottom: 10,
+              width: "100%",
+              paddingHorizontal: 10
+            }}
+          >
+            <View style={{ width: "20%" }}>
+              <TouchableOpacity
+                style={{
+                  width: 60,
+                  height: 60,
+                  backgroundColor: "#4BAE52",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 10
+                }}
+              >
+                <AntDesign name="sharealt" size={24} color="#FFF" />
+              </TouchableOpacity>
             </View>
+
+            <View style={{ width: "80%" }}>
+              <TouchableOpacity
+                onPress={() => setReportModal(!input_modal)}
+                style={{
+                  width: "100%",
+                  height: 60,
+                  backgroundColor: "#FE5722",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 10
+                }}
+              >
+                <Text
+                  style={{ color: "#FFF", fontFamily: "Bold", fontSize: 18 }}
+                >
+                  الإبلاغ عن مشكلة
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
           : <View
-              style={{
-                flexDirection: "row",
-                backgroundColor: "#FFF",
-                justifyContent: "space-between",
-                position: "absolute",
-                bottom: 10,
-                width: "100%",
-                paddingHorizontal: 10
-              }}
-            >
-              <View style={{ width: "20%" }}>
-                <TouchableOpacity
-                  style={{
-                    width: 60,
-                    height: 60,
-                    backgroundColor: "#4BAE52",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 10
-                  }}
-                >
-                  <AntDesign name="sharealt" size={24} color="#FFF" />
-                </TouchableOpacity>
-              </View>
+            style={{
+              flexDirection: "row",
+              backgroundColor: "#FFF",
+              justifyContent: "space-between",
+              position: "absolute",
+              bottom: 10,
+              width: "100%",
+              paddingHorizontal: 10
+            }}
+          >
+            <View style={{ width: "20%" }}>
+              <TouchableOpacity
+                style={{
+                  width: 60,
+                  height: 60,
+                  backgroundColor: "#4BAE52",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 10
+                }}
+              >
+                <AntDesign name="sharealt" size={24} color="#FFF" />
+              </TouchableOpacity>
+            </View>
 
-              <View style={{ width: "60%" }}>
-                <TouchableOpacity
-                  onPress={() => setReportModal(!input_modal)}
-                  style={{
-                    width: "100%",
-                    height: 60,
-                    backgroundColor: "#FE5722",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 10
-                  }}
+            <View style={{ width: "60%" }}>
+              <TouchableOpacity
+                onPress={() => setReportModal(!input_modal)}
+                style={{
+                  width: "100%",
+                  height: 60,
+                  backgroundColor: "#FE5722",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 10
+                }}
+              >
+                <Text
+                  style={{ color: "#FFF", fontFamily: "Bold", fontSize: 18 }}
                 >
-                  <Text
-                    style={{ color: "#FFF", fontFamily: "Bold", fontSize: 18 }}
-                  >
-                    الإبلاغ عن مشكلة
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                  الإبلاغ عن مشكلة
+                </Text>
+              </TouchableOpacity>
+            </View>
 
-              <View style={{ width: "20%", alignItems: "flex-end" }}>
-                <TouchableOpacity
-                  onPress={() => _openChat()}
-                  style={{
-                    width: 60,
-                    height: 60,
-                    backgroundColor: "#000",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 10
-                  }}
-                >
-                  <Ionicons name="chatbubbles-outline" size={24} color="#FFF" />
-                </TouchableOpacity>
-              </View>
-            </View>}
+            <View style={{ width: "20%", alignItems: "flex-end" }}>
+              <TouchableOpacity
+                onPress={() => _openChat()}
+                style={{
+                  width: 60,
+                  height: 60,
+                  backgroundColor: "#000",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 10
+                }}
+              >
+                <Ionicons name="chatbubbles-outline" size={24} color="#FFF" />
+              </TouchableOpacity>
+            </View>
+          </View>}
       </View>
 
       <Modal transparent={true} animationType="slide" visible={input_modal}>
@@ -855,24 +972,24 @@ export default function AuctionDetails({ route, navigation }) {
                 >
                   {buttonLoading == false
                     ? <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center"
+                      }}
+                    >
+                      <Text
                         style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "center"
+                          color: "white",
+                          textAlign: "center",
+                          fontFamily: "Bold",
+                          marginHorizontal: 10
                         }}
                       >
-                        <Text
-                          style={{
-                            color: "white",
-                            textAlign: "center",
-                            fontFamily: "Bold",
-                            marginHorizontal: 10
-                          }}
-                        >
-                          ارسال
-                        </Text>
-                        <Ionicons name="send" size={24} color="#FFF" />
-                      </View>
+                        ارسال
+                      </Text>
+                      <Ionicons name="send" size={24} color="#FFF" />
+                    </View>
                     : <ActivityIndicator size="large" color={"#FFF"} />}
                 </TouchableOpacity>
               </View>
@@ -956,24 +1073,24 @@ export default function AuctionDetails({ route, navigation }) {
                 >
                   {buttonLoading == false
                     ? <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center"
+                      }}
+                    >
+                      <Text
                         style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "center"
+                          color: "white",
+                          textAlign: "center",
+                          fontFamily: "Bold",
+                          marginHorizontal: 10
                         }}
                       >
-                        <Text
-                          style={{
-                            color: "white",
-                            textAlign: "center",
-                            fontFamily: "Bold",
-                            marginHorizontal: 10
-                          }}
-                        >
-                          ارسال
-                        </Text>
-                        <Ionicons name="send" size={24} color="#FFF" />
-                      </View>
+                        ارسال
+                      </Text>
+                      <Ionicons name="send" size={24} color="#FFF" />
+                    </View>
                     : <ActivityIndicator size="large" color={"#FFF"} />}
                 </TouchableOpacity>
               </View>
