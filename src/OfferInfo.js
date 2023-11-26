@@ -32,7 +32,7 @@ export default function OrderInfo({ route, navigation }) {
     const [deliver_modal, SetdeliverModal] = useState(false);
     const [chat_loading, setChatLoading] = useState(false);
 
-    
+
 
 
     useEffect(() => {
@@ -527,9 +527,9 @@ export default function OrderInfo({ route, navigation }) {
                                     style={{ marginHorizontal: 5 }} />
                             </View>
                             <Text style={{ fontFamily: "Bold", color: "#000", marginVertical: 10 }}>
-                               
-                               
-                                تاريخ  العرض :   
+
+
+                                تاريخ  العرض :
                                 {moment(orderInfo.created_at).format("MMM Do YY")}
                             </Text>
 
@@ -606,17 +606,19 @@ export default function OrderInfo({ route, navigation }) {
                 }
 
 
-
-                  {orderInfo.status == "delivering" && itemSeller.id == user_id ?
+                {orderInfo.status == "delivering" && itemSeller.id == user_id ?
                     <View style={{
                         width: "100%",
                         paddingHorizontal: 20,
+                        paddingVertical: 10,
+                        marginVertical: 20,
                         justifyContent: "center",
-                        alignItems:"center"
+                        alignItems: "center",
+                        backgroundColor: 'green'
                     }}>
 
-                        <Text style={{ fontFamily: "Bold", color: "#000" }}>
-                        Balance Charged success
+                        <Text style={{ fontFamily: "Bold", color: "#FFF" }}>
+                            تم شحن الرصيد وايداعه في حسابنا
                         </Text>
 
                     </View>

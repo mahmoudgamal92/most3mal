@@ -49,6 +49,41 @@ export default function MyAdds({ route, navigation }) {
     }, []);
 
 
+    const render_order = (val) => {
+        switch (val) {
+            case "active":
+                return {
+                    color: "#54B7D3",
+                    text: "نشط"
+                };
+
+            case "inactive":
+                return {
+                    color: "red",
+                    text: "غير نشط"
+                };
+
+
+            case "pending":
+                return {
+                    color: "grey",
+                    text: "قيد الانتظار"
+                };
+            case "done":
+                return {
+                    color: "green",
+                    text: "مكتمل"
+                };
+
+            default:
+                return {
+                    color: "#119fbf",
+                    text: "حالة غير معروفة"
+                };
+        }
+    };
+
+
     const _retrieveData = async () => {
         const user_token = await AsyncStorage.getItem("user_token");
         setLoading(true);
@@ -78,7 +113,38 @@ export default function MyAdds({ route, navigation }) {
     };
 
 
-    
+
+
+
+    const updateStatus = async (id, status) => {
+
+        let url = "https://mestamal.com/mahmoud/api/api.php/records/ads/" + id;
+        const body = JSON.stringify({
+            "status": status == "active" ? "inactive" : "active",
+        });
+        try {
+            fetch(url, {
+                method: "PUT",
+                headers: {
+                    Accept: "*/*",
+                    "Content-type": "multipart/form-data;",
+                    "cache-control": "no-cache",
+                    "Accept-Encoding": "gzip, deflate, br",
+                    Connection: "keep-alive",
+                },
+                body: body
+            })
+                .then(response => response.json())
+                .then(json => {
+                    alert("تم  تغيير حالة الاعلان بنجاح");
+                    _retrieveData();
+                })
+                .catch(error => console.error(error));
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const deleteAdd = async (ad_id) => {
         try {
             const user_token = await AsyncStorage.getItem("user_token");
@@ -126,31 +192,31 @@ export default function MyAdds({ route, navigation }) {
 
     const handleEmptyProp = () => {
         return (
-          <View
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              marginTop: 160
-            }}
-          >
-            <Image
-              source={require("./../assets/broken-heart.png")}
-              style={{ width: 200, height: 200 }}
-            />
-            <Text
-              style={{
-                fontFamily: "Regular",
-                color: "#c9c9c9",
-                fontSize: 18,
-                marginTop: 10
-              }}
+            <View
+                style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: 160
+                }}
             >
-              لا توجد لديك أي إعلاناتي
-            </Text>
-          </View>
+                <Image
+                    source={require("./../assets/broken-heart.png")}
+                    style={{ width: 200, height: 200 }}
+                />
+                <Text
+                    style={{
+                        fontFamily: "Regular",
+                        color: "#c9c9c9",
+                        fontSize: 18,
+                        marginTop: 10
+                    }}
+                >
+                    لا توجد لديك أي إعلاناتي
+                </Text>
+            </View>
         );
-      };
-    
+    };
+
 
     return (
         <View style={styles.container}>
@@ -203,30 +269,36 @@ export default function MyAdds({ route, navigation }) {
                     >
                         <ImageBackground
                             imageStyle={styles.itemImg}
-                            source={{ uri: "https://mestamal.com/uploads/" + item.main_image }}
-                        >
+                            source={{ uri: "https://mestamal.com/uploads/" + item.main_image }}>
 
                             <View style={styles.itemContent}>
-
                                 <TouchableOpacity
                                     onPress={() => {
-                                        Alert.alert('تأكيد التعطيل!', 'هل أنت متأكد من تعطيل هذاالإعلان', [
-                                            {
-                                                text: 'Cancel',
-                                                onPress: () => console.log('Cancel Pressed'),
-                                                style: 'cancel',
-                                            },
-                                            { text: 'OK', onPress: () => deleteAdd(item.id) },
-                                        ]);
+                                        Alert.alert('تأكيد !',
+                                            'هل أنت متأكد من تغيير حالة هذاالإعلان',
+                                            [
+                                                {
+                                                    text: 'Cancel',
+                                                    onPress: () => console.log('Cancel Pressed'),
+                                                    style: 'cancel',
+                                                },
+                                                {
+                                                    text: 'OK',
+                                                    onPress: () => updateStatus(item.id, item.status)
+                                                },
+                                            ]);
 
-                                    }}
-                                >
-                       <Entypo name="eye-with-line" size={30} color="red" />
+                                    }}>
+
+                                    {item.status == "active" ?
+                                        <Entypo name="eye-with-line" size={30} color="red" />
+                                        :
+                                        <AntDesign name="eye" size={24} color="green" />
+                                    }
                                 </TouchableOpacity>
 
-                                <TouchableOpacity onPress={() => navigation.navigate("EditAdd",{
-                                    item : item
-                                })}>
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate("EditAdd", { item: item })}>
                                     <FontAwesome5 name="edit" size={30} color="#34ace0" />
                                 </TouchableOpacity>
 
@@ -242,14 +314,26 @@ export default function MyAdds({ route, navigation }) {
                             <Text style={{ fontFamily: "Bold", color: '#34ace0' }}>
                                 {item.price} SR
                             </Text>
-                            <Text style={{ fontFamily: "Regular", color: 'grey' }}>
-                                10 Month ago
+                            <Text style={{
+                                fontFamily: "Regular",
+                                color: '#FFF',
+                                backgroundColor: render_order(item.status).color,
+                                paddingHorizontal:10,
+                                paddingVertical:2,
+                                borderRadius: 5
+                            }}>
+                                {render_order(item.status).text}
                             </Text>
                         </View>
 
                         <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
 
-                            <Text style={{ fontFamily: "Bold", color: '#000', textAlign: "right" }}>
+                            <Text style={{
+                                fontFamily: "Bold",
+                                color: '#000',
+                                textAlign: "right",
+
+                            }}>
                                 {item.title}
                             </Text>
 
@@ -262,7 +346,6 @@ export default function MyAdds({ route, navigation }) {
                             }}>
                                 <Entypo name="location-pin" size={24} color="grey" />
                                 <Text style={{ fontFamily: "Regular", color: 'grey' }}>
-                                    {/* {item.address !== null ? item.address : "لايوجد عنوان"} */}
                                     عرض العنوان
                                 </Text>
                             </View>
