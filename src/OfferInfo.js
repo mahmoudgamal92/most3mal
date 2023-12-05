@@ -140,7 +140,7 @@ export default function OrderInfo({ route, navigation }) {
             .then(response => response.json())
             .then(json => {
                 setProfile(json);
-                console.log(json);
+                //console.log(json);
             }
             )
             .catch(error => {
@@ -202,25 +202,20 @@ export default function OrderInfo({ route, navigation }) {
 
 
 
-    const acceptOrder = async (offer_id) => {
-        const user_token = await AsyncStorage.getItem("user_token");
-        const user_id = await AsyncStorage.getItem("user_id");
-        let url = "https://mestamal.com/mahmoud/api/api.php/records/item_offers/" + offer_id;
-        const body = JSON.stringify({
-            "status": "delivered",
-        });
+    const deliverOrder = async (offer_id) => {
+        // const user_token = await AsyncStorage.getItem("user_token");
+        // const user_id = await AsyncStorage.getItem("user_id");
+        let url = "https://mestamal.com/mahmoud/api/custom/deliver_order.php?offer_id=" + offer_id;
         try {
             fetch(url, {
-                method: "PUT",
+                method: "GET",
                 headers: {
                     Accept: "*/*",
                     "Content-type": "multipart/form-data;",
                     "cache-control": "no-cache",
                     "Accept-Encoding": "gzip, deflate, br",
                     Connection: "keep-alive",
-                },
-                body: body
-            })
+                }})
                 .then(response => response.json())
                 .then(json => {
                     SetdeliverModal(false);
@@ -619,7 +614,7 @@ export default function OrderInfo({ route, navigation }) {
                     }}>
 
                         <Text style={{ fontFamily: "Bold", color: "#FFF" }}>
-                            تم شحن الرصيد وايداعه في حسابنا
+                            تم شحن الرصيد و إيداعة في حسابكم لدي مستعمل . كوم
                         </Text>
 
                     </View>
@@ -834,7 +829,7 @@ export default function OrderInfo({ route, navigation }) {
                                 </View>
 
                                 <TouchableOpacity
-                                    onPress={() => acceptOrder(orderInfo.id)}
+                                    onPress={() => deliverOrder(orderInfo.id)}
                                     style={{
                                         flexDirection: "row-reverse",
                                         backgroundColor: "#41A2D8",

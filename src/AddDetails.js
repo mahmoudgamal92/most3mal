@@ -893,7 +893,7 @@ const AddDetail = ({ route, navigation }) => {
                         style={{
                           width: "35%",
                           alignItems: "center",
-                          justifyContent: "center",
+                          justifyContent: "space-between",
                           flexDirection: "row"
                         }}
                        >

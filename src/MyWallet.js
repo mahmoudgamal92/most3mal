@@ -19,6 +19,8 @@ import {
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
+
 export default function MyWallet({ route, navigation }) {
   const [data, setData] = useState([]);
   const [payments, setPayments] = useState([]);
@@ -28,10 +30,12 @@ export default function MyWallet({ route, navigation }) {
   const [buttonLoading, setButtonLoading] = React.useState(false);
   const [amount, setAmount] = useState("0");
 
-  useEffect(() => {
-    getProfile();
-    _retriveTransactions();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      getProfile();
+      _retriveTransactions();
+    }, [])
+  );
 
   const _proceedToPayment = () => {
     setChargeModal(false);
@@ -81,7 +85,7 @@ export default function MyWallet({ route, navigation }) {
     )
       .then(response => response.json())
       .then(json => {
-        setPayments(json.records);
+        setPayments(json.records.reverse());
         console.log(json);
       })
       .catch(error => {

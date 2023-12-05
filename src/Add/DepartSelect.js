@@ -84,7 +84,7 @@ export default function CatSelect({ route, navigation }) {
                     ماذا تريد أن تبيع أو تعلن؟
                 </Text>
 
-                <View style={{ width: "80%", height: "77%" }}>
+                <View style={{ width: "80%",flex:1 }}>
                     <FlatList
                         data={data}
                         keyExtractor={item => item.id}

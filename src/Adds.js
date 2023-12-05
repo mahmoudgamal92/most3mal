@@ -91,10 +91,7 @@ export default function Adds({ route, navigation }) {
     setLoading(true);
 
     let url =
-      "https://mestamal.com/api/ads?depart_id=" +
-      depart_id +
-      "&cat_id=" +
-      cat_id;
+      "https://mestamal.com/api/ads?depart_id="+depart_id +"&cat_id="+cat_id;
     try {
       fetch(url, {
         method: "GET",
@@ -229,6 +226,7 @@ export default function Adds({ route, navigation }) {
         data={data}
         keyExtractor={item => item.id}
         renderItem={({ item }) =>
+        item.status == "active" ?
           <TouchableOpacity
             onPress={() => {
               navigation.navigate("AddDetails", {
@@ -279,7 +277,7 @@ export default function Adds({ route, navigation }) {
               </Text>
               <AntDesign name="shoppingcart" size={24} color="#34ace0" />
             </View>
-          </TouchableOpacity>}
+          </TouchableOpacity> : null}
       />
     </View>
   );
