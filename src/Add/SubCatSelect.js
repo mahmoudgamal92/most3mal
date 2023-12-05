@@ -52,7 +52,7 @@ export default function CatSelect({ route, navigation }) {
             .then(response => response.json())
             .then(json => {
                 setLoading(false);
-               /// alert(JSON.stringify(json));
+                /// alert(JSON.stringify(json));
                 //console.log(json);
             }
             )
@@ -114,7 +114,7 @@ export default function CatSelect({ route, navigation }) {
 
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
-                    style={{ position: "absolute", right : 20 }}
+                    style={{ position: "absolute", right: 20 }}
                 >
                     <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
                 </TouchableOpacity>
@@ -122,19 +122,28 @@ export default function CatSelect({ route, navigation }) {
 
             </View>
 
-    
 
-                    <TouchableOpacity style={styles.primaryBtn}
-                        onPress={() => AddAuction()}>
 
-                        {loading == true ?
-                            <ActivityIndicator size={40} color="#FFF" />
-                            :
-                            <Text style={styles.btnText}>التالي</Text>
-                        }
+            <TouchableOpacity style={{
+                backgroundColor: "#34ACE0",
+                width: "100%",
+                height: 60,
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 20,
+                marginTop: 20,
+                marginBottom: 30
+            }}
+                onPress={() => AddAuction()}>
 
-                    </TouchableOpacity>
-           
+                {loading == true ?
+                    <ActivityIndicator size={40} color="#FFF" />
+                    :
+                    <Text style={styles.btnText}>التالي</Text>
+                }
+
+            </TouchableOpacity>
+
         </View>
     );
 }

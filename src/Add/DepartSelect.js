@@ -132,8 +132,6 @@ export default function CatSelect({ route, navigation }) {
                         onPress={() => {
                             {
                                 current_item == 0 ? alert("الرجاء اختيار القسم") :
-
-
                                     navigation.navigate("CatSelect",
                                         {
                                             depart_id: current_item,
@@ -141,7 +139,16 @@ export default function CatSelect({ route, navigation }) {
                                         });
                             }
                         }}
-                        style={styles.primaryBtn}>
+                        style={{
+                            backgroundColor: "#34ACE0",
+                            width: "100%",
+                            height: 60,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 20,
+                            marginTop: 20,
+                            marginBottom: 30
+                        }}>
                         {loading == true ?
                             <ActivityIndicator size={40} color="#FFF" />
                             :

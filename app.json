@@ -30,7 +30,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/app_logo.png",
-        "backgroundColor": "#ebecf0"
+        "backgroundColor": "#34ace0"
       },
       "package": "com.mahmoud2391997.most3mal",
       "config": {
