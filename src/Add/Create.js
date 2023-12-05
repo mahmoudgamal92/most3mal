@@ -22,6 +22,9 @@ import toastConfig from "./../../constants/Toast";
 import { KeyboardAvoidingView } from "react-native";
 
 export default function Create({ route , navigation }) {
+
+
+    const {depart_id , cat_id} = route.params;
     const [image, setImage] = useState(null);
     const [imageURI, setImageURI] = useState(null);
     const [title, setTitle] = useState("");
@@ -88,8 +91,7 @@ export default function Create({ route , navigation }) {
         formData.append("title", title);
         formData.append("details", description);
         formData.append("price", price);
-        formData.append("Category", "");
-        formData.append("subcat", 4);
+        formData.append("Category", cat_id);
         formData.append("address", state + "," + city);
         formData.append("coords", coords);
         formData.append("country_id", 2);

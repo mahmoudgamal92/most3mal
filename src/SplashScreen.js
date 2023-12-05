@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Image, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Image, ActivityIndicator,Text } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -41,6 +41,9 @@ export default function Splash({ route, navigation }) {
       <Image source={require('./../assets/logo.png')} style={styles.logo} />
       <View style={{marginTop:20}}>
       <ActivityIndicator size={50} color="#0f95b3" />
+      <Text style={{fontFamily:"Bold"}}>
+        v 1.0.1
+      </Text>
       </View>
     </View>
   );

@@ -124,7 +124,6 @@ export default function Create({ navigation, route }) {
         formData.append("car_conditions", car_status);
         formData.append("model", carModel);
         formData.append("Category", cat_id);
-        formData.append("subcat", 4);
         formData.append("country_id", 2);
         formData.append("city_id", 1);
         formData.append("images[]", image);

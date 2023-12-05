@@ -80,14 +80,6 @@ export default function Conversations({ route, navigation }) {
         <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 20 }}>
           المحادثات
         </Text>
-
-
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={{ position: "absolute", right: 20 }}
-        >
-          <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
-        </TouchableOpacity>
       </View>
 
 

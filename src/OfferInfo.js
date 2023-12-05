@@ -41,6 +41,7 @@ export default function OrderInfo({ route, navigation }) {
     }, []);
 
 
+    
     const render_order = (val) => {
         switch (val) {
             case "waiting":

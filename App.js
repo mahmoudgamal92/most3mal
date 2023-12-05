@@ -172,12 +172,6 @@ export default function App() {
           }}
         />
 
-
-
-
-
-
-
       </Tabs.Navigator>
     );
   };

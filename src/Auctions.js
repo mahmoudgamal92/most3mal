@@ -114,15 +114,10 @@ export default function HomePage({ route, navigation }) {
                     المزادات
                 </Text>
 
-                <TouchableOpacity
-                    onPress={() => navigation.goBack()}
-                    style={{ position: "absolute", right : 20 }}
-                >
-                    <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
-                </TouchableOpacity>
+            
             </View>
 
-            <View style={{ flex: 1, backgroundColor: "#FFF", paddingHorizontal: 20 }}>
+            <View style={{ flex: 1, paddingHorizontal: 20 }}>
                <FlatList
                     data={data}
                     ListEmptyComponent={handleEmptyProp()}
@@ -141,6 +136,7 @@ export default function HomePage({ route, navigation }) {
                     borderRadius: 10,
                     padding: 10, 
                     alignItems: "center",
+                    backgroundColor:"#FFF",
                     justifyContent:"flex-end",
                     marginVertical:5 }}>
                   

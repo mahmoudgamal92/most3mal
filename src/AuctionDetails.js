@@ -870,8 +870,7 @@ export default function AuctionDetails({ route, navigation }) {
                 }}
               >
                 <Text
-                  style={{ color: "#FFF", fontFamily: "Bold", fontSize: 18 }}
-                >
+                  style={{ color: "#FFF", fontFamily: "Bold", fontSize: 18 }}>
                   الإبلاغ عن مشكلة
                 </Text>
               </TouchableOpacity>
