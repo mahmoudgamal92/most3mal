@@ -6,12 +6,13 @@ import {
   FlatList
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { MaterialIcons, Feather, Entypo } from '@expo/vector-icons';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { MaterialIcons, Feather, Entypo } from "@expo/vector-icons";
 import styles from "../constants/style";
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from "@react-navigation/native";
 export default function Conversations({ route, navigation }) {
   const [data, setData] = useState([]);
+  const [user_id, setUserID] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useFocusEffect(
@@ -20,15 +21,13 @@ export default function Conversations({ route, navigation }) {
     }, [])
   );
 
-  useEffect(() => {
-    _retrieveData();
-  }, []);
-
   const _retrieveData = async () => {
-
-    const user_token = await AsyncStorage.getItem("user_token");
+    const user_id = await AsyncStorage.getItem("user_id");
+    setUserID(user_id);
     setLoading(true);
-    let url = "https://www.mestamal.com/api/get_chats";
+    let url =
+      "https://www.mestamal.com/mahmoud/messaging/conversations.php?user_id=" +
+      user_id;
     try {
       fetch(url, {
         method: "GET",
@@ -37,13 +36,12 @@ export default function Conversations({ route, navigation }) {
           "Content-type": "multipart/form-data;",
           "cache-control": "no-cache",
           "Accept-Encoding": "gzip, deflate, br",
-          Connection: "keep-alive",
-          Authorization: "Bearer " + user_token
+          Connection: "keep-alive"
         }
       })
         .then(response => response.json())
         .then(json => {
-          setData(json.response[0]);
+          setData(json.data);
           setLoading(false);
           //alert(JSON.stringify(json));
         })
@@ -52,7 +50,6 @@ export default function Conversations({ route, navigation }) {
       console.log(error);
     }
   };
-
 
   return (
     <View style={styles.container}>
@@ -69,32 +66,28 @@ export default function Conversations({ route, navigation }) {
           shadowColor: "#000",
           shadowOffset: {
             width: 0,
-            height: 5,
+            height: 5
           },
           shadowOpacity: 0.36,
           shadowRadius: 6.68,
 
-          elevation: 11,
-        }}>
-
+          elevation: 11
+        }}
+      >
         <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 20 }}>
           المحادثات
         </Text>
       </View>
 
-
       <FlatList
         style={{ width: "100%", marginTop: 20, paddingHorizontal: 10, flex: 1 }}
         data={data}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-
+        keyExtractor={item => item.conv_num}
+        renderItem={({ item }) =>
           <TouchableOpacity
-            onPress={() => navigation.navigate("ChatScreen",
-              {
-                chat_id: item.id,
-                user_name: item.name,
-
+            onPress={() =>
+              navigation.navigate("ChatScreen", {
+                chat_id: item.conv_num
               })}
             style={{
               flexDirection: "row",
@@ -105,65 +98,86 @@ export default function Conversations({ route, navigation }) {
               paddingHorizontal: 15,
               borderBottomColor: "#b5bcc4",
               borderBottomWidth: 1,
-              paddingBottom: 10,
-            }}>
-            <View style={{
-              width: "25%",
-              alignItems: "flex-start",
+              paddingBottom: 10
             }}
+          >
+            <View
+              style={{
+                width: "25%",
+                alignItems: "flex-start"
+              }}
             >
-              <View style={{
-                alignItems: "center",
-                justifyContent: "center",
-                height: 70,
-                width: 70,
-                borderRadius: 35,
-                borderColor: "#34ace0",
-                borderWidth: 2,
-                backgroundColor: "#051A3A",
-              }}>
-
-                <Feather name="user" size={40} color="#FFF"
-                  style={{
-
-
-                  }} />
-
-
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: 70,
+                  width: 70,
+                  borderRadius: 35,
+                  borderColor: "#34ace0",
+                  borderWidth: 2,
+                  backgroundColor: "#051A3A"
+                }}
+              >
+                <Feather name="user" size={40} color="#FFF" style={{}} />
               </View>
             </View>
 
-            <View style={{
-              flex: 1,
-              justifyContent: "center",
-              width: "55%",
-
-            }}>
-              <Text style={{
-                fontFamily: "Bold",
-                fontSize: 18,
-                textAlign: "left",
-                width: "100%"
-              }}>
-                {item.name}
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                width: "55%",
+                flexDirection: "row",
+                justifyContent: "space-between"
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "Bold",
+                  fontSize: 18,
+                  textAlign: "left"
+                }}
+              >
+                {user_id == item.sender_id
+                  ? item.reciver_name
+                  : item.sender_name}
               </Text>
+              {parseInt(item.unseen_msg) > 0
+                ? <Text
+                    style={{
+                      fontFamily: "Bold",
+                      fontSize: 18,
+                      textAlign: "center",
+                      backgroundColor: "red",
+                      borderRadius: 15,
+                      width: 30,
+                      height: 30,
+                      color: "#FFF"
+                    }}
+                  >
+                    {item.unseen_msg}
+                  </Text>
+                : null}
             </View>
 
-            <View style={{
-              alignItems: "flex-end",
-              justifyContent: "center",
-              width: "10%",
-            }}>
-
-              <View style={{
-                alignItems: "center",
+            <View
+              style={{
+                alignItems: "flex-end",
                 justifyContent: "center",
-              }}>
+                width: "10%"
+              }}
+            >
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
                 <Entypo name="dots-three-vertical" size={24} color="black" />
               </View>
             </View>
-          </TouchableOpacity>
-        )}
+          </TouchableOpacity>}
       />
     </View>
   );

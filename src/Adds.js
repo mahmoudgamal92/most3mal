@@ -8,7 +8,16 @@ import {
   FlatList
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
-import { MaterialIcons, AntDesign,MaterialCommunityIcons} from "@expo/vector-icons";
+import {
+  MaterialIcons,
+  AntDesign,
+  MaterialCommunityIcons
+} from "@expo/vector-icons";
+import moment from "moment";
+import 'moment/src/locale/ar'
+
+moment.locale('ar');
+
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -52,7 +61,7 @@ export default function Adds({ route, navigation }) {
     const user_token = await AsyncStorage.getItem("user_token");
     setLoading(true);
     let url = "";
-    if (current_cat !== null && current_cat !== 0 ) {
+    if (current_cat !== null && current_cat !== 0) {
       url =
         "https://mestamal.com/api/ads?depart_id=" +
         depart_id +
@@ -91,7 +100,10 @@ export default function Adds({ route, navigation }) {
     setLoading(true);
 
     let url =
-      "https://mestamal.com/api/ads?depart_id="+depart_id +"&cat_id="+cat_id;
+      "https://mestamal.com/api/ads?depart_id=" +
+      depart_id +
+      "&cat_id=" +
+      cat_id;
     try {
       fetch(url, {
         method: "GET",
@@ -160,7 +172,7 @@ export default function Adds({ route, navigation }) {
             onPress={() => changeCat(0)}
             style={{
               flexDirection: "row-reverse",
-              backgroundColor: current_cat == 0  ? "#0393ce" : "#FFF",
+              backgroundColor: current_cat == 0 ? "#0393ce" : "#FFF",
               paddingHorizontal: 10,
               paddingVertical: 5,
               borderWidth: 1,
@@ -211,7 +223,11 @@ export default function Adds({ route, navigation }) {
                   {JSON.parse(item.name).ar}
                 </Text>
 
-                <MaterialCommunityIcons name="check-decagram" size={24} color="#143656" />
+                <MaterialCommunityIcons
+                  name="check-decagram"
+                  size={24}
+                  color="#143656"
+                />
               </TouchableOpacity>
             );
           })}
@@ -226,58 +242,73 @@ export default function Adds({ route, navigation }) {
         data={data}
         keyExtractor={item => item.id}
         renderItem={({ item }) =>
-        item.status == "active" ?
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("AddDetails", {
-                item: item
-              });
-            }}
-            style={styles.itemContainer}
-          >
-            <ImageBackground
-              imageStyle={styles.itemImg}
-              source={{
-                uri:
-                  item.main_image == null ||
-                  item.main_image == "" ||
-                  item.main_image == "0"
-                    ? "https://fakeimg.pl/400x400?text=Most3mal&font=noto"
-                    : "https://mestamal.com/uploads/" + item.main_image
-              }}
-            >
-              <View style={styles.itemContent} />
-            </ImageBackground>
-
-            <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
-              <Text
-                style={{
-                  fontFamily: "Bold",
-                  color: "#000",
-                  textAlign: "left",
-                  fontSize: 12
+          item.status == "active"
+            ? <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("AddDetails", {
+                    item: item
+                  });
                 }}
+                style={styles.itemContainer}
               >
-                {item.title}
-              </Text>
-            </View>
+                <ImageBackground
+                  imageStyle={styles.itemImg}
+                  source={{
+                    uri:
+                      item.main_image == null ||
+                      item.main_image == "" ||
+                      item.main_image == "0"
+                        ? "https://fakeimg.pl/400x400?text=Most3mal&font=noto"
+                        : "https://mestamal.com/uploads/" + item.main_image
+                  }}
+                >
+                  <View style={styles.itemContent} />
+                </ImageBackground>
 
-            <View
-              style={{
-                width: "100%",
-                flexDirection: "row-reverse",
-                justifyContent: "space-between",
-                paddingHorizontal: 10,
-                marginVertical: 10,
-                alignItems: "center"
-              }}
-            >
-              <Text style={{ fontFamily: "Bold", color: "grey" }}>
-                {item.price} SR
-              </Text>
-              <AntDesign name="shoppingcart" size={24} color="#34ace0" />
-            </View>
-          </TouchableOpacity> : null}
+                <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
+                  <Text
+                    style={{
+                      fontFamily: "Bold",
+                      color: "#000",
+                      textAlign: "left",
+                      fontSize: 12
+                    }}
+                  >
+                    {item.title}
+                  </Text>
+                </View>
+
+
+                <View style={{ paddingHorizontal: 10, }}>
+                  <Text
+                    style={{
+                      fontFamily: "Bold",
+                      color: "#000",
+                      textAlign: "left",
+                      fontSize: 12
+                    }}
+                  >
+                    {moment(item.created_at).startOf('day').fromNow()}
+                  </Text>
+                </View>
+
+                <View
+                  style={{
+                    width: "100%",
+                    flexDirection: "row-reverse",
+                    justifyContent: "space-between",
+                    paddingHorizontal: 10,
+                    marginVertical: 10,
+                    alignItems: "center"
+                  }}
+                >
+                  <Text style={{ fontFamily: "Bold", color: "grey" }}>
+                    {item.price} SR
+                  </Text>
+                  <AntDesign name="shoppingcart" size={24} color="#34ace0" />
+                </View>
+              </TouchableOpacity>
+            : null}
       />
     </View>
   );
