@@ -188,7 +188,9 @@ const AddDetail = ({ route, navigation }) => {
       item_id: item.id,
       status: "waiting",
       created_at: new Date().toString(),
-      updated_at: new Date().toString()
+      updated_at: new Date().toString(),
+      rating_text:"",
+      rating_val :""
     });
     try {
       fetch(url, {

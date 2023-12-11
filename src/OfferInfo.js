@@ -9,7 +9,9 @@ import {
   Modal,
   Alert,
   ActivityIndicator,
-  ScrollView
+  ScrollView,
+  Linking,
+  TextInput
 } from "react-native";
 import {
   Feather,
@@ -21,8 +23,10 @@ import {
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { AntDesign, FontAwesome, Entypo } from "@expo/vector-icons";
 import moment from "moment";
+import MapView, { Marker } from "react-native-maps";
+import { Rating, AirbnbRating } from "react-native-ratings";
 
 export default function OrderInfo({ route, navigation }) {
   const { offer_id } = route.params;
@@ -37,11 +41,29 @@ export default function OrderInfo({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [deliver_modal, SetdeliverModal] = useState(false);
   const [chat_loading, setChatLoading] = useState(false);
+  const [rating_text, setRatingText] = useState("");
+  const [rating_val, setRatingValue] = useState("");
 
+  const [lat, setLat] = useState(24.7136);
+  const [long, setLong] = useState(46.6753);
   useEffect(() => {
     _retrieveData();
     getProfile();
   }, []);
+
+  const openAddressOnMap = (label, lat, lng) => {
+    const scheme = Platform.select({
+      ios: "maps:0,0?q=",
+      android: "geo:0,0?q="
+    });
+    const latLng = `${lat},${lng}`;
+    //const label = label;
+    const url = Platform.select({
+      ios: `${scheme}${label}@${latLng}`,
+      android: `${scheme}${latLng}(${label})`
+    });
+    Linking.openURL(url);
+  };
 
   const render_order = val => {
     switch (val) {
@@ -110,6 +132,8 @@ export default function OrderInfo({ route, navigation }) {
             setOrderClient(json.client_info);
             setItemSeller(json.seller_info);
             setOrderItem(json.item);
+            setLat(json.item.coords.split(",")[0]);
+            setLong(json.item.coords.split(",")[1]);
           } else {
             setData([]);
           }
@@ -243,6 +267,37 @@ export default function OrderInfo({ route, navigation }) {
         .then(json => {
           setModalVisible(false);
           alert("تم الايداع بنجاح");
+          _retrieveData();
+        })
+        .catch(error => console.error(error));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const _rateOrder = async offer_id => {
+    let url =
+      "https://mestamal.com/mahmoud/api/api.php/records/item_offers/" +
+      offer_id;
+    const body = JSON.stringify({
+      rating_text: rating_text,
+      rating_val: rating_val
+    });
+    try {
+      fetch(url, {
+        method: "PUT",
+        headers: {
+          Accept: "*/*",
+          "Content-type": "multipart/form-data;",
+          "cache-control": "no-cache",
+          "Accept-Encoding": "gzip, deflate, br",
+          Connection: "keep-alive"
+        },
+        body: body
+      })
+        .then(response => response.json())
+        .then(json => {
+          alert("شكرا علي تقييمك");
           _retrieveData();
         })
         .catch(error => console.error(error));
@@ -612,7 +667,7 @@ export default function OrderInfo({ route, navigation }) {
           </TouchableOpacity>
         </View>
 
-        {orderInfo.status == "delivering" && orderInfo.user_id == user_id
+        {/* {orderInfo.status == "delivering" && orderInfo.user_id == user_id
           ? <View
               style={{
                 flexDirection: "row-reverse",
@@ -625,7 +680,7 @@ export default function OrderInfo({ route, navigation }) {
                 دفع المبلغ
               </Text>
             </View>
-          : null}
+          : null} */}
 
         {orderInfo.status == "delivering" && itemSeller.id == user_id
           ? <View
@@ -667,12 +722,61 @@ export default function OrderInfo({ route, navigation }) {
         {orderInfo.status == "delivering" && orderInfo.user_id == user_id
           ? <View
               style={{
-                flexDirection: "row-reverse",
                 width: "100%",
                 paddingHorizontal: 20,
-                justifyContent: "space-between"
+                marginVertical: 20
               }}
             >
+              <Text
+                style={{
+                  fontFamily: "Bold",
+                  marginVertical: 10
+                }}
+              >
+                موقع الإستلام :
+              </Text>
+              <TouchableOpacity
+                onPress={() =>
+                  openAddressOnMap(
+                    orderItem.title,
+                    parseFloat(lat),
+                    parseFloat(long)
+                  )}
+                style={{
+                  width: "100%",
+                  height: 300,
+                  borderRadius: 20,
+                  overflow: "hidden"
+                }}
+              >
+                <MapView
+                  style={{
+                    flex: 1,
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: 20
+                  }}
+                  rotateEnabled={false}
+                  scrollEnabled={false}
+                  initialRegion={{
+                    latitude: parseFloat(lat) || 0,
+                    longitude: parseFloat(long) || 0,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421
+                  }}
+                >
+                  <Marker
+                    key={"7484"}
+                    coordinate={{
+                      latitude: parseFloat(lat) || 0,
+                      longitude: parseFloat(long) || 0
+                    }}
+                  >
+                    <Entypo name="location-pin" size={50} color="black" />
+                  </Marker>
+                </MapView>
+              </TouchableOpacity>
+
               <TouchableOpacity
                 onPress={() => SetdeliverModal(true)}
                 style={styles.primaryBtn}
@@ -684,6 +788,193 @@ export default function OrderInfo({ route, navigation }) {
                   color="#FFF"
                 />
               </TouchableOpacity>
+            </View>
+          : null}
+
+        {orderInfo.status == "delivered" && orderInfo.user_id == user_id
+          ? <View
+              style={{
+                width: "100%",
+                paddingHorizontal: 20,
+                marginVertical: 20
+              }}
+            >
+              {orderInfo.rating_val == "" || orderInfo.rating_val == "0"
+                ? <View
+                    style={{
+                      width: "100%"
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: "Bold",
+                        marginVertical: 10
+                      }}
+                    >
+                      تقييم البائع :
+                    </Text>
+                    <Text
+                      style={{
+                        fontFamily: "Regular",
+                        marginVertical: 10
+                      }}
+                    >
+                      اترك تقييم للبائع , حتي تساعدة علي تحسين جودة منتجة و ايضا
+                      مساعدة الأخرين علي اتخاذ قرارات أفضل
+                    </Text>
+
+                    <AirbnbRating
+                      style={{
+                        fontFamily: "Bold"
+                      }}
+                      count={5}
+                      onFinishRating={rating => setRatingValue(rating)}
+                      reviews={[
+                        "سيئ للغاية",
+                        "علي غير المستوي المرجو",
+                        "متوسط الجودة",
+                        "جودة جيدة",
+                        "جودة ممتازة"
+                      ]}
+                      size={20}
+                    />
+
+                    <View
+                      style={{
+                        marginVertical: 10
+                      }}
+                    >
+                      <TextInput
+                        onChangeText={value => setRatingText(value)}
+                        style={{
+                          width: "100%",
+                          color: "#000",
+                          backgroundColor: "#FFF",
+                          borderRadius: 20,
+                          height: 80,
+                          paddingHorizontal: 20
+                        }}
+                      />
+
+                      <TouchableOpacity
+                        onPress={() => _rateOrder(orderInfo.id)}
+                        style={{
+                          backgroundColor: "#41A2D8",
+                          marginVertical: 10,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          borderRadius: 20,
+                          padding: 10
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: "Bold",
+                            color: "#FFF"
+                          }}
+                        >
+                          تقييم
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                : <View
+                    style={{
+                      backgroundColor: "#FFF",
+                      borderRadius: 10
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: "Bold",
+                        textAlign: "center"
+                      }}
+                    >
+                      تم تقييم البائع
+                    </Text>
+
+                    <AirbnbRating
+                      style={{
+                        fontFamily: "Bold"
+                      }}
+                      isDisabled={true}
+                      count={5}
+                      reviews={[
+                        "سيئ للغاية",
+                        "علي غير المستوي المرجو",
+                        "متوسط الجودة",
+                        "جودة جيدة",
+                        "جودة ممتازة"
+                      ]}
+                      size={20}
+                    />
+
+                    <Text
+                      style={{
+                        fontFamily: "Bold",
+                        textAlign: "center",
+                        marginVertical: 5
+                      }}
+                    >
+                      {orderInfo.rating_text}
+                    </Text>
+                  </View>}
+            </View>
+          : null}
+
+        {orderInfo.status == "delivered" &&
+        orderInfo.user_id !== user_id &&
+        orderInfo.rating_val !== ""
+          ? <View
+              style={{
+                width: "100%",
+                paddingHorizontal: 20,
+                marginVertical: 20
+              }}
+            >
+              {orderInfo.rating_val !== ""
+                ? <View
+                    style={{
+                      backgroundColor: "#FFF",
+                      borderRadius: 10
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: "Bold",
+                        textAlign: "center"
+                      }}
+                    >
+                      تم تقييم من قبل المشتري
+                    </Text>
+
+                    <AirbnbRating
+                      style={{
+                        fontFamily: "Bold"
+                      }}
+                      isDisabled={true}
+                      count={5}
+                      reviews={[
+                        "سيئ للغاية",
+                        "علي غير المستوي المرجو",
+                        "متوسط الجودة",
+                        "جودة جيدة",
+                        "جودة ممتازة"
+                      ]}
+                      size={20}
+                    />
+
+                    <Text
+                      style={{
+                        fontFamily: "Bold",
+                        textAlign: "center",
+                        marginVertical: 5
+                      }}
+                    >
+                      {orderInfo.rating_text}
+                    </Text>
+                  </View>
+                : null}
             </View>
           : null}
       </ScrollView>
@@ -879,10 +1170,6 @@ export default function OrderInfo({ route, navigation }) {
                     مستعمل . كوم لحساب البائع أو مقدم الخدمه ولا تتحمل منصة
                     مستعمل . كوم ادنى مسؤوليه تجاه ذلك ..
                   </Text>
-
-                  {/* <Text style={{ color: "red", fontFamily: "Bold" }}>
-                                        جاري العمل علي تحويل الرصيد لحساب البائع
-                                    </Text> */}
                 </View>
 
                 <TouchableOpacity

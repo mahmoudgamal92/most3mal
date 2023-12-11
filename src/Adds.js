@@ -283,12 +283,12 @@ export default function Adds({ route, navigation }) {
                   <Text
                     style={{
                       fontFamily: "Bold",
-                      color: "#000",
+                      color: "#34ace0",
                       textAlign: "left",
-                      fontSize: 12
+                      fontSize: 16
                     }}
                   >
-                    {moment(item.created_at).startOf('day').fromNow()}
+                        {item.price} SR
                   </Text>
                 </View>
 
@@ -303,9 +303,9 @@ export default function Adds({ route, navigation }) {
                   }}
                 >
                   <Text style={{ fontFamily: "Bold", color: "grey" }}>
-                    {item.price} SR
+                    {moment(item.created_at).startOf('day').fromNow()}
                   </Text>
-                  <AntDesign name="shoppingcart" size={24} color="#34ace0" />
+                  <AntDesign name="shoppingcart" size={24} color="grey" />
                 </View>
               </TouchableOpacity>
             : null}

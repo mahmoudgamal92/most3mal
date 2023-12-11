@@ -4,7 +4,6 @@ import {
   SafeAreaView,
   Text,
   View,
-  StyleSheet,
   StatusBar,
   TouchableOpacity,
   ActivityIndicator,
@@ -17,8 +16,6 @@ import MapView, { Marker } from "react-native-maps";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   MaterialIcons,
-  Feather,
-  MaterialCommunityIcons,
   FontAwesome
 } from "@expo/vector-icons";
 import styles from "./../../constants/style";
