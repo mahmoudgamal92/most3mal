@@ -41,7 +41,7 @@ export default function Conversations({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
-          setData(json.data);
+          setData(json.data.reverse());
           setLoading(false);
           //alert(JSON.stringify(json));
         })

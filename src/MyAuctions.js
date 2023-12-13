@@ -65,7 +65,7 @@ export default function MyAuctions({ route, navigation }) {
             })
                 .then(response => response.json())
                 .then(json => {
-                     setData(json);
+                    setData(json.reverse());
                     setLoading(false);
                     //alert(JSON.stringify(json));
                 })
@@ -207,9 +207,9 @@ export default function MyAuctions({ route, navigation }) {
                     renderItem={({ item }) => (
 
                         <TouchableOpacity
-                        onPress={() => navigation.navigate("AuctionDetails",{
-                            item:item
-                        })}
+                            onPress={() => navigation.navigate("AuctionDetails", {
+                                item: item
+                            })}
                             style={{
                                 flexDirection: "row-reverse",
                                 borderColor: "#DDDDDD",

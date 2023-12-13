@@ -23,6 +23,8 @@ import {
 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
+import { useFocusEffect } from "@react-navigation/native";
+
 export default function AuctionDetails({ route, navigation }) {
   const { item } = route.params;
   const [user_id, setUserID] = useState(null);
@@ -41,6 +43,13 @@ export default function AuctionDetails({ route, navigation }) {
   const [countDown, setCountDown] = useState(
     countDownDate - new Date().getTime()
   );
+  
+  useFocusEffect(
+    React.useCallback(() => {
+      _retrieveData();
+    }, [])
+  );
+
 
   useEffect(
     () => {
@@ -602,8 +611,8 @@ export default function AuctionDetails({ route, navigation }) {
                       />
                       <Text
                         style={{
-                          color: "#34ace0",
-                          fontSize: 18,
+                          color: "#000",
+                          fontSize: 14,
                           fontFamily: "Bold",
                           textAlign: "left"
                         }}

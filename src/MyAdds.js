@@ -102,7 +102,7 @@ export default function MyAdds({ route, navigation }) {
             })
                 .then(response => response.json())
                 .then(json => {
-                    setData(json);
+                    setData(json.reverse());
                     setLoading(false);
                     //alert(JSON.stringify(json));
                 })

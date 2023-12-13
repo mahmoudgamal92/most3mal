@@ -692,10 +692,9 @@ export default function OrderInfo({ route, navigation }) {
                 justifyContent: "center",
                 alignItems: "center",
                 backgroundColor: "green"
-              }}
-            >
-              <Text style={{ fontFamily: "Bold", color: "#FFF" }}>
-                تم شحن الرصيد و إيداعة في حسابكم لدي مستعمل . كوم
+              }}>
+              <Text style={{ fontFamily: "Bold", color: "#FFF",fontSize:13 }}>
+                تم شحن الرصيد و إيداعة في محفظتك لدي مستعمل . كوم
               </Text>
             </View>
           : null}
@@ -733,7 +732,7 @@ export default function OrderInfo({ route, navigation }) {
                   marginVertical: 10
                 }}
               >
-                موقع الإستلام :
+                موقع الإستلام : انقر علي الخريطة
               </Text>
               <TouchableOpacity
                 onPress={() =>
@@ -831,7 +830,7 @@ export default function OrderInfo({ route, navigation }) {
                       onFinishRating={rating => setRatingValue(rating)}
                       reviews={[
                         "سيئ للغاية",
-                        "علي غير المستوي المرجو",
+                        "مقبول",
                         "متوسط الجودة",
                         "جودة جيدة",
                         "جودة ممتازة"
@@ -897,6 +896,7 @@ export default function OrderInfo({ route, navigation }) {
                       style={{
                         fontFamily: "Bold"
                       }}
+                      defaultRating={parseInt(orderInfo.rating_val)}
                       isDisabled={true}
                       count={5}
                       reviews={[
@@ -945,7 +945,7 @@ export default function OrderInfo({ route, navigation }) {
                         textAlign: "center"
                       }}
                     >
-                      تم تقييم من قبل المشتري
+                      تم التقييم من قبل المشتري
                     </Text>
 
                     <AirbnbRating
