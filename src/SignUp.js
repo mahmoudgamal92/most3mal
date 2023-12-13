@@ -16,7 +16,7 @@ import { FontAwesome5, Feather, MaterialCommunityIcons } from '@expo/vector-icon
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from "../constants/style";
 import Checkbox from 'expo-checkbox';
-
+import {api} from "./../constants/constants";
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import toastConfig from "./../constants/Toast";
 export default function SignUp({ route, navigation }) {
@@ -44,9 +44,8 @@ export default function SignUp({ route, navigation }) {
       formData.append("phone", phone);
       formData.append("email", email);
       formData.append("password", password);
-      formData.append("password_confirmation", confirm_password);
       setLoading(true);
-      fetch("https://mestamal.com/api/user/new_register", {
+      fetch(api + "auth/signup.php", {
         method: "POST",
         headers: {
           Accept: "*/*",

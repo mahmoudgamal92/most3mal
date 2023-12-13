@@ -154,6 +154,7 @@ const AddDetail = ({ route, navigation }) => {
     }
   };
 
+  
   const getadOffers = async () => {
     setLoading(true);
     let url =

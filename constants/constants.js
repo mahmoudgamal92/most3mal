@@ -1,9 +1,7 @@
 const api = {
-    base_url: "https://mestamal.com/api/",
-    list :"https://mestamal.com/mahmoud/api/api.php/records/",
+    custom_api: "https://mestamal.com/mahmoud/api/custom",
+    dynamic_api :"https://mestamal.com/mahmoud/api/api.php/records/",
     media_url: "https://mestamal.com/uploads/",
-    media_url1: "https://mestamal.com/uploads/",
-    media_url1: "https://mestamal.com/uploads/",
 };
 
 const colors = {
