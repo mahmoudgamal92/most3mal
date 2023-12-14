@@ -22,6 +22,7 @@ import {
 import styles from "../constants/style";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
+import api from "./../constants/constants";
 
 export default function ChatScreen({ navigation, route }) {
   const [data, setData] = useState([]);
@@ -39,8 +40,7 @@ export default function ChatScreen({ navigation, route }) {
   const _retrieveData = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
     setUserID(user_id);
-    let url =
-      "https://mestamal.com/mahmoud/messaging/chat.php?conv_id=" + chat_id;
+    let url = api.custom_url + "messaging/chat.php?conv_id=" + chat_id;
     try {
       fetch(url, {
         method: "GET",
@@ -67,7 +67,7 @@ export default function ChatScreen({ navigation, route }) {
 
   const _updateSeen = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
-    let url = "https://mestamal.com/mahmoud/messaging/seen.php?conv_id=" + chat_id+"&user_id="+user_id;
+    let url = api.custom_url + "messaging/seen.php?conv_id=" + chat_id+"&user_id="+user_id;
     try {
       fetch(url, {
         method: "GET",
@@ -96,7 +96,7 @@ export default function ChatScreen({ navigation, route }) {
     Keyboard.dismiss();
     setBtnLoading(true);
     const user_id = await AsyncStorage.getItem("user_id");
-    let url = "https://mestamal.com/mahmoud/api/api.php/records/message";
+    let url = api.dynamic_url + "messages";
     const body = JSON.stringify({
       sender_id: user_id,
       conv_id: chat_id,

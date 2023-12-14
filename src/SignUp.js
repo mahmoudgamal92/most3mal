@@ -7,17 +7,23 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Alert
+  Alert,
+  ActivityIndicator
 } from "react-native";
 import React, { useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
-import { FontAwesome5, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  FontAwesome5,
+  Feather,
+  MaterialCommunityIcons
+} from "@expo/vector-icons";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import styles from "../constants/style";
-import Checkbox from 'expo-checkbox';
-import {api} from "./../constants/constants";
-import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+import Checkbox from "expo-checkbox";
+import api from "./../constants/constants";
+import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import toastConfig from "./../constants/Toast";
 export default function SignUp({ route, navigation }) {
   const [name, setUserName] = useState("");
@@ -28,24 +34,39 @@ export default function SignUp({ route, navigation }) {
   const [loading, setLoading] = useState(false);
   const [isChecked, setChecked] = useState(false);
 
-
   const registerUser = () => {
-    if (name == "" || phone == "" || email == "" || password == "" || confirm_password == "" || isChecked == false) {
-      alert("الرجاء ملئ جميع الحقول");
+    if (
+      name == "" ||
+      phone == "" ||
+      email == "" ||
+      password == "" ||
+      confirm_password == "" ||
+      isChecked == false
+    ) {
+      Toast.show({
+        type: "erorrToast",
+        text1: "الرجاء ملئ جميع الحقول",
+        bottomOffset: 80,
+        visibilityTime: 2000
+      });
       return;
     }
     if (password !== confirm_password) {
-      alert("كلمة المرور غير متطابقة");
+      Toast.show({
+        type: "erorrToast",
+        text1: "كلمة المرور غير متطابقة",
+        bottomOffset: 80,
+        visibilityTime: 2000
+      });
       return;
-    }
-    else {
+    } else {
       let formData = new FormData();
-      formData.append("name", name);
-      formData.append("phone", phone);
-      formData.append("email", email);
+      formData.append("username", name);
+      formData.append("userphone", phone);
+      formData.append("useremail", email);
       formData.append("password", password);
       setLoading(true);
-      fetch(api + "auth/signup.php", {
+      fetch(api.custom_url + "auth/signup.php", {
         method: "POST",
         headers: {
           Accept: "*/*",
@@ -57,14 +78,17 @@ export default function SignUp({ route, navigation }) {
       })
         .then(response => response.json())
         .then(responseJson => {
-          if (responseJson.status == true) {
+          if (responseJson.success == true) {
             setLoading(false);
-            Alert.alert("Success", "تم انشاء الحساب بنجاح");
-            getUserProfile(responseJson.token);
-            navigation.navigate("AppHome");
-          } else {
-           // alert(JSON.stringify(responseJson));
-           Alert.alert("Failed","حدث خطأ ما");
+            saveCredintials(responseJson.data);
+          }
+           else {
+            Toast.show({
+              type: "erorrToast",
+              text1: responseJson.message,
+              bottomOffset: 80,
+              visibilityTime: 3000
+            });
             setLoading(false);
           }
         });
@@ -72,35 +96,26 @@ export default function SignUp({ route, navigation }) {
   };
 
 
-  const getUserProfile = async (user_token) => {
-    fetch("https://mestamal.com/api/user/profile", {
-      method: "GET",
-      headers: {
-        Accept: "*/*",
-        "Content-type": "multipart/form-data;",
-        "cache-control": "no-cache",
-        "Accept-Encoding": "gzip, deflate, br",
-        Connection: "keep-alive",
-        Authorization: "Bearer " + user_token
-      }
-    })
-      .then(response => response.json())
-      .then(json => {
-        AsyncStorage.setItem("user_token", user_token);
-        AsyncStorage.setItem('user_id', json.id.toString());
-        AsyncStorage.setItem('user_name', json.name);
-        navigation.replace('AppHome');
-      }
-      )
-      .catch(error => {
-        setLoading(false);
-        console.error(error);
-      }
-      );
+  const saveCredintials = (object) => {
+    AsyncStorage.setItem("user_token", object.token);
+    AsyncStorage.setItem('user_id',object.id.toString());
+    AsyncStorage.setItem('user_name',object.name);
+    Toast.show({
+      type: "successToast",
+      text1: "تم إنشاء الحساب بنجاح",
+      bottomOffset: 80,
+      visibilityTime: 2000
+    });
+
+    setTimeout(() => {
+      navigation.navigate("AppHome");
+    }, 1000);
   }
 
   return (
-    <ScrollView contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}>
+    <ScrollView
+      contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
+    >
       <StatusBar style="auto" />
       <View style={styles.loginBox}>
         <Image source={require("./../assets/logo.png")} style={styles.logo} />
@@ -113,94 +128,109 @@ export default function SignUp({ route, navigation }) {
             <FontAwesome5 name="user-circle" size={24} color="grey" />
           </View>
 
-          <TextInput style={styles.input}
+          <TextInput
+            style={styles.input}
             onChangeText={text => setUserName(text)}
-            placeholder="أسم المستخدم" />
+            placeholder="أسم المستخدم"
+          />
         </View>
-
-
 
         <View style={styles.inputContainer}>
           <View style={{ width: "10%" }}>
             <Feather name="phone-call" size={24} color="grey" />
           </View>
-          <TextInput style={styles.input}
+          <TextInput
+            style={styles.input}
             onChangeText={text => setPhone(text)}
             keyboardType="numeric"
-            placeholder="رقم الجوال" />
+            placeholder="رقم الجوال"
+          />
         </View>
-
-
 
         <View style={styles.inputContainer}>
           <View style={{ width: "10%" }}>
-            <MaterialCommunityIcons name="email-outline" size={24} color="grey" />
+            <MaterialCommunityIcons
+              name="email-outline"
+              size={24}
+              color="grey"
+            />
           </View>
-          <TextInput style={styles.input}
+          <TextInput
+            style={styles.input}
             onChangeText={text => setEmail(text)}
             keyboardType="email-address"
-            placeholder="البريد الإلكتروني" />
+            placeholder="البريد الإلكتروني"
+          />
         </View>
-
-
 
         <View style={styles.inputContainer}>
           <View style={{ width: "10%" }}>
             <Feather name="lock" size={24} color="grey" />
           </View>
-          <TextInput style={styles.input}
+          <TextInput
+            style={styles.input}
             onChangeText={text => setPassword(text)}
             secureTextEntry={true}
-            placeholder="كلمة المرور" />
+            placeholder="كلمة المرور"
+          />
         </View>
-
-
 
         <View style={styles.inputContainer}>
           <View style={{ width: "10%" }}>
             <Feather name="lock" size={24} color="grey" />
           </View>
-          <TextInput style={styles.input}
+          <TextInput
+            style={styles.input}
             onChangeText={text => setConfitmPassword(text)}
             secureTextEntry={true}
-            placeholder="تأكيد كلمة المرور" />
+            placeholder="تأكيد كلمة المرور"
+          />
         </View>
 
-        <View style={{
-          width:"100%",
-          flexDirection:"row",
-          paddingHorizontal:10,
-          paddingVertical:10,
-          justifyContent:"flex-start",
-          alignItems:"center"
-        }}>
+        <View
+          style={{
+            width: "100%",
+            flexDirection: "row",
+            paddingHorizontal: 10,
+            paddingVertical: 10,
+            justifyContent: "flex-start",
+            alignItems: "center"
+          }}
+        >
+          <Checkbox
+            value={isChecked}
+            onValueChange={setChecked}
+            style={{
+              padding: 10,
+              margin: 10
+            }}
+          />
 
-        <Checkbox 
-         value={isChecked} onValueChange={setChecked}
-        style={{
-          padding:10,
-          margin:10,
-
-        }}
-         />
-
-        <Text style={{
-          fontFamily:"Bold",
-          color:"grey"
-        }}>
-          الموافقة علي الشروط و الأحكام
-        </Text>
-      </View>
-
-        <TouchableOpacity style={styles.primaryBtn}
-          onPress={() => registerUser()}>
-          <Text style={styles.btnText}>
-            إنشاء حساب
+          <Text
+            style={{
+              fontFamily: "Bold",
+              color: "grey"
+            }}
+          >
+            الموافقة علي الشروط و الأحكام
           </Text>
-        </TouchableOpacity>
+        </View>
 
-        <TouchableOpacity style={{ marginTop: 20 }} onPress={() => navigation.navigate("SignIn")}>
-          <Text style={{ fontFamily: "Bold", }}>
+        {loading == true
+          ? <TouchableOpacity style={styles.primaryBtn}>
+              <ActivityIndicator size={40} color={"#FFF"} />
+            </TouchableOpacity>
+          : <TouchableOpacity
+              style={styles.primaryBtn}
+              onPress={() => registerUser()}
+            >
+              <Text style={styles.btnText}>إنشاء حساب</Text>
+            </TouchableOpacity>}
+        <TouchableOpacity
+          style={{ marginTop: 20 }}
+          onPress={() => navigation.navigate("SignIn")}
+        >
+          <Text style={{ fontFamily: "Bold" }}>
             لديك حساب بالفعل ؟ تسجيل الدخول
           </Text>
         </TouchableOpacity>

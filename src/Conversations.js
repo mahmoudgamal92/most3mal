@@ -8,6 +8,8 @@ import {
 import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MaterialIcons, Feather, Entypo } from "@expo/vector-icons";
+import api from "./../constants/constants";
+
 import styles from "../constants/style";
 import { useFocusEffect } from "@react-navigation/native";
 export default function Conversations({ route, navigation }) {
@@ -25,9 +27,7 @@ export default function Conversations({ route, navigation }) {
     const user_id = await AsyncStorage.getItem("user_id");
     setUserID(user_id);
     setLoading(true);
-    let url =
-      "https://www.mestamal.com/mahmoud/messaging/conversations.php?user_id=" +
-      user_id;
+    let url = api.custom_url + "messaging/conversations.php?user_id=" + user_id;
     try {
       fetch(url, {
         method: "GET",
@@ -41,7 +41,7 @@ export default function Conversations({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
-          setData(json.data.reverse());
+          setData(json.data);
           setLoading(false);
           //alert(JSON.stringify(json));
         })

@@ -10,6 +10,8 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { MaterialIcons, Feather } from '@expo/vector-icons';
+import api from "./../../constants/constants";
+
 import styles from "./../../constants/style";
 export default function CatSelect({ route, navigation }) {
 
@@ -24,7 +26,7 @@ export default function CatSelect({ route, navigation }) {
 
 
     const _retrieveData = async () => {
-        fetch("https://mestamal.com/api/departments", {
+        fetch(api.dynamic_url+"departments", {
             method: "GET",
             headers: {
                 Accept: "*/*",
@@ -34,8 +36,7 @@ export default function CatSelect({ route, navigation }) {
             .then(response => response.json())
             .then(json => {
                 setLoading(false);
-                setData(json);
-
+                setData(json.records);
             }
             )
             .catch(error => {

@@ -1,22 +1,17 @@
 import {
-    Animated,
     Image,
-    SafeAreaView,
     Text,
     View,
-    StyleSheet,
     StatusBar,
     TouchableOpacity,
     ActivityIndicator,
-    TextInput,
-    ScrollView,
     FlatList
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import * as ImagePicker from 'expo-image-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FontAwesome5, Feather, MaterialIcons, Entypo } from '@expo/vector-icons';
+import {Feather, MaterialIcons } from '@expo/vector-icons';
 import styles from "./../../constants/style";
+import api from "./../../constants/constants";
+
 export default function CatSelect({ route, navigation }) {
 
     const [data, setData] = useState([]);
@@ -58,7 +53,7 @@ export default function CatSelect({ route, navigation }) {
     }
 
     const _retrieveData = async () => {
-        fetch("https://mestamal.com/api/categories", {
+        fetch(api.dynamic_url+"categories", {
             method: "GET",
             headers: {
                 Accept: "*/*",
@@ -69,9 +64,9 @@ export default function CatSelect({ route, navigation }) {
             .then(json => {
                 setLoading(false);
                 const arr = [];
-                for (let i = 0; i < json.length; i++) {
-                    if (json[i].depart_id == depart_id) {
-                        arr.push(json[i]);
+                for (let i = 0; i < json.records.length; i++) {
+                    if (json.records[i].depart_id == depart_id) {
+                        arr.push(json.records[i]);
                     }
                 }
                 setData(arr);

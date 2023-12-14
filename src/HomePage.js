@@ -28,7 +28,6 @@ import api from "./../constants/constants";
 
 export default function HomePage({ route, navigation }) {
   const width = Dimensions.get("window").width;
-
   const [departs, setDeparts] = useState([]);
   const [banner, setBanner] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -45,8 +44,7 @@ export default function HomePage({ route, navigation }) {
     const location_coordinates = await AsyncStorage.getItem("current_location");
 
     if (location_coordinates !== null) {
-      //   setCoordinates(JSON.parse(location_coordinates));
-      //   setLocationInfo(JSON.parse(location_info));
+
     } else {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
@@ -61,7 +59,7 @@ export default function HomePage({ route, navigation }) {
 
   const _retrieveData = async () => {
     setLoading(true);
-    let url = "https://mestamal.com/mahmoud/api/api.php/records/departments";
+    let url = api.dynamic_url +"departments";
     try {
       fetch(url, {
         method: "GET",
@@ -83,7 +81,7 @@ export default function HomePage({ route, navigation }) {
   };
 
   _fetchBanners = () => {
-    let url = "https://mestamal.com/api/get-banners";
+    let url = api.dynamic_url +"banners";
     try {
       fetch(url, {
         method: "GET",
@@ -97,7 +95,7 @@ export default function HomePage({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
-          setBanner(json.banners);
+          setBanner(json.records);
           setLoading(false);
         })
         .catch(error => console.error(error));

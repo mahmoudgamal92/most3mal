@@ -1,11 +1,7 @@
 const api = {
-    custom_api: "https://mestamal.com/mahmoud/api/custom",
-    dynamic_api :"https://mestamal.com/mahmoud/api/api.php/records/",
+    custom_url: "https://mestamal.com/mahmoud/api/custom/",
+    dynamic_url :"https://mestamal.com/mahmoud/api/dynamic/api.php/records/",
     media_url: "https://mestamal.com/uploads/",
 };
 
-const colors = {
-    primary_color: "#34ace0",
-};
-
-export default {api,colors};
+export default api;

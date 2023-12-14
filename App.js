@@ -50,7 +50,6 @@ import MyAuctions from "./src/MyAuctions";
 import MyAuction from "./src/MyAuction";
 import MyOrders from "./src/MyOrders";
 import Settings from "./src/Settings";
-import CountDown from "./src/CountDown";
 import AuctionOfferInfo from "./src/AuctionOfferInfo";
 import SearchResult from "./src/SearchResult";
 import PrivacyPolicy from "./src/PrivacyPolicy";
@@ -506,7 +505,6 @@ export default function App() {
         <HomeStack.Screen name="HowWorks" component={HowWorks} />
         <HomeStack.Screen name="MyAuctions" component={MyAuctions} />
         <HomeStack.Screen name="EditProfile" component={EditProfile} />
-        <HomeStack.Screen name="CountDown" component={CountDown} />
         <HomeStack.Screen name="ChoosePaymentMethod" component={ChoosePaymentMethod} />
         <HomeStack.Screen name="PaymentProcess" component={PaymentProcess} />
         <HomeStack.Screen name="PaymentSuccess" component={PaymentSuccess} />

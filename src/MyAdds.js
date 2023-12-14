@@ -27,6 +27,7 @@ import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from '@react-navigation/native';
+import api from "./../constants/constants";
 
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import toastConfig from "./../constants/Toast";
@@ -85,9 +86,9 @@ export default function MyAdds({ route, navigation }) {
 
 
     const _retrieveData = async () => {
-        const user_token = await AsyncStorage.getItem("user_token");
+        const user_id = await AsyncStorage.getItem("user_id");
         setLoading(true);
-        let url = "https://mestamal.com/api/user/ads";
+        let url = api.custom_url +"user/ads.php?user_id="+user_id;
         try {
             fetch(url, {
                 method: "GET",
@@ -97,12 +98,11 @@ export default function MyAdds({ route, navigation }) {
                     "cache-control": "no-cache",
                     "Accept-Encoding": "gzip, deflate, br",
                     Connection: "keep-alive",
-                    Authorization: "Bearer " + user_token
                 }
             })
                 .then(response => response.json())
                 .then(json => {
-                    setData(json.reverse());
+                    setData(json.data);
                     setLoading(false);
                     //alert(JSON.stringify(json));
                 })
@@ -145,50 +145,7 @@ export default function MyAdds({ route, navigation }) {
         }
     };
 
-    const deleteAdd = async (ad_id) => {
-        try {
-            const user_token = await AsyncStorage.getItem("user_token");
-            if (user_token !== null) {
-                fetch("https://mestamal.com/api/user/ads/" + ad_id + "/delete", {
-                    method: "POST",
-                    headers: {
-                        Accept: "*/*",
-                        "Content-type": "multipart/form-data;",
-                        "Accept-Encoding": "gzip, deflate, br",
-                        Connection: "keep-alive",
-                        Authorization: "Bearer " + user_token
-                    },
-                })
-                    .then(response => response.json())
-                    .then(responseJson => {
-                        if (responseJson.status == true) {
-                            Toast.show({
-                                type: 'successToast',
-                                text1: "تم حذف الإعلان بنجاح",
-                                topOffset: 120,
-                                visibilityTime: 2000,
-                            });
-
-                            _retrieveData();
-                        }
-                        else {
-                            Toast.show({
-                                type: 'erorrToast',
-                                text1: "خط أثناء حذف الإعلان",
-                                bottomOffset: 80,
-                                visibilityTime: 2000,
-                            });
-
-                        }
-                    });
-            } else {
-                alert("هناك مشكلة الحذف");
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
+ 
 
     const handleEmptyProp = () => {
         return (
@@ -269,7 +226,7 @@ export default function MyAdds({ route, navigation }) {
                     >
                         <ImageBackground
                             imageStyle={styles.itemImg}
-                            source={{ uri: "https://mestamal.com/uploads/" + item.main_image }}>
+                            source={{ uri: api.media_url + item.images.split(",")[0] }}>
 
                             <View style={styles.itemContent}>
                                 <TouchableOpacity
@@ -305,11 +262,12 @@ export default function MyAdds({ route, navigation }) {
                             </View>
 
                         </ImageBackground>
+
                         <View style={{
                             width: "100%",
-                            flexDirection: "row",
+                            flexDirection: "row-reverse",
                             justifyContent: "space-between",
-                            paddingHorizontal: 10
+                            padding: 10,
                         }}>
                             <Text style={{ fontFamily: "Bold", color: '#34ace0' }}>
                                 {item.price} SR
@@ -326,19 +284,22 @@ export default function MyAdds({ route, navigation }) {
                             </Text>
                         </View>
 
-                        <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
+                        <View style={{ 
+                            paddingHorizontal: 10, 
+                            marginVertical: 10,
+                            width:"100%",
+                             }}>
 
                             <Text style={{
                                 fontFamily: "Bold",
                                 color: '#000',
-                                textAlign: "right",
-
+                                fontSize:12
                             }}>
                                 {item.title}
                             </Text>
 
                             <View style={{
-                                flexDirection: "row-reverse",
+                                flexDirection: "row",
                                 justifyContent: "flex-start",
                                 width: "100%",
                                 marginTop: 10,
@@ -346,7 +307,7 @@ export default function MyAdds({ route, navigation }) {
                             }}>
                                 <Entypo name="location-pin" size={24} color="grey" />
                                 <Text style={{ fontFamily: "Regular", color: 'grey' }}>
-                                    عرض العنوان
+                                {item.address}
                                 </Text>
                             </View>
                         </View>

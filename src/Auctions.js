@@ -19,6 +19,7 @@ import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import api from "./../constants/constants";
 
 export default function HomePage({ route, navigation }) {
 
@@ -35,10 +36,8 @@ export default function HomePage({ route, navigation }) {
     }, []);
 
     const _retrieveData = async () => {
-
-        const user_token = await AsyncStorage.getItem("user_token");
         setLoading(true);
-        let url = "https://mestamal.com/api/auctions";
+        let url = api.dynamic_url + "auctions";
         try {
             fetch(url, {
                 method: "GET",
@@ -48,14 +47,12 @@ export default function HomePage({ route, navigation }) {
                     "cache-control": "no-cache",
                     "Accept-Encoding": "gzip, deflate, br",
                     Connection: "keep-alive",
-                    Authorization: "Bearer " + user_token
                 }
             })
                 .then(response => response.json())
                 .then(json => {
-                    setData(json);
+                    setData(json.records);
                     setLoading(false);
-                    //alert(JSON.stringify(json));
                 })
                 .catch(error => console.error(error));
         } catch (error) {
@@ -63,8 +60,6 @@ export default function HomePage({ route, navigation }) {
         }
     };
 
-
-    
     const handleEmptyProp = () => {
         return (
           <View
@@ -162,14 +157,14 @@ export default function HomePage({ route, navigation }) {
                             }}>
 
                           <AntDesign name="calendar" size={24} color="grey" />
-                            <Text style={{ fontFamily: "Bold", color: "grey",}}>
+                            <Text style={{ fontFamily: "Regular", color: "grey",}}>
                                 {moment(item.end_date).format("MMM Do YY")} تاريخ الانتهاء :
                             </Text>
                         </View>
                     </View>
 
                     <View style={{}}>
-                        <Image source={{ uri: "https://mestamal.com/uploads/"+item.main_image }}
+                        <Image  source={{ uri: api.media_url + item.images.split(",")[0] }}
                             style={{ width: 100, height: 100, resizeMode: "cover", borderRadius: 10 }} />
                     </View>
                 </TouchableOpacity>

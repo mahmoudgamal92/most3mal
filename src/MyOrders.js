@@ -24,6 +24,7 @@ import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import moment from "moment";
+import api from "./../constants/constants";
 
 export default function MyOrders({ route, navigation }) {
   const [data, setData] = useState([]);
@@ -44,11 +45,9 @@ export default function MyOrders({ route, navigation }) {
   );
 
   const _retrieveData = async () => {
-    const user_token = await AsyncStorage.getItem("user_token");
+    const user_id = await AsyncStorage.getItem("user_id");
     setLoading(true);
-    let url =
-      "https://mestamal.com/mahmoud/api/custom/offers.php?user_token=" +
-      user_token;
+    let url = api.custom_url + "user/offers.php?ads=true&user_id" + user_id;
     try {
       fetch(url, {
         method: "GET"
@@ -71,26 +70,22 @@ export default function MyOrders({ route, navigation }) {
 
   const deleteOrder = async id => {
     try {
-      fetch(
-        "https://mestamal.com/mahmoud/api/api.php/records/item_offers/" + id,
-        {
-          method: "DELETE",
-          headers: {
-            Accept: "*/*",
-            "Content-type": "multipart/form-data;",
-            "Accept-Encoding": "gzip, deflate, br"
-          }
+      fetch(api.dynamic_url + "item_offers/" + id, {
+        method: "DELETE",
+        headers: {
+          Accept: "*/*",
+          "Content-type": "multipart/form-data;",
+          "Accept-Encoding": "gzip, deflate, br"
         }
-      )
+      })
         .then(response => response.json())
         .then(responseJson => {
-          // Toast.show({
-          //     type: 'successToast',
-          //     text1: "تم حذف الإعلان بنجاح",
-          //     topOffset: 120,
-          //     visibilityTime: 2000,
-          // });
-          alert("تم حذف العرض بنجاح");
+          Toast.show({
+            type: "successToast",
+            text1: "تم حذف الإعلان بنجاح",
+            topOffset: 120,
+            visibilityTime: 2000
+          });
           _retrieveData();
         });
     } catch (error) {
@@ -101,21 +96,17 @@ export default function MyOrders({ route, navigation }) {
   const updateOrder = async () => {
     if (amount !== "0" && current_item !== "0") {
       try {
-        fetch(
-          "https://mestamal.com/mahmoud/api/api.php/records/item_offers/" +
-            current_item,
-          {
-            method: "PUT",
-            headers: {
-              Accept: "*/*",
-              "Content-type": "multipart/form-data;",
-              "Accept-Encoding": "gzip, deflate, br"
-            },
-            body: JSON.stringify({
-              amount: amount
-            })
-          }
-        )
+        fetch(api.dynamic_url + "item_offers/" + current_item, {
+          method: "PUT",
+          headers: {
+            Accept: "*/*",
+            "Content-type": "multipart/form-data;",
+            "Accept-Encoding": "gzip, deflate, br"
+          },
+          body: JSON.stringify({
+            amount: amount
+          })
+        })
           .then(response => response.json())
           .then(responseJson => {
             setInputModal(false);
@@ -256,20 +247,6 @@ export default function MyOrders({ route, navigation }) {
                   <AntDesign name="delete" size={30} color="red" />
                 </TouchableOpacity>
               </View>
-
-              {/* <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
-                                <TouchableOpacity
-                                    onPress={() => 
-                                        {
-                                        setInputModal(true);
-                                        setCurrentItem(item.id);
-                                    }
-                                }
-                                >
-                                    <AntDesign name="edit" size={30} color="#000" />
-                                </TouchableOpacity>
-                            </View> */}
-
               <View
                 style={{
                   width: "50%",

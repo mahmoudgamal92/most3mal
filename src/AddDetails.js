@@ -5,7 +5,6 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  TextInput,
   ActivityIndicator,
   StatusBar,
   Modal,
@@ -19,6 +18,8 @@ import {
   AntDesign,
   Entypo
 } from "@expo/vector-icons";
+import api from "./../constants/constants";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import moment from "moment";
@@ -89,45 +90,7 @@ const AddDetail = ({ route, navigation }) => {
     setUserID(user_id);
   };
 
-  const deleteAdd = async ad_id => {
-    try {
-      const user_token = await AsyncStorage.getItem("user_token");
-      if (user_token !== null) {
-        fetch("https://mestamal.com/api/user/ads/" + ad_id + "/delete", {
-          method: "POST",
-          headers: {
-            Accept: "*/*",
-            "Content-type": "multipart/form-data;",
-            "Accept-Encoding": "gzip, deflate, br",
-            Connection: "keep-alive",
-            Authorization: "Bearer " + user_token
-          }
-        })
-          .then(response => response.json())
-          .then(responseJson => {
-            if (responseJson.status == true) {
-              Toast.show({
-                type: "successToast",
-                text1: "تم حذف الإعلان بنجاح",
-                topOffset: 120,
-                visibilityTime: 2000
-              });
-            } else {
-              Toast.show({
-                type: "erorrToast",
-                text1: "خط أثناء حذف الإعلان",
-                bottomOffset: 80,
-                visibilityTime: 2000
-              });
-            }
-          });
-      } else {
-        alert("هناك مشكلة الحذف");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
 
   const toggleFavorite = async () => {
     try {
@@ -135,7 +98,7 @@ const AddDetail = ({ route, navigation }) => {
       let formData = new FormData();
       formData.append("ad_id", item.id);
       formData.append("user_id", user_id);
-      fetch("https://mestamal.com/mahmoud/api/custom/wishlist.php", {
+      fetch(api.custom_url + "wishlist/toggle.php", {
         method: "POST",
         headers: {
           Accept: "*/*",
@@ -157,8 +120,7 @@ const AddDetail = ({ route, navigation }) => {
   
   const getadOffers = async () => {
     setLoading(true);
-    let url =
-      "https://mestamal.com/mahmoud/api/custom/offers.php?item_id=" + item.id;
+    let url = api.custom_url + "ads/offers.php?item_id=" + item.id;
     try {
       fetch(url, {
         method: "GET"
@@ -181,7 +143,7 @@ const AddDetail = ({ route, navigation }) => {
   const sendOffer = async () => {
     const user_token = await AsyncStorage.getItem("user_token");
     const user_id = await AsyncStorage.getItem("user_id");
-    let url = "https://mestamal.com/mahmoud/api/api.php/records/item_offers";
+    let url = api.dynamic_url + "item_offers";
     const body = JSON.stringify({
       user_id: user_id,
       user_token: user_token,
@@ -255,7 +217,7 @@ const AddDetail = ({ route, navigation }) => {
   const _openChat = async (reciver_id, reciver_name) => {
     const user_id = await AsyncStorage.getItem("user_id");
     const user_name = await AsyncStorage.getItem("user_name");
-    let url = "https://mestamal.com/mahmoud/messaging/create.php";
+    let url = api.custom_url + "messaging/create.php";
     let formData = new FormData();
     formData.append("sender_id", user_id);
     formData.append("sender_name", user_name);
@@ -367,7 +329,7 @@ const AddDetail = ({ route, navigation }) => {
 
       <View>
         <ImageBackground
-          source={{ uri: "https://mestamal.com/uploads/" + item.main_image }}
+           source={{ uri: api.media_url + item.images.split(",")[0] }}
           style={{ width: "100%", height: 280 }}
         />
       </View>

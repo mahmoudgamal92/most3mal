@@ -19,11 +19,13 @@ import {
     Feather,
     AntDesign
 } from "@expo/vector-icons";
+import moment from 'moment';
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from '@react-navigation/native';
-import moment from 'moment';
+import api from "./../constants/constants";
+
 export default function MyOrders({ route, navigation }) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -45,14 +47,14 @@ export default function MyOrders({ route, navigation }) {
     const _retrieveData = async () => {
         const user_id = await AsyncStorage.getItem("user_id");
         setLoading(true);
-        let url = "https://mestamal.com/mahmoud/api/custom/offers.php?user_id=" + user_id;
+        let url = api.custom_url + "user/offers.php?auction=true&user_id=" + user_id;
         try {
             fetch(url, {
                 method: "GET",
             })
                 .then(response => response.json())
                 .then(json => {
-                    //alert(JSON.stringify(json));
+                   //alert(JSON.stringify(json))
                     if (json.success == true) {
                         setData(json.data);
                     }

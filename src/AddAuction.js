@@ -19,6 +19,7 @@ import { FontAwesome5, Feather, MaterialIcons, FontAwesome } from '@expo/vector-
 import styles from "../constants/style";
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import toastConfig from "./../constants/Toast";
+import api from "./../constants/constants";
 
 import MapView, { Marker } from "react-native-maps";
 
@@ -66,14 +67,13 @@ export default function AddAuction({ route, navigation }) {
         const user_token = await AsyncStorage.getItem("user_token");
         setLoading(true);
         let formData = new FormData();
+        formData.append("auction_number", parseInt(Math.random()*1000000));
         formData.append("title", title);
         formData.append("details", description);
         formData.append("duration", 7);
-        formData.append("country_id", 2);
-        formData.append("city_id", 1);
         formData.append("images[]", image);
 
-        fetch("https://mestamal.com/api/auction/create", {
+        fetch(api.custom_url+"auctions/create.php", {
             method: "POST",
             headers: {
                 Accept: "*/*",
@@ -87,7 +87,7 @@ export default function AddAuction({ route, navigation }) {
             .then(response => response.json())
             .then(json => {
                 setLoading(false);
-                if (json.status == true) {
+                if (json.success == true) {
                     alert("تم إضافة المزاد بنجاح ");
                     navigation.goBack();
                     console.log(json);

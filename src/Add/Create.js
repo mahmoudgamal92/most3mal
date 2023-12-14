@@ -14,14 +14,12 @@ import React, { useState, useEffect, useRef } from "react";
 import * as ImagePicker from "expo-image-picker";
 import MapView, { Marker } from "react-native-maps";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  MaterialIcons,
-  FontAwesome
-} from "@expo/vector-icons";
+import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import styles from "./../../constants/style";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import toastConfig from "./../../constants/Toast";
 import { KeyboardAvoidingView } from "react-native";
+import api from "./../../constants/constants";
 
 export default function Create({ route, navigation }) {
   const { depart_id, cat_id } = route.params;
@@ -76,37 +74,52 @@ export default function Create({ route, navigation }) {
   };
 
   const NewAdd = async () => {
+    const user_id = await AsyncStorage.getItem("user_id");
     if (title.length < 10) {
       alert("لايمكن إضافة إعلان أقل من 10 حروف");
     } else if (description == "" || price == "") {
       alert("لابد من إكمال البيانات كاملة");
     } else {
-      const user_token = await AsyncStorage.getItem("user_token");
       setLoading(true);
       let formData = new FormData();
+      formData.append("user_id", user_id);
+      formData.append("ad_number", parseInt(Math.random() * 100000));
       formData.append("title", title);
       formData.append("details", description);
-      formData.append("price", price);
-      formData.append("Category", cat_id);
+      formData.append("price", parseInt(price));
+      formData.append("depart_id", parseInt(depart_id));
+      formData.append("cat_id", parseInt(cat_id));
       formData.append("address", state + "," + city);
       formData.append("coords", coords);
-      formData.append("country_id", 2);
-      formData.append("city_id", 1);
       formData.append("images[]", image);
-      fetch("https://mestamal.com/api/ad/create", {
+
+      fetch(api.custom_url + "ads/create.php", {
         method: "POST",
-        headers: {
-          Authorization: "Bearer " + user_token
-        },
         body: formData
       })
         .then(response => response.json())
         .then(json => {
-          if (json.status == true) {
-            alert("تم اضافة الإعلان بنجاح");
-            navigation.pop(3);
+          if (json.success == true) {
+            Toast.show({
+              type: "successToast",
+              text1: "تم إنشاء الإعلان بنجاح",
+              bottomOffset: 80,
+              visibilityTime: 2000
+            });
+
+            setLoading(false);
+
+            setTimeout(() => {
+              navigation.pop(3);
+            }, 1000);
           } else {
-            alert("هناك خطأ في إضافة الإعلان");
+            Toast.show({
+              type: "errorToast",
+              text1: "هناك مشكلة في إضافة الإعلان ",
+              bottomOffset: 80,
+              visibilityTime: 2000
+            });
+            setLoading(false);
           }
         })
         .catch(error => {

@@ -14,10 +14,7 @@ import {
   MaterialCommunityIcons
 } from "@expo/vector-icons";
 import moment from "moment";
-import 'moment/src/locale/ar'
-
-moment.locale('ar');
-
+import api from "./../constants/constants";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -34,7 +31,7 @@ export default function Adds({ route, navigation }) {
   }, []);
 
   const _retrieveCats = async () => {
-    fetch("https://mestamal.com/api/categories", {
+    fetch(api.dynamic_url + "categories", {
       method: "GET",
       headers: {
         Accept: "*/*",
@@ -45,9 +42,9 @@ export default function Adds({ route, navigation }) {
       .then(json => {
         setLoading(false);
         const arr = [];
-        for (let i = 0; i < json.length; i++) {
-          if (json[i].depart_id == depart_id) {
-            arr.push(json[i]);
+        for (let i = 0; i < json.records.length; i++) {
+          if (json.records[i].depart_id == depart_id) {
+            arr.push(json.records[i]);
           }
         }
         setCats(arr);
@@ -63,12 +60,13 @@ export default function Adds({ route, navigation }) {
     let url = "";
     if (current_cat !== null && current_cat !== 0) {
       url =
-        "https://mestamal.com/api/ads?depart_id=" +
+        api.custom_url +
+        "ads/list.php?depart_id=" +
         depart_id +
         "&cat_id=" +
         current_cat;
     } else {
-      url = "https://mestamal.com/api/ads?depart_id=" + depart_id;
+      url = api.custom_url + "ads/list.php?depart_id=" + depart_id;
     }
     try {
       fetch(url, {
@@ -78,15 +76,13 @@ export default function Adds({ route, navigation }) {
           "Content-type": "multipart/form-data;",
           "cache-control": "no-cache",
           "Accept-Encoding": "gzip, deflate, br",
-          Connection: "keep-alive",
-          Authorization: "Bearer " + user_token
+          Connection: "keep-alive"
         }
       })
         .then(response => response.json())
         .then(json => {
-          setData(json);
+          setData(json.data);
           setLoading(false);
-          //alert(JSON.stringify(json));
         })
         .catch(error => console.error(error));
     } catch (error) {
@@ -98,7 +94,6 @@ export default function Adds({ route, navigation }) {
     setCurrentCat(cat_id);
     const user_token = await AsyncStorage.getItem("user_token");
     setLoading(true);
-
     let url =
       "https://mestamal.com/api/ads?depart_id=" +
       depart_id +
@@ -253,14 +248,7 @@ export default function Adds({ route, navigation }) {
               >
                 <ImageBackground
                   imageStyle={styles.itemImg}
-                  source={{
-                    uri:
-                      item.main_image == null ||
-                      item.main_image == "" ||
-                      item.main_image == "0"
-                        ? "https://fakeimg.pl/400x400?text=Most3mal&font=noto"
-                        : "https://mestamal.com/uploads/" + item.main_image
-                  }}
+                  source={{ uri: api.media_url + item.images.split(",")[0] }}
                 >
                   <View style={styles.itemContent} />
                 </ImageBackground>
@@ -278,8 +266,7 @@ export default function Adds({ route, navigation }) {
                   </Text>
                 </View>
 
-
-                <View style={{ paddingHorizontal: 10, }}>
+                <View style={{ paddingHorizontal: 10 }}>
                   <Text
                     style={{
                       fontFamily: "Bold",
@@ -288,7 +275,7 @@ export default function Adds({ route, navigation }) {
                       fontSize: 16
                     }}
                   >
-                        {item.price} SR
+                    {item.price} SR
                   </Text>
                 </View>
 
@@ -303,7 +290,7 @@ export default function Adds({ route, navigation }) {
                   }}
                 >
                   <Text style={{ fontFamily: "Bold", color: "grey" }}>
-                    {moment(item.created_at).startOf('day').fromNow()}
+                    {moment(item.created_at).startOf("day").fromNow()}
                   </Text>
                   <AntDesign name="shoppingcart" size={24} color="grey" />
                 </View>
