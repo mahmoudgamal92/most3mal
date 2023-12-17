@@ -31,6 +31,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import toastConfig from "./../constants/Toast";
+import api from "../constants/constants";
 
 export default function MyAuctions({ route, navigation }) {
 
@@ -48,9 +49,9 @@ export default function MyAuctions({ route, navigation }) {
     );
 
     const _retrieveData = async () => {
-        const user_token = await AsyncStorage.getItem("user_token");
+        const user_id = await AsyncStorage.getItem("user_id");
         setLoading(true);
-        let url = "https://mestamal.com/api/user/auctions";
+        let url = api.custom_url+"user/auctions.php?user_id="+user_id;
         try {
             fetch(url, {
                 method: "GET",
@@ -60,12 +61,11 @@ export default function MyAuctions({ route, navigation }) {
                     "cache-control": "no-cache",
                     "Accept-Encoding": "gzip, deflate, br",
                     Connection: "keep-alive",
-                    Authorization: "Bearer " + user_token
                 }
             })
                 .then(response => response.json())
                 .then(json => {
-                    setData(json.reverse());
+                    setData(json.data);
                     setLoading(false);
                     //alert(JSON.stringify(json));
                 })

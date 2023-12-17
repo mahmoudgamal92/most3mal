@@ -129,7 +129,8 @@ const AddDetail = ({ route, navigation }) => {
         .then(json => {
           if (json.success == true) {
             setOffers(json.data);
-            //alert(JSON.stringify(json.data));
+           // setOffers([]);
+            alert(JSON.stringify(json));
           } else {
             setOffers([]);
           }

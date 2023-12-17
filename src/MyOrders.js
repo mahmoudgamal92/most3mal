@@ -47,15 +47,17 @@ export default function MyOrders({ route, navigation }) {
   const _retrieveData = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
     setLoading(true);
-    let url = api.custom_url + "user/offers.php?ads=true&user_id" + user_id;
+    //alert(user_id);
+    let url = api.custom_url + "user/offers.php?ads=true&user_id=" + user_id;
     try {
       fetch(url, {
         method: "GET"
       })
         .then(response => response.json())
         .then(json => {
+          //alert(JSON.stringify(json));
+
           if (json.success == true) {
-            //  alert(JSON.stringify(json));
             setData(json.data);
           } else {
             //   alert(JSON.stringify(json));

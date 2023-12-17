@@ -27,6 +27,7 @@ import { AntDesign, FontAwesome, Entypo } from "@expo/vector-icons";
 import moment from "moment";
 import MapView, { Marker } from "react-native-maps";
 import { Rating, AirbnbRating } from "react-native-ratings";
+import api from "./../constants/constants";
 
 export default function OrderInfo({ route, navigation }) {
   const { offer_id } = route.params;
@@ -111,9 +112,7 @@ export default function OrderInfo({ route, navigation }) {
       const user_id = await AsyncStorage.getItem("user_id");
       setUserToken(user_token);
       setUserID(user_id);
-      fetch(
-        "https://mestamal.com/mahmoud/api/custom/order.php?offer_id=" +
-          offer_id,
+      fetch(api.custom_url+"orders/index.php?offer_id="+offer_id,
         {
           method: "GET",
           headers: {

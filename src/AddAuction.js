@@ -64,11 +64,12 @@ export default function AddAuction({ route, navigation }) {
 
 
     const AddAuction = async () => {
-        const user_token = await AsyncStorage.getItem("user_token");
+        const user_id = await AsyncStorage.getItem("user_id");
         setLoading(true);
         let formData = new FormData();
         formData.append("auction_number", parseInt(Math.random()*1000000));
         formData.append("title", title);
+        formData.append("user_id", user_id);
         formData.append("details", description);
         formData.append("start_date", moment().format());
         formData.append("end_date", moment().add(7, 'days').format());
@@ -82,7 +83,6 @@ export default function AddAuction({ route, navigation }) {
                 "Content-type": "multipart/form-data;",
                 "Accept-Encoding": "gzip, deflate, br",
                 Connection: "keep-alive",
-                Authorization: "Bearer " + user_token
             },
             body: formData
         })
