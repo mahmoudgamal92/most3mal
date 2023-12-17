@@ -14,6 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useRef, useEffect } from "react";
 import { MaterialIcons,Ionicons,SimpleLineIcons } from '@expo/vector-icons';
 import Constants from "expo-constants";
+import api from "./../constants/constants";
 
 export default function ChoosePaymentMethod({ route, navigation }) {
     const [loading, setLoading] = useState(false);
@@ -46,42 +47,10 @@ export default function ChoosePaymentMethod({ route, navigation }) {
     ];
 
 
-    useEffect(() => {
-        getProfile();
-    }, []);
-
-
-    const getProfile = async () => {
-        const user_token = await AsyncStorage.getItem("user_token");
-        // setLoading(true);
-        fetch("https://mestamal.com/api/user/profile", {
-            method: "GET",
-            headers: {
-                Accept: "*/*",
-                "Content-type": "multipart/form-data;",
-                "cache-control": "no-cache",
-                "Accept-Encoding": "gzip, deflate, br",
-                Connection: "keep-alive",
-                Authorization: "Bearer " + user_token
-            }
-        })
-            .then(response => response.json())
-            .then(json => {
-                // setLoading(false);
-                setUserID(json.id);
-               // alert(json.id);
-            }
-            )
-            .catch(error => {
-                setLoading(false);
-                console.error(error);
-            }
-            );
-    }
-
     const _proceedPayment = async () => {
+        const user_id = await AsyncStorage.getItem("user_id");3
         setLoading(true);
-        let url = "http://mestamal.com/mahmoud/payment/payment.php?user_id="+user_id+"&invoice_value="+invoice_value;
+        let url = api.custom_url +"payment/payment.php?user_id="+user_id+"&invoice_value="+invoice_value;
         try {
             fetch(url, {
                 method: "GET",

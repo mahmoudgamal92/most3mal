@@ -12,6 +12,8 @@ import {
   SimpleLineIcons
 } from "@expo/vector-icons";
 import styles from "../constants/style";
+import { useFocusEffect } from "@react-navigation/native";
+
 export default function ProfilePage({ route }) {
   const navigation = useNavigation();
   const [data, setData] = useState([]);
@@ -20,6 +22,13 @@ export default function ProfilePage({ route }) {
   useEffect(() => {
     getProfile();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getProfile();
+    }, [])
+  );
+
 
   const getProfile = async () => {
     const user_id = await AsyncStorage.getItem("user_id");

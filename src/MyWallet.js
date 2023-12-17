@@ -15,6 +15,7 @@ import {
   SimpleLineIcons,
   FontAwesome
 } from "@expo/vector-icons";
+import api from "./../constants/constants";
 
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
@@ -44,23 +45,25 @@ export default function MyWallet({ route, navigation }) {
       invoice_value: amount
     });
   };
+
+
+
   const getProfile = async () => {
-    const user_token = await AsyncStorage.getItem("user_token");
-    fetch("https://mestamal.com/api/user/profile", {
+    const user_id = await AsyncStorage.getItem("user_id");
+    fetch(api.custom_url + "user/info.php?user_id=" + user_id, {
       method: "GET",
       headers: {
         Accept: "*/*",
         "Content-type": "multipart/form-data;",
         "cache-control": "no-cache",
         "Accept-Encoding": "gzip, deflate, br",
-        Connection: "keep-alive",
-        Authorization: "Bearer " + user_token
+        Connection: "keep-alive"
       }
     })
       .then(response => response.json())
       .then(json => {
-        setData(json);
-        console.log(json);
+        //alert(JSON.stringify(json))
+        setData(json.data[0]);
       })
       .catch(error => {
         console.error(error);
@@ -69,9 +72,7 @@ export default function MyWallet({ route, navigation }) {
 
   const _retriveTransactions = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
-    fetch(
-      "https://mestamal.com/mahmoud/api/api.php/records/payment_process?filter=user_id,eq," +
-        user_id,
+    fetch(api.dynamic_url+"payment_process?filter=user_id,eq," + user_id,
       {
         method: "GET",
         headers: {
@@ -95,8 +96,7 @@ export default function MyWallet({ route, navigation }) {
 
   const orderWithdraw = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
-    let url =
-      "https://mestamal.com/mahmoud/api/api.php/records/payment_process";
+    let url = api.dynamic_url+ "payment_process";
     const body = JSON.stringify({
       payment_token: "none",
       payment_type: "withdraw",

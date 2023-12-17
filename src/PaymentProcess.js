@@ -52,12 +52,12 @@ export default function PaymentProcess({ route, navigation }) {
                     const navigation_info = JSON.parse(JSON.stringify(e));
                     console.log(navigation_info);
                     const url = navigation_info.url;
-                    if (url.includes("https://mestamal.com/mahmoud/payment/success.php")) {
+                    if (url.includes("https://mestamal.com/mahmoud/api/custom/payment/success.php")) {
                         setTimeout(() => {
                             navigation.replace("PaymentSuccess");
                         }, 2000);
                     }
-                    else if (url.includes("https://mestamal.com/mahmoud/payment/erorr.php")) {
+                    else if (url.includes("https://mestamal.com/mahmoud/api/custom/payment/erorr.php")) {
                         setTimeout(() => {
                             navigation.replace("PaymentErorr");
                         }, 2000);

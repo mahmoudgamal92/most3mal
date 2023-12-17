@@ -20,7 +20,7 @@ import styles from "../constants/style";
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import toastConfig from "./../constants/Toast";
 import api from "./../constants/constants";
-
+import moment from "moment";
 import MapView, { Marker } from "react-native-maps";
 
 export default function AddAuction({ route, navigation }) {
@@ -70,6 +70,8 @@ export default function AddAuction({ route, navigation }) {
         formData.append("auction_number", parseInt(Math.random()*1000000));
         formData.append("title", title);
         formData.append("details", description);
+        formData.append("start_date", moment().format());
+        formData.append("end_date", moment().add(7, 'days').format());
         formData.append("duration", 7);
         formData.append("images[]", image);
 

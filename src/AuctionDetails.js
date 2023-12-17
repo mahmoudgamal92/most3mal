@@ -159,7 +159,6 @@ export default function AuctionDetails({ route, navigation }) {
 
   const sendOffer = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
-
     let formData = new FormData();
     formData.append("user_id", user_id);
     formData.append("auction_id", item.id);
