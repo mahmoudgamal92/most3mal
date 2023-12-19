@@ -1,10 +1,6 @@
 import {
-    Animated,
-    Image,
-    SafeAreaView,
     Text,
     View,
-    StyleSheet,
     StatusBar,
     TouchableOpacity,
     ActivityIndicator,
@@ -12,19 +8,12 @@ import {
     ScrollView
 } from "react-native";
 import React, { useState } from "react";
-import * as ImagePicker from 'expo-image-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FontAwesome5, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import styles from "../constants/style";
+
 export default function About({ route, navigation }) {
-    const [image, setImage] = useState(null);
-    const [imageURI, setImageURI] = useState(null);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [price, setPrice] = useState("");
-    const [address, setAddress] = useState("");
     const [loading, setLoading] = useState(false);
-
     return (
         <View style={styles.container}>
             <StatusBar barStyle="default" backgroundColor="#34ace0" />
@@ -39,21 +28,15 @@ export default function About({ route, navigation }) {
                     backgroundColor: "#34ace0"
                 }}
             >
-
-
                 <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 20 }}>
                    عن التطبيق 
                 </Text>
-
-
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
                     style={{ position: "absolute", right : 20 }}
                 >
                     <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
                 </TouchableOpacity>
-
-
             </View>
 
             <ScrollView
@@ -87,11 +70,6 @@ export default function About({ route, navigation }) {
                             onChangeText={text => setTitle(text)}
                             placeholder="أدخل عنوان البريد الإلكتروني" />
                     </View>
-
-
-
-
-
                     <View style={styles.inputLabelContainer}>
                         <Text style={{ fontFamily: "Bold", textAlign: "right", fontSize: 15 }}>
                            موضوع التواصل
@@ -105,9 +83,6 @@ export default function About({ route, navigation }) {
                             multiline={true}
                         />
                     </View>
-
-
-
                     <TouchableOpacity style={styles.primaryBtn}
                         onPress={() => AddAuction()}>
 
@@ -116,7 +91,6 @@ export default function About({ route, navigation }) {
                             :
                             <Text style={styles.btnText}>أرسل الأن</Text>
                         }
-
                     </TouchableOpacity>
                 </View>
             </ScrollView>
