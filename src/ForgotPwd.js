@@ -10,6 +10,8 @@ import {
 import React, { useState } from "react";
 import {Feather,MaterialIcons} from '@expo/vector-icons';
 import styles from "../constants/style";
+import api from "./../constants/constants";
+
 export default function AddAuction({ route, navigation }) {
 
     const [email, setEmail] = useState("");
@@ -24,7 +26,7 @@ export default function AddAuction({ route, navigation }) {
             setLoading(true);
             let formData = new FormData();
             formData.append("email", email);
-            fetch("https://mestamal.com/api/user/forget-password", {
+            fetch(api.custom_url + "auth/otp.php", {
                 method: "POST",
                 headers: {
                     Accept: "*/*",
@@ -37,13 +39,18 @@ export default function AddAuction({ route, navigation }) {
                 .then(response => response.json())
                 .then(json => {
                     setLoading(false);
-                    if (json.status == true) {
-                        alert("تم ارسال رابط اعادة تعيين كلمة المرور الى بريدك الالكتروني");
+
+                    if (json.success == true) {
+                        alert("تم إرسال كود التحقق علي بريد الإلكتروني ");
+                        navigation.navigate("OtpScreen",{
+                            code : json.code,
+                            user : json.data
+                        });
+                       // alert(JSON.stringify(json));
                     }
                     else {
-                       alert("حدث خطأ ما , يرجى المحاولة مرة اخرى");
+                       alert(json.messages);
                     }
-
                 }
                 )
                 .catch(error => {
@@ -67,27 +74,21 @@ export default function AddAuction({ route, navigation }) {
                     backgroundColor: "#34ace0",
                 }}
             >
-
-
                 <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 20 }}>
                     اعادة تعيين كلمة المرور
                 </Text>
-
-
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
                     style={{ position: "absolute", right : 20 }}
                 >
                     <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
                 </TouchableOpacity>
-
-
             </View>
-
-
             <View>
-                <Image source={require("../assets/lock.png")}
-                    style={{ width: 200, height: 200, marginTop: 50 }} />
+                <Image 
+                source={require("../assets/pwd.png")}
+                resizeMode="cover"
+                style={{ width: 200, height: 200, marginTop: 50 }} />
             </View>
 
 
@@ -103,11 +104,14 @@ export default function AddAuction({ route, navigation }) {
                 },
                 shadowOpacity: 0.34,
                 shadowRadius: 6.27,
-
                 elevation: 10
             }}>
-                <View style={styles.inputLabelContainer}>
-                    <Text style={{ fontFamily: "Bold", textAlign: "right", fontSize: 15 }}>
+
+                <View style={{
+                    width:"100%",
+                    paddingHorizontal:10
+                }}>
+                    <Text style={{ fontFamily: "Bold", fontSize: 15 }}>
                         أدخل البريد الالكتروني الخاص بك
                     </Text>
                 </View>
@@ -119,11 +123,6 @@ export default function AddAuction({ route, navigation }) {
                         placeholder=" أدخل البريد الالكتروني الخاص بك" />
                 </View>
 
-
-
-
-
-
                 <TouchableOpacity style={styles.primaryBtn}
                     onPress={() => forgotPwd()}>
 
@@ -131,7 +130,7 @@ export default function AddAuction({ route, navigation }) {
                         <ActivityIndicator size={40} color="#FFF" />
                         :
                         <Text style={styles.btnText}>
-                            ارسال رابط تغيير كلمة المرور
+                            متابعة
                         </Text>
                     }
 

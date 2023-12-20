@@ -18,7 +18,7 @@ import SignIn from "./src/SignIn";
 import SignUp from "./src/SignUp";
 import NewAdd from "./src/NewAdd";
 import ChatScreen from "./src/ChatScreen";
-
+import OtpScreen from "./src/OtpScreen";
 import HomePage from "./src/HomePage";
 import Favorite from "./src/Favourite";
 import Conversations from "./src/Conversations";
@@ -513,6 +513,7 @@ export default function App() {
         <HomeStack.Screen name="AuctionOfferInfo" component={AuctionOfferInfo} />
         <HomeStack.Screen name="MyBids" component={MyBids}/>
         <HomeStack.Screen name="EditAdd" component={EditAdd}/>
+        <HomeStack.Screen name="OtpScreen" component={OtpScreen}/>
       </HomeStack.Navigator>
     </NavigationContainer>
   );
