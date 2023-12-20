@@ -17,6 +17,7 @@ import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import moment from 'moment';
+import api from "./../constants/constants";
 
 export default function AuctionOfferInfo({ route, navigation }) {
     const { offer_id } = route.params;
@@ -80,16 +81,14 @@ export default function AuctionOfferInfo({ route, navigation }) {
 
         }
     };
-
-
-
     const _retrieveData = async () => {
         try {
             const user_token = await AsyncStorage.getItem("user_token");
             const user_id = await AsyncStorage.getItem("user_id");
             setUserToken(user_token);
             setUserID(user_id);
-            fetch("https://mestamal.com/mahmoud/api/custom/order.php?auction_offer_id=" + offer_id, {
+            fetch(api.custom_url+"orders/index.php?auction_offer_id="+offer_id,
+            {
                 method: "GET",
                 headers: {
                     Accept: "*/*",
@@ -120,33 +119,31 @@ export default function AuctionOfferInfo({ route, navigation }) {
     };
 
 
+
     const getProfile = async () => {
-        const user_token = await AsyncStorage.getItem("user_token");
-        fetch("https://mestamal.com/api/user/profile", {
-            method: "GET",
-            headers: {
-                Accept: "*/*",
-                "Content-type": "multipart/form-data;",
-                "cache-control": "no-cache",
-                "Accept-Encoding": "gzip, deflate, br",
-                Connection: "keep-alive",
-                Authorization: "Bearer " + user_token
-            }
+        const user_id = await AsyncStorage.getItem("user_id");
+        fetch(api.custom_url + "user/info.php?user_id=" + user_id, {
+          method: "GET",
+          headers: {
+            Accept: "*/*",
+            "Content-type": "multipart/form-data;",
+            "cache-control": "no-cache",
+            "Accept-Encoding": "gzip, deflate, br",
+            Connection: "keep-alive"
+          }
         })
-            .then(response => response.json())
-            .then(json => {
-                setProfile(json);
-                console.log(json);
-            }
-            )
-            .catch(error => {
-                console.error(error);
-            }
-            );
-    }
+          .then(response => response.json())
+          .then(json => {
+            //alert(JSON.stringify(json))
+            setProfile(json.data[0]);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      };
 
     const deliverOrder = async (offer_id) => {
-        let url = "https://mestamal.com/mahmoud/api/custom/deliver_order.php?auction_offer_id=" + offer_id;
+        let url = api.custom_url + "orders/auction/deliver.php?auction_offer_id=" + offer_id;
         try {
             fetch(url, {
                 method: "GET",
@@ -175,7 +172,7 @@ export default function AuctionOfferInfo({ route, navigation }) {
     const _payForOrder = async (offer_id) => {
         const user_token = await AsyncStorage.getItem("user_token");
         const user_id = await AsyncStorage.getItem("user_id");
-        let url = "https://mestamal.com/mahmoud/api/api.php/records/offers/" + offer_id;
+        let url = api.dynamic_url + "offers/" + offer_id;
         const body = JSON.stringify({
             "status": "delivering",
         });
@@ -484,7 +481,10 @@ export default function AuctionOfferInfo({ route, navigation }) {
                         }}>
 
                         <View style={{ width: "25%" }}>
-                            <Image source={{ uri: "https://mestamal.com/uploads/" + orderItem.main_image }}
+                            <Image 
+                           source={{
+                            uri: "https://mestamal.com/uploads/" + orderItem.images
+                          }}
                                 style={{ width: 80, height: 80, borderRadius: 10 }} />
                         </View>
 

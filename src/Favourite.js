@@ -19,11 +19,11 @@ export default function Favourite({ route, navigation }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // useFocusEffect(
-  //     React.useCallback(() => {
-  //         _retrieveData();
-  //     }, [])
-  // );
+  useFocusEffect(
+    React.useCallback(() => {
+      _retrieveData();
+    }, [])
+  );
 
   useEffect(() => {
     _retrieveData();
@@ -32,7 +32,6 @@ export default function Favourite({ route, navigation }) {
   const _retrieveData = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
     setLoading(true);
-
     let url = api.custom_url + "wishlist/list.php?user_id=" + user_id;
     try {
       fetch(url, {
@@ -47,6 +46,7 @@ export default function Favourite({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
+          alert(JSON.stringify(json));
           setData(json.data);
           setLoading(false);
         })
@@ -75,7 +75,7 @@ export default function Favourite({ route, navigation }) {
       })
         .then(response => response.json())
         .then(responseJson => {
-          alert(responseJson.message);
+         // alert(responseJson.message);
           _retrieveData();
         });
     } catch (error) {
@@ -161,20 +161,18 @@ export default function Favourite({ route, navigation }) {
               ? <TouchableOpacity
                   onPress={() => {
                     navigation.navigate("AddDetails", {
-                      item: item.ad
+                      item: item
                     });
                   }}
                   style={styles.itemContainer}
                 >
                   <ImageBackground
                     imageStyle={styles.itemImg}
-                    source={{
-                      uri: "https://mestamal.com/uploads/" + item.ad.main_image
-                    }}
+                    source={{ uri: api.media_url + item.images.split(",")[0] }}
                   >
                     <View style={styles.itemContent}>
                       <TouchableOpacity
-                        onPress={() => toggleFavorite(item.ad.id)}
+                        onPress={() => toggleFavorite(item.id)}
                       >
                         <MaterialIcons name="favorite" size={30} color="red" />
                       </TouchableOpacity>
@@ -190,7 +188,7 @@ export default function Favourite({ route, navigation }) {
                         fontSize: 12
                       }}
                     >
-                      {item.ad.title}
+                      {item.title}
                     </Text>
 
                     <View
@@ -218,7 +216,7 @@ export default function Favourite({ route, navigation }) {
                     }}
                   >
                     <Text style={{ fontFamily: "Bold", color: "#34ace0" }}>
-                      {item.ad.price} SR
+                      {item.price} SR
                     </Text>
 
                     <AntDesign name="shoppingcart" size={24} color="black" />

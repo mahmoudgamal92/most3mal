@@ -73,7 +73,7 @@ export default function MyOrders({ route, navigation }) {
         if(amount !== "0" && current_item !== "0")
         {
         try {
-            fetch("https://mestamal.com/mahmoud/api/api.php/records/offers/" + current_item, {
+            fetch(api.dynamic_url + "offers/" + current_item, {
                 method: "PUT",
                 headers: {
                     Accept: "*/*",
@@ -104,7 +104,7 @@ export default function MyOrders({ route, navigation }) {
 
     const deleteOrder = async (id) => {
         try {
-            fetch("https://mestamal.com/mahmoud/api/api.php/records/offers/" + id, {
+            fetch(api.dynamic_url +"offers/" + id, {
                 method: "DELETE",
                 headers: {
                     Accept: "*/*",
@@ -188,7 +188,7 @@ export default function MyOrders({ route, navigation }) {
                     </TouchableOpacity>
 
                     <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 20, marginLeft: 20 }}>
-                        طلباتي
+                    مناقصاتي
                     </Text>
                 </View>
 
@@ -280,7 +280,7 @@ export default function MyOrders({ route, navigation }) {
                             </View>
 
                             <View style={{ width: "20%" }}>
-                                <Image source={{ uri: "https://mestamal.com/uploads/" + item.auction.main_image }}
+                                <Image source={{ uri: "https://mestamal.com/uploads/" + item.auction.images }}
                                     style={{ width: 70, height: 70, resizeMode: "cover", borderRadius: 10 }} />
                             </View>
 

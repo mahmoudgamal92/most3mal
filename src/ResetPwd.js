@@ -15,7 +15,9 @@ import React, { useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialIcons, Feather, SimpleLineIcons } from '@expo/vector-icons';
 import styles from "../constants/style";
-export default function AddAuction({ route, navigation }) {
+import api from "./../constants/constants";
+
+export default function ResetPwd({ route, navigation }) {
 
     const [password, setPassword] = useState("");
     const [new_password, setNewPassword] = useState("");
@@ -29,35 +31,33 @@ export default function AddAuction({ route, navigation }) {
             return;
         }
         else {
-            const user_token = await AsyncStorage.getItem("user_token");
+            const user_id = await AsyncStorage.getItem("user_id");
             setLoading(true);
             let formData = new FormData();
-            formData.append("old_password", password);
-            formData.append("password", new_password);
-            formData.append("password_confirmation", confirm_password);
-            fetch("https://mestamal.com/api/user/reset-password", {
+            formData.append("user_id", user_id);
+            formData.append("current_password", password);
+            formData.append("new_password", new_password);
+            fetch(api.custom_url + "user/reset_pwd.php", {
                 method: "POST",
                 headers: {
                     Accept: "*/*",
                     "Content-type": "multipart/form-data;",
                     "Accept-Encoding": "gzip, deflate, br",
                     Connection: "keep-alive",
-                    Authorization: "Bearer " + user_token
                 },
                 body: formData
             })
                 .then(response => response.json())
                 .then(json => {
+                    alert(JSON.stringify(json));
                     setLoading(false);
-                    if (json.status == true) {
-                        alert("تم تغيير كلمة المرور بنجاح");
-
-                        navigation.goBack();
-                    }
-                    else {
-                       alert("حدث خطأ اثناء تغيير كلمة المرور");
-                    }
-
+                    // if (json.status == true) {
+                    //     alert("تم تغيير كلمة المرور بنجاح");
+                    //     navigation.goBack();
+                    // }
+                    // else {
+                    //    alert("حدث خطأ اثناء تغيير كلمة المرور");
+                    // }
                 }
                 )
                 .catch(error => {

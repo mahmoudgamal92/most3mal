@@ -24,6 +24,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import { useFocusEffect } from "@react-navigation/native";
+import api from "../constants/constants";
 
 export default function AuctionDetails({ route, navigation }) {
   const { item } = route.params;
@@ -35,9 +36,7 @@ export default function AuctionDetails({ route, navigation }) {
   const [problem, setProblem] = useState("");
 
   const [buttonLoading, setButtonLoading] = useState(false);
-  const [data, setData] = useState([]);
   const [offers, setOffers] = useState([]);
-  const [user_name, setUserName] = useState("");
 
   const countDownDate = new Date(item.end_date).getTime();
   const [countDown, setCountDown] = useState(
@@ -51,9 +50,8 @@ export default function AuctionDetails({ route, navigation }) {
   );
 
 
-  useEffect(
-    () => {
-      _retrieveData();
+  useEffect(() => {
+     _retrieveData();
       const interval = setInterval(() => {
         setCountDown(countDownDate - new Date().getTime());
       }, 1000);
@@ -129,33 +127,39 @@ export default function AuctionDetails({ route, navigation }) {
         };
     }
   };
+
+  
   const _retrieveData = async () => {
     const user_token = await AsyncStorage.getItem("user_token");
     const user_id = await AsyncStorage.getItem("user_id");
     setUserID(user_id);
-    fetch("https://www.mestamal.com/api/user/auction/" + item.id + "/get", {
-      method: "GET",
-      headers: {
-        Accept: "*/*",
-        "Content-type": "multipart/form-data;",
-        "cache-control": "no-cache",
-        "Accept-Encoding": "gzip, deflate, br",
-        Connection: "keep-alive",
-        Authorization: "Bearer " + user_token
-      }
-    })
-      .then(response => response.json())
-      .then(json => {
-        setData(json);
-        setOffers(json.offers);
-        setUserName(json.user.name);
-        // alert(JSON.stringify(json));
-        // console.log(json);
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    _getOffers();
   };
+
+  const _getOffers = () => {
+    //alert(item.id);
+    let url = api.custom_url + "orders/auction/offers.php?item_id="+item.id;
+    try {
+      fetch(url, {
+        method: "GET",
+        headers: {
+          Accept: "*/*",
+          "cache-control": "no-cache",
+        }
+      })
+        .then(response => response.json())
+        .then(json => {
+          if (json.success == true) {
+            setOffers(json.data);
+          } else {
+           alert("هناك مشكلة ");
+          }
+        })
+        .catch(error => console.error(error));
+    } catch (error) {
+      console.log(error);
+    }
+  } 
 
   const sendOffer = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
@@ -164,7 +168,7 @@ export default function AuctionDetails({ route, navigation }) {
     formData.append("auction_id", item.id);
     formData.append("amount", amount);
 
-    let url = "https://mestamal.com/mahmoud/api/custom/auction_offer.php";
+    let url = api.custom_url + "orders/auction/insert.php";
     try {
       fetch(url, {
         method: "POST",
@@ -179,9 +183,10 @@ export default function AuctionDetails({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
+          alert(JSON.stringify(json))
           if (json.success == true) {
             setInputModal(!input_modal);
-            _retrieveData();
+            _getOffers();
           } else {
             // setBtnLoading(false);
             alert("هناك مشكلة ");
@@ -195,8 +200,7 @@ export default function AuctionDetails({ route, navigation }) {
 
   const _acceptOffer = async offer_id => {
     const user_id = await AsyncStorage.getItem("user_id");
-    let url =
-      "https://mestamal.com/mahmoud/api/api.php/records/offers/" + offer_id;
+    let url = api.dynamic_url + "offers/" + offer_id;
     const body = JSON.stringify({
       status: "pending"
     });
@@ -229,7 +233,7 @@ export default function AuctionDetails({ route, navigation }) {
   const _openChat = async (reciver_id, reciver_name) => {
     const user_id = await AsyncStorage.getItem("user_id");
     const user_name = await AsyncStorage.getItem("user_name");
-    let url = "https://mestamal.com/mahmoud/messaging/create.php";
+    let url = api.custom_url + "messaging/create.php";
     let formData = new FormData();
     formData.append("sender_id", user_id);
     formData.append("sender_name", user_name);
@@ -404,8 +408,7 @@ export default function AuctionDetails({ route, navigation }) {
       </View>
 
       <View>
-        <ImageBackground
-          source={{ uri: "https://mestamal.com/uploads/" + item.main_image }}
+        <ImageBackground source={{ uri: api.media_url + item.images.split(",")[0] }}
           style={{ width: "100%", height: 280, resizeMode: "contain" }}
         >
           <View
@@ -532,7 +535,7 @@ export default function AuctionDetails({ route, navigation }) {
                 <Text
                   style={{ color: "grey", fontFamily: "Bold", fontSize: 18 }}
                 >
-                  {user_name}
+                  {item.user.name}
                 </Text>
 
                 <View style={{ flexDirection: "row", alignItems: "center" }}>

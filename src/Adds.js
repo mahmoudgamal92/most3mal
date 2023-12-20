@@ -5,7 +5,8 @@ import {
   ImageBackground,
   TouchableOpacity,
   ScrollView,
-  FlatList
+  FlatList,
+  Image
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
 import {
@@ -123,6 +124,34 @@ export default function Adds({ route, navigation }) {
     }
   };
 
+
+  const handleEmptyProp = () => {
+    return (
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: 160
+        }}
+      >
+        <Image
+          source={require("./../assets/broken-heart.png")}
+          style={{ width: 200, height: 200 }}
+        />
+        <Text
+          style={{
+            fontFamily: "Regular",
+            color: "#c9c9c9",
+            fontSize: 18,
+            marginTop: 10
+          }}
+        >
+          لا توجد أي إعلانات في هذة الفئة
+        </Text>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#34ace0" />
@@ -235,7 +264,8 @@ export default function Adds({ route, navigation }) {
         }}
         numColumns={2}
         data={data}
-        keyExtractor={item => item.id}
+        ListEmptyComponent={handleEmptyProp()}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) =>
           item.status == "active"
             ? <TouchableOpacity

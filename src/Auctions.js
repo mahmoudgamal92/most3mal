@@ -37,7 +37,7 @@ export default function HomePage({ route, navigation }) {
 
     const _retrieveData = async () => {
         setLoading(true);
-        let url = api.dynamic_url + "auctions";
+        let url = api.custom_url + "auctions/list.php";
         try {
             fetch(url, {
                 method: "GET",
@@ -51,7 +51,7 @@ export default function HomePage({ route, navigation }) {
             })
                 .then(response => response.json())
                 .then(json => {
-                    setData(json.records);
+                    setData(json.data);
                     setLoading(false);
                 })
                 .catch(error => console.error(error));
@@ -213,7 +213,7 @@ export default function HomePage({ route, navigation }) {
                 }}>
              <MaterialCommunityIcons name="clipboard-list-outline" size={24} color="#FFF" />
                 <Text style={{ fontFamily: "Bold", color: "#FFF",marginHorizontal:5}}>
-                    عروضي
+                مناقصاتي
                 </Text>
             </TouchableOpacity>
 

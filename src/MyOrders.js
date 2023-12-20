@@ -257,10 +257,8 @@ export default function MyOrders({ route, navigation }) {
                   justifyContent: "center"
                 }}
               >
-                <Text
-                  style={{ fontFamily: "Bold", fontSize: 15, color: "#34ace0" }}
-                >
-                  العرض : {item.amount} ربال
+                <Text style={{ fontFamily: "Bold", fontSize: 15, color: "#34ace0" }}>
+                 {item.amount} ربال
                 </Text>
 
                 <View
@@ -288,7 +286,7 @@ export default function MyOrders({ route, navigation }) {
               <View style={{ width: "20%" }}>
                 <Image
                   source={{
-                    uri: "https://mestamal.com/uploads/" + item.ad.main_image
+                    uri: "https://mestamal.com/uploads/" + item.ad.images
                   }}
                   style={{
                     width: 70,

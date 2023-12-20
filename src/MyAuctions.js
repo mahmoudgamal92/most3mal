@@ -32,7 +32,6 @@ import { useFocusEffect } from '@react-navigation/native';
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import toastConfig from "./../constants/Toast";
 import api from "../constants/constants";
-
 export default function MyAuctions({ route, navigation }) {
 
     const [data, setData] = useState([]);
@@ -264,7 +263,7 @@ export default function MyAuctions({ route, navigation }) {
                             </View>
 
                             <View style={{ width: "20%" }}>
-                                <Image source={{ uri: "https://mestamal.com/uploads/" + item.main_image }}
+                                <Image source={{ uri: api.media_url + item.images.split(",")[0] }}
                                     style={{ width: 70, height: 70, resizeMode: "cover", borderRadius: 10 }} />
                             </View>
                         </TouchableOpacity>

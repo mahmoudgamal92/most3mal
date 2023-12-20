@@ -38,6 +38,7 @@ const AddDetail = ({ route, navigation }) => {
   const [amount, setAmount] = useState("");
 
   useEffect(() => {
+    //alert(JSON.stringify(item));
     _retriveData();
     getadOffers();
   }, []);
@@ -127,10 +128,11 @@ const AddDetail = ({ route, navigation }) => {
       })
         .then(response => response.json())
         .then(json => {
+          //alert(JSON.stringify(json));
           if (json.success == true) {
             setOffers(json.data);
            // setOffers([]);
-            alert(JSON.stringify(json));
+           // alert(JSON.stringify(json));
           } else {
             setOffers([]);
           }
@@ -179,11 +181,9 @@ const AddDetail = ({ route, navigation }) => {
       console.log(error);
     }
   };
-
   const _acceptOffer = async offer_id => {
     setOfferModal(false);
-    let url = "https://mestamal.com/mahmoud/api/custom/accept_offer.php";
-
+    let url = api.custom_url+"orders/ad/accept.php";
     let formData = new FormData();
     formData.append("offer_id", offer_id);
     formData.append("item_id", item.id);
@@ -663,7 +663,7 @@ const AddDetail = ({ route, navigation }) => {
                   onPress={() =>
                     _openChat(
                       item.user_id,
-                      item.user != null ? item.user.name : "مستخدم محذوف"
+                      item.user !== null ? item.user.name : "مستخدم محذوف"
                     )}
                   style={{
                     width: 60,
@@ -879,8 +879,8 @@ const AddDetail = ({ route, navigation }) => {
                           </TouchableOpacity>
 
                           <TouchableOpacity
-                            onPress={() =>
-                              _openChat(item.user_id, item.user.name)}
+                            // onPress={() =>
+                            //   _openChat(item.user_id, item.user.name)}
                             style={{
                               backgroundColor: "green",
                               borderRadius: 5,

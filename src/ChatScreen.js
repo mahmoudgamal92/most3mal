@@ -54,6 +54,7 @@ export default function ChatScreen({ navigation, route }) {
       })
         .then(response => response.json())
         .then(json => {
+          //alert(JSON.stringify(json))
           setData(json.messages);
           setConversation(json.conversation);
           setLoading(false);
@@ -81,10 +82,6 @@ export default function ChatScreen({ navigation, route }) {
       })
         .then(response => response.json())
         .then(json => {
-        //   setData(json.messages);
-        //   setConversation(json.conversation);
-        //   setLoading(false);
-        //   _updateSeen();
         })
         .catch(error => console.error(error));
     } catch (error) {

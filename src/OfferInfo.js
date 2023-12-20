@@ -144,23 +144,23 @@ export default function OrderInfo({ route, navigation }) {
     }
   };
 
+ 
   const getProfile = async () => {
-    const user_token = await AsyncStorage.getItem("user_token");
-    fetch("https://mestamal.com/api/user/profile", {
+    const user_id = await AsyncStorage.getItem("user_id");
+    fetch(api.custom_url + "user/info.php?user_id=" + user_id, {
       method: "GET",
       headers: {
         Accept: "*/*",
         "Content-type": "multipart/form-data;",
         "cache-control": "no-cache",
         "Accept-Encoding": "gzip, deflate, br",
-        Connection: "keep-alive",
-        Authorization: "Bearer " + user_token
+        Connection: "keep-alive"
       }
     })
       .then(response => response.json())
       .then(json => {
-        setProfile(json);
-        //console.log(json);
+        alert(JSON.stringify(json))
+        setProfile(json.data[0]);
       })
       .catch(error => {
         console.error(error);
@@ -213,11 +213,7 @@ export default function OrderInfo({ route, navigation }) {
   };
 
   const deliverOrder = async offer_id => {
-    // const user_token = await AsyncStorage.getItem("user_token");
-    // const user_id = await AsyncStorage.getItem("user_id");
-    let url =
-      "https://mestamal.com/mahmoud/api/custom/deliver_order.php?offer_id=" +
-      offer_id;
+    let url = api.custom_url + "orders/ad/deliver.php?offer_id=" + offer_id;
     try {
       fetch(url, {
         method: "GET",
@@ -244,8 +240,7 @@ export default function OrderInfo({ route, navigation }) {
   const _payForOrder = async offer_id => {
     const user_token = await AsyncStorage.getItem("user_token");
     const user_id = await AsyncStorage.getItem("user_id");
-    let url =
-      "https://mestamal.com/mahmoud/api/api.php/records/item_offers/" +
+    let url = api.dynamic_url + "item_offers/" +
       offer_id;
     const body = JSON.stringify({
       status: "delivering"
@@ -275,8 +270,7 @@ export default function OrderInfo({ route, navigation }) {
   };
 
   const _rateOrder = async offer_id => {
-    let url =
-      "https://mestamal.com/mahmoud/api/api.php/records/item_offers/" +
+    let url = api.dynamic_url + "item_offers/" +
       offer_id;
     const body = JSON.stringify({
       rating_text: rating_text,
@@ -648,7 +642,7 @@ export default function OrderInfo({ route, navigation }) {
             <View style={{ width: "25%" }}>
               <Image
                 source={{
-                  uri: "https://mestamal.com/uploads/" + orderItem.main_image
+                  uri: "https://mestamal.com/uploads/" + orderItem.images
                 }}
                 style={{ width: 80, height: 80, borderRadius: 10 }}
               />
@@ -665,22 +659,6 @@ export default function OrderInfo({ route, navigation }) {
             </View>
           </TouchableOpacity>
         </View>
-
-        {/* {orderInfo.status == "delivering" && orderInfo.user_id == user_id
-          ? <View
-              style={{
-                flexDirection: "row-reverse",
-                width: "100%",
-                paddingHorizontal: 20,
-                justifyContent: "space-between"
-              }}
-            >
-              <Text style={{ fontFamily: "Bold", color: "#000" }}>
-                دفع المبلغ
-              </Text>
-            </View>
-          : null} */}
-
         {orderInfo.status == "delivering" && itemSeller.id == user_id
           ? <View
               style={{
@@ -1013,7 +991,7 @@ export default function OrderInfo({ route, navigation }) {
                   <AntDesign name="closecircleo" size={24} color="black" />
                 </TouchableOpacity>
               </View>
-              {profile.current_balance < orderItem.price
+              {parseInt(profile.current_balance) < parseInt(orderItem.price)
                 ? <View
                     style={{
                       width: "100%",
