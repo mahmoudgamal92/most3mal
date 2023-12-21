@@ -25,7 +25,8 @@ import {
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import constants from "./../constants/constants";
+import api from "./../constants/constants";
+
 export default function SearchResult({ route, navigation }) {
     const { search_param } = route.params;
     const [data, setData] = useState([]);
@@ -39,7 +40,7 @@ export default function SearchResult({ route, navigation }) {
 
         const user_token = await AsyncStorage.getItem("user_token");
         setLoading(true);
-        let url = "https://mestamal.com/api/ads?title=" + search_param;
+        let url = api.custom_url + "ads/search.php?param=" + search_param;
         try {
             fetch(url, {
                 method: "GET",
@@ -54,7 +55,7 @@ export default function SearchResult({ route, navigation }) {
             })
                 .then(response => response.json())
                 .then(json => {
-                    setData(json);
+                    setData(json.data);
                     setLoading(false);
                     //alert(JSON.stringify(json));
                 })
@@ -112,20 +113,9 @@ export default function SearchResult({ route, navigation }) {
                         }}
                         style={styles.itemContainer}
                     >
-
-
                         <ImageBackground
                             imageStyle={styles.itemImg}
-
-                            source={{
-                                uri:
-                                    item.main_image == null || item.main_image == "" || item.main_image == "0"
-                                        ?
-                                        "https://placehold.jp/250x250.png"
-                                        :
-                                        "https://mestamal.com/uploads/" + item.main_image
-                            }}
-                        >
+                            source={{ uri: api.media_url + item.images.split(",")[0] }}>
                             <View style={styles.itemContent}>
 
                                 <TouchableOpacity

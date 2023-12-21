@@ -46,7 +46,7 @@ export default function Favourite({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
-          alert(JSON.stringify(json));
+          //alert(JSON.stringify(json));
           setData(json.data);
           setLoading(false);
         })

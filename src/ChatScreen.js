@@ -1,4 +1,10 @@
-import React, { Component, useState, useEffect } from "react";
+import React, {
+  Component,
+  useState,
+  useEffect,
+  useRef,
+  useCallback
+} from "react";
 import {
   View,
   StyleSheet,
@@ -11,17 +17,24 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   Keyboard,
-  Dimensions
+  Dimensions,
+  ScrollView
 } from "react-native";
 import {
   FontAwesome,
   MaterialIcons,
   Feather,
+  Ionicons,
   Entypo
 } from "@expo/vector-icons";
 import styles from "../constants/style";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
+import BottomSheet from "@gorhom/bottom-sheet";
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
+import moment from "moment";
+
 import api from "./../constants/constants";
 
 export default function ChatScreen({ navigation, route }) {
@@ -32,11 +45,52 @@ export default function ChatScreen({ navigation, route }) {
   const [message, setMessage] = useState("");
   const [btnLoading, setBtnLoading] = useState(false);
   const { chat_id } = route.params;
-
+  const [bottomSheetState, SetBottomSheetState] = useState(-1);
+  const [image, setImage] = useState(null);
+  const [imageURI, setImageURI] = useState("null");
   useEffect(() => {
     _retrieveData();
   }, []);
 
+  const bottomSheetRef = useRef();
+  const handleSheetChanges = useCallback(index => {}, []);
+
+  const openBottomSheet = () => {
+    SetBottomSheetState(0);
+    bottomSheetRef.current.expand();
+  };
+
+  const closeBottomSheet = () => {
+    if (bottomSheetRef.current) {
+      bottomSheetRef.current.close();
+    }
+  };
+
+  const pickImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1
+      });
+
+      if (!result.canceled) {
+        let localUri = result.assets[0].uri;
+        let filename = localUri.split("/").pop();
+        let match = /\.(\w+)$/.exec(filename);
+        let img_type = match ? `image/${match[1]}` : `image`;
+        setImageURI(localUri);
+
+        // Read the selected image file and convert it to base64
+        const base64String = await FileSystem.readAsStringAsync(localUri, {
+          encoding: FileSystem.EncodingType.Base64
+        });
+        setImageURI(`data:image/png;base64,${base64String}`);
+      }
+    } catch (E) {
+      console.log(E);
+    }
+  };
   const _retrieveData = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
     setUserID(user_id);
@@ -68,7 +122,12 @@ export default function ChatScreen({ navigation, route }) {
 
   const _updateSeen = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
-    let url = api.custom_url + "messaging/seen.php?conv_id=" + chat_id+"&user_id="+user_id;
+    let url =
+      api.custom_url +
+      "messaging/seen.php?conv_id=" +
+      chat_id +
+      "&user_id=" +
+      user_id;
     try {
       fetch(url, {
         method: "GET",
@@ -81,8 +140,7 @@ export default function ChatScreen({ navigation, route }) {
         }
       })
         .then(response => response.json())
-        .then(json => {
-        })
+        .then(json => {})
         .catch(error => console.error(error));
     } catch (error) {
       console.log(error);
@@ -91,16 +149,21 @@ export default function ChatScreen({ navigation, route }) {
 
   const sendMessage = async () => {
     Keyboard.dismiss();
+    closeBottomSheet();
+    setImageURI(null);
     setBtnLoading(true);
+
     const user_id = await AsyncStorage.getItem("user_id");
-    let url = api.dynamic_url + "messages";
-    const body = JSON.stringify({
-      sender_id: user_id,
-      conv_id: chat_id,
-      message: message,
-      attatchments: "",
-      seen: "0"
-    });
+
+    let url = api.custom_url + "messaging/send.php";
+
+    let formData = new FormData();
+    formData.append("sender_id",user_id);
+    formData.append("conv_id",chat_id);
+    formData.append("message",message);
+    formData.append("attatchments",imageURI);
+    formData.append("seen","0");
+
     try {
       fetch(url, {
         method: "POST",
@@ -111,10 +174,11 @@ export default function ChatScreen({ navigation, route }) {
           "Accept-Encoding": "gzip, deflate, br",
           Connection: "keep-alive"
         },
-        body: body
+        body: formData
       })
         .then(response => response.json())
         .then(json => {
+          alert(JSON.stringify(json))
           setBtnLoading(false);
           setMessage("");
           _retrieveData();
@@ -126,20 +190,19 @@ export default function ChatScreen({ navigation, route }) {
   };
   return (
     <KeyboardAvoidingView
-      behavior="position"
-      keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
       style={{
-        width: "100%"
+        width: "100%",
+        paddingTop: Constants.statusBarHeight,
+        flex: 1
       }}
     >
+      <StatusBar backgroundColor="#34ace0" />
+
       <View
         style={{
-          width: "100%",
-          marginTop: Constants.statusBarHeight,
-          height: Dimensions.get("window").height
+          flex: 1
         }}
       >
-        <StatusBar backgroundColor="#34ace0" />
         <View
           style={{
             width: "100%",
@@ -163,72 +226,111 @@ export default function ChatScreen({ navigation, route }) {
           </TouchableOpacity>
         </View>
 
-        {loading == true
-          ? null
-          : <View style={{ width: "100%", paddingHorizontal: 20 }}>
-              <FlatList
-                data={data}
-                keyExtractor={item => item.adv_id}
-                renderItem={({ item }) =>
-                  <View>
-                    {item.sender_id == user_id
-                      ? <View style={styles.leftMessageContainer}>
-                          <View
-                            style={{
-                              ...styles.messageTileleft,
-                              backgroundColor: "#DDDDDD"
-                            }}
-                          >
-                            <Text
+        <View
+          style={{
+            flex: 1,
+            width: "100%",
+            paddingHorizontal: 20,
+            marginBottom: 100
+          }}
+        >
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={data}
+            scrollEnabled={true}
+            keyExtractor={item => item.adv_id}
+            renderItem={({ item }) =>
+              <View
+                style={{
+                  width: "100%"
+                }}
+              >
+                {item.sender_id == user_id
+                  ? <View style={styles.leftMessageContainer}>
+                      <View>
+                        {item.attatchments == null || item.attatchments == ""
+                          ? null
+                          : <Image
+                              source={{ uri: item.attatchments }}
                               style={{
-                                fontSize: 15,
-                                color: "#000",
-                                fontFamily: "Regular"
+                                width: 120,
+                                height: 120,
+                                borderRadius: 10,
+                                margin: 5
                               }}
-                            >
-                              {item.message}
-                            </Text>
-                            <Text
+                            />}
+                      </View>
+
+                      <View
+                        style={{
+                          ...styles.messageTileleft,
+                          backgroundColor: "#DDDDDD"
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            color: "#000",
+                            fontFamily: "Regular"
+                          }}
+                        >
+                          {item.message}
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: "Regular",
+                            color: "#000",
+                            fontSize: 10
+                          }}
+                        >
+                          {moment(item.created_at).startOf("day").fromNow()}
+                        </Text>
+                      </View>
+                    </View>
+                  : <View style={styles.rightMessageContainer}>
+                      <View>
+                        {item.attatchments == null || item.attatchments == ""
+                          ? null
+                          : <Image
+                              source={{ uri: item.attatchments }}
                               style={{
-                                fontFamily: "Regular",
-                                color: "#000",
-                                fontSize: 10
+                                width: 100,
+                                height: 100,
+                                borderRadius: 10,
+                                margin: 5
                               }}
-                            >
-                              12:00:00
-                            </Text>
-                          </View>
-                        </View>
-                      : <View style={styles.rightMessageContainer}>
-                          <View
-                            style={{
-                              ...styles.messageTileright,
-                              backgroundColor: "#34ace0"
-                            }}
-                          >
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                color: "#FFF",
-                                fontFamily: "Regular"
-                              }}
-                            >
-                              {item.message}
-                            </Text>
-                            <Text
-                              style={{
-                                fontFamily: "Regular",
-                                color: "#FFF",
-                                fontSize: 10
-                              }}
-                            >
-                              12:00:00
-                            </Text>
-                          </View>
-                        </View>}
-                  </View>}
-              />
-            </View>}
+                            />}
+                      </View>
+                      <View
+                        style={{
+                          ...styles.messageTileright,
+                          backgroundColor: "#34ace0"
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            color: "#FFF",
+                            fontFamily: "Regular"
+                          }}
+                        >
+                          {item.message}
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: "Regular",
+                            color: "#FFF",
+                            fontSize: 10
+                          }}
+                        >
+                          {moment(item.created_at).startOf("day").fromNow()}
+                        </Text>
+                      </View>
+                    </View>}
+              </View>}
+          />
+        </View>
+
         <View
           style={{
             position: "absolute",
@@ -241,14 +343,13 @@ export default function ChatScreen({ navigation, route }) {
             style={{
               flexDirection: "row",
               width: "90%",
-
+              paddingHorizontal: 25,
               backgroundColor: "#fff",
               elevation: 8,
               marginBottom: 10,
               justifyContent: "center",
               alignItems: "center",
-              borderRadius: 50,
-              paddingHorizontal: 10
+              borderRadius: 50
             }}
           >
             <TextInput
@@ -278,8 +379,121 @@ export default function ChatScreen({ navigation, route }) {
                 ? <ActivityIndicator size="small" color="#0000ff" />
                 : <FontAwesome name="send" size={26} color="#666" />}
             </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{ width: "10%" }}
+              onPress={() => openBottomSheet()}
+            >
+              <Entypo name="attachment" size={24} color="black" />
+            </TouchableOpacity>
           </View>
         </View>
+
+        <BottomSheet
+          ref={bottomSheetRef}
+          index={bottomSheetState}
+          enableOverDrag={true}
+          snapPoints={["40%"]}
+          handleComponent={() => null}
+          enableContentPanningGesture={true}
+          onChange={handleSheetChanges}
+          style={{ backgroundColor: "grey" }}
+        >
+          <View
+            style={{
+              paddingHorizontal: 20,
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => closeBottomSheet()}
+              style={{
+                marginTop: 20,
+                width: "100%"
+              }}
+            >
+              <Text style={{ fontFamily: "Bold", fontSize: 15 }}>إغلاق</Text>
+            </TouchableOpacity>
+
+            <View
+              style={{
+                height: 120,
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "row-reverse",
+                flexWrap: "wrap"
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => pickImage()}
+                style={{ margin: 5 }}
+              >
+                <Image
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: 10,
+                    resizeMode: "contain",
+                    margin: 5
+                  }}
+                  source={require("./../assets/add.png")}
+                />
+              </TouchableOpacity>
+
+              {imageURI !== null && imageURI !== ""
+                ? <Image
+                    style={{
+                      width: 100,
+                      height: 100,
+                      borderRadius: 10,
+                      borderWidth: 2,
+                      borderColor: "#34ace0",
+                      resizeMode: "contain",
+                      margin: 5
+                    }}
+                    source={{ uri: imageURI }}
+                  />
+                : null}
+            </View>
+
+            <View
+              style={{
+                width: "100%"
+              }}
+            >
+              <TextInput
+                onChangeText={message => setMessage(message)}
+                placeholder="أكتب رسالتك"
+                style={{
+                  borderRadius: 10,
+                  borderWidth: 1,
+                  borderColor: "#DDDDDD",
+                  width: "100%",
+                  padding: 10,
+                  fontFamily: "Bold"
+                }}
+              />
+            </View>
+
+            <TouchableOpacity
+              onPress={() => sendMessage()}
+              style={{
+                marginTop: 20,
+                backgroundColor: "#34ace0",
+                width: "100%",
+                borderRadius: 10,
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 10
+              }}
+            >
+              <Text style={{ fontFamily: "Bold", fontSize: 15, color: "#FFF" }}>
+                إرسال
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </BottomSheet>
       </View>
     </KeyboardAvoidingView>
   );
