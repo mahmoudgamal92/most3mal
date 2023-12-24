@@ -139,7 +139,7 @@ export default function Conversations({ route, navigation }) {
                   textAlign: "left"
                 }}
               >
-                {user_id == item.sender_id
+                {user_id == item.sender_id.toString()
                   ? item.reciver_name
                   : item.sender_name}
               </Text>

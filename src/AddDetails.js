@@ -9,7 +9,8 @@ import {
   StatusBar,
   Modal,
   ImageBackground,
-  FlatList
+  FlatList,
+  Dimensions
 } from "react-native";
 import {
   FontAwesome,
@@ -19,17 +20,23 @@ import {
   Entypo
 } from "@expo/vector-icons";
 import api from "./../constants/constants";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import moment from "moment";
 import { ScrollView } from "react-native-gesture-handler";
 
 const AddDetail = ({ route, navigation }) => {
+
+  const windowWidth = Dimensions.get('window').width;
+  const windowHeight = Dimensions.get('window').height;
+
+
   const [isLoading, setLoading] = React.useState(false);
   const [user_id, setUserID] = useState(null);
   const { item } = route.params;
   const [offers, setOffers] = useState([]);
+  const [images, setImages] = useState([]);
+
   const [buttonLoading, setButtonLoading] = useState(false);
   const [chatLoading, setChatLoading] = useState(false);
   const [input_modal, setInputModal] = useState(false);
@@ -84,7 +91,7 @@ const AddDetail = ({ route, navigation }) => {
   };
 
   const _retriveData = async () => {
-    console.log();
+    setImages(item.images.split(','));
     const user_token = await AsyncStorage.getItem("user_token");
     const user_id = await AsyncStorage.getItem("user_id");
     const user_name = await AsyncStorage.getItem("user_name");
@@ -118,7 +125,7 @@ const AddDetail = ({ route, navigation }) => {
     }
   };
 
-  
+
   const getadOffers = async () => {
     setLoading(true);
     let url = api.custom_url + "ads/offers.php?item_id=" + item.id;
@@ -131,8 +138,8 @@ const AddDetail = ({ route, navigation }) => {
           //alert(JSON.stringify(json));
           if (json.success == true) {
             setOffers(json.data);
-           // setOffers([]);
-           // alert(JSON.stringify(json));
+            // setOffers([]);
+            // alert(JSON.stringify(json));
           } else {
             setOffers([]);
           }
@@ -155,8 +162,8 @@ const AddDetail = ({ route, navigation }) => {
       status: "waiting",
       created_at: new Date().toString(),
       updated_at: new Date().toString(),
-      rating_text:"",
-      rating_val :""
+      rating_text: "",
+      rating_val: ""
     });
     try {
       fetch(url, {
@@ -183,7 +190,7 @@ const AddDetail = ({ route, navigation }) => {
   };
   const _acceptOffer = async offer_id => {
     setOfferModal(false);
-    let url = api.custom_url+"orders/ad/accept.php";
+    let url = api.custom_url + "orders/ad/accept.php";
     let formData = new FormData();
     formData.append("offer_id", offer_id);
     formData.append("item_id", item.id);
@@ -329,10 +336,58 @@ const AddDetail = ({ route, navigation }) => {
       </View>
 
       <View>
-        <ImageBackground
-           source={{ uri: api.media_url + item.images.split(",")[0] }}
-          style={{ width: "100%", height: 280 }}
-        />
+
+        {images.length > 1 ?
+          <ScrollView
+            horizontal
+            style={{
+              width: windowWidth,
+              height: 280,
+            }}>
+
+            {images.map((item) => {
+              return (
+                <ImageBackground
+                  source={{ uri: api.media_url + item }}
+                  style={{
+                    width: windowWidth,
+                    height: 280,
+                    alignItems: "flex-end",
+                    justifyContent: "flex-end",
+                    padding: 30
+                  }}
+                >
+                  <View style={{
+                    width: 50,
+                    height: 40,
+                    flexDirection: "row",
+                    backgroundColor: "grey",
+                    borderRadius: 10,
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}>
+                    <Text style={{
+                      fontFamily: "Bold",
+                      color: "#FFF",
+                      margin: 5
+                    }}>
+                      {images.length}
+                    </Text>
+
+                    <Entypo name="images" size={24} color="#FFF" />
+                  </View>
+                </ImageBackground>
+              )
+            })
+            }
+
+          </ScrollView>
+          :
+          <ImageBackground
+            source={{ uri: api.media_url + item.images.split(",")[0] }}
+            style={{ width: "100%", height: 280 }}
+          />
+        }
       </View>
 
       <View
@@ -365,98 +420,98 @@ const AddDetail = ({ route, navigation }) => {
 
             {item.user_id == user_id
               ? <View style={{ width: "50%" }}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      //getadOffers();
-                      setOfferModal(true);
-                    }}
+                <TouchableOpacity
+                  onPress={() => {
+                    //getadOffers();
+                    setOfferModal(true);
+                  }}
+                  style={{
+                    width: "100%",
+                    flexDirection: "row",
+                    height: 40,
+                    backgroundColor: "#34ace0",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    borderRadius: 10,
+                    paddingHorizontal: 10
+                  }}
+                >
+                  <Text
                     style={{
-                      width: "100%",
-                      flexDirection: "row",
-                      height: 40,
-                      backgroundColor: "#34ace0",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      borderRadius: 10,
-                      paddingHorizontal: 10
+                      color: "#FFF",
+                      fontFamily: "Bold",
+                      fontSize: 15
                     }}
                   >
-                    <Text
+                    عرض طلبات الشراء
+                  </Text>
+
+                  <AntDesign name="shoppingcart" size={24} color="#FFF" />
+                </TouchableOpacity>
+              </View>
+              : <View style={{ width: "40%", justifyContent: "flex-end" }}>
+                <View>
+                  {offers.find(obj => obj.user_id === user_id)
+                    ? <TouchableOpacity
+                      //onPress={() => setInputModal(true)}
                       style={{
-                        color: "#FFF",
-                        fontFamily: "Bold",
-                        fontSize: 15
+                        width: "100%",
+                        flexDirection: "row",
+                        height: 40,
+                        backgroundColor: "#34ace0",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        borderRadius: 10,
+                        paddingHorizontal: 10
                       }}
                     >
-                      عرض طلبات الشراء
-                    </Text>
+                      <Text
+                        style={{
+                          color: "#FFF",
+                          fontFamily: "Regular",
+                          fontSize: 15
+                        }}
+                      >
+                        تم إضافة طلب
+                      </Text>
 
-                    <AntDesign name="shoppingcart" size={24} color="#FFF" />
-                  </TouchableOpacity>
+                      <AntDesign
+                        name="checkcircle"
+                        size={24}
+                        color="#FFF"
+                      />
+                    </TouchableOpacity>
+                    : <TouchableOpacity
+                      onPress={() => setInputModal(true)}
+                      style={{
+                        width: "100%",
+                        flexDirection: "row",
+                        height: 40,
+                        backgroundColor: "#34ace0",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        borderRadius: 10,
+                        paddingHorizontal: 10
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: "#FFF",
+                          fontFamily: "Bold",
+                          fontSize: 15
+                        }}
+                      >
+                        طلب المنتج
+                      </Text>
+
+                      <AntDesign
+                        name="shoppingcart"
+                        size={24}
+                        color="#FFF"
+                      />
+                    </TouchableOpacity>}
                 </View>
-              : <View style={{ width: "40%", justifyContent: "flex-end" }}>
-                  <View>
-                    {offers.find(obj => obj.user_id === user_id)
-                      ? <TouchableOpacity
-                          //onPress={() => setInputModal(true)}
-                          style={{
-                            width: "100%",
-                            flexDirection: "row",
-                            height: 40,
-                            backgroundColor: "#34ace0",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            borderRadius: 10,
-                            paddingHorizontal: 10
-                          }}
-                        >
-                          <Text
-                            style={{
-                              color: "#FFF",
-                              fontFamily: "Regular",
-                              fontSize: 15
-                            }}
-                          >
-                            تم إضافة طلب
-                          </Text>
-
-                          <AntDesign
-                            name="checkcircle"
-                            size={24}
-                            color="#FFF"
-                          />
-                        </TouchableOpacity>
-                      : <TouchableOpacity
-                          onPress={() => setInputModal(true)}
-                          style={{
-                            width: "100%",
-                            flexDirection: "row",
-                            height: 40,
-                            backgroundColor: "#34ace0",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            borderRadius: 10,
-                            paddingHorizontal: 10
-                          }}
-                        >
-                          <Text
-                            style={{
-                              color: "#FFF",
-                              fontFamily: "Bold",
-                              fontSize: 15
-                            }}
-                          >
-                            طلب المنتج
-                          </Text>
-
-                          <AntDesign
-                            name="shoppingcart"
-                            size={24}
-                            color="#FFF"
-                          />
-                        </TouchableOpacity>}
-                  </View>
-                </View>}
+              </View>}
           </View>
 
           <View style={{ paddingHorizontal: 20 }}>
@@ -492,198 +547,198 @@ const AddDetail = ({ route, navigation }) => {
 
           {item.user !== undefined
             ? <View style={{ paddingHorizontal: 30, marginTop: 20 }}>
-                <Text
-                  style={{ fontFamily: "Bold", fontSize: 20, color: "#000" }}
-                >
-                  بيانات المعلن :
-                </Text>
+              <Text
+                style={{ fontFamily: "Bold", fontSize: 20, color: "#000" }}
+              >
+                بيانات المعلن :
+              </Text>
 
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginTop: 10
+                }}
+              >
                 <View
                   style={{
                     flexDirection: "row-reverse",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginTop: 10
+                    alignItems: "center"
                   }}
                 >
-                  <View
+                  <Image
+                    source={require("./../assets/profile.png")}
                     style={{
-                      flexDirection: "row-reverse",
-                      alignItems: "center"
+                      width: 50,
+                      height: 50,
+                      borderRadius: 50,
+                      marginHorizontal: 5
+                    }}
+                  />
+
+                  <Text
+                    style={{
+                      color: "grey",
+                      fontFamily: "Bold",
+                      fontSize: 18
                     }}
                   >
-                    <Image
-                      source={require("./../assets/profile.png")}
-                      style={{
-                        width: 50,
-                        height: 50,
-                        borderRadius: 50,
-                        marginHorizontal: 5
-                      }}
-                    />
+                    {item.user != null ? item.user.name : "لاتوجد معلومات"}
+                  </Text>
+                </View>
 
-                    <Text
-                      style={{
-                        color: "grey",
-                        fontFamily: "Bold",
-                        fontSize: 18
-                      }}
-                    >
-                      {item.user != null ? item.user.name : "لاتوجد معلومات"}
-                    </Text>
-                  </View>
-
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <AntDesign name="star" size={20} color="#F7D000" />
-                    <AntDesign name="star" size={20} color="#F7D000" />
-                    <AntDesign name="star" size={20} color="#F7D000" />
-                    <AntDesign name="star" size={20} color="#F7D000" />
-                    <AntDesign name="star" size={20} color="#F7D000" />
-                  </View>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <AntDesign name="star" size={20} color="#F7D000" />
+                  <AntDesign name="star" size={20} color="#F7D000" />
+                  <AntDesign name="star" size={20} color="#F7D000" />
+                  <AntDesign name="star" size={20} color="#F7D000" />
+                  <AntDesign name="star" size={20} color="#F7D000" />
                 </View>
               </View>
+            </View>
             : null}
         </ScrollView>
         {item.user_id == user_id
           ? <View
-              style={{
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexDirection: "row",
-                paddingHorizontal: 20,
-                position: "absolute",
-                bottom: 20,
-                width: "100%"
-              }}
-            >
-              <View style={{ width: "40%" }}>
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("EditAdd", {
-                      item: item
-                    })}
-                  style={{
-                    width: "100%",
-                    flexDirection: "row",
-                    height: 40,
-                    backgroundColor: "#34ace0",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    borderRadius: 10,
-                    paddingHorizontal: 10
-                  }}
+            style={{
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexDirection: "row",
+              paddingHorizontal: 20,
+              position: "absolute",
+              bottom: 20,
+              width: "100%"
+            }}
+          >
+            <View style={{ width: "40%" }}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("EditAdd", {
+                    item: item
+                  })}
+                style={{
+                  width: "100%",
+                  flexDirection: "row",
+                  height: 40,
+                  backgroundColor: "#34ace0",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  borderRadius: 10,
+                  paddingHorizontal: 10
+                }}
+              >
+                <Text
+                  style={{ color: "#FFF", fontFamily: "Bold", fontSize: 15 }}
                 >
-                  <Text
-                    style={{ color: "#FFF", fontFamily: "Bold", fontSize: 15 }}
-                  >
-                    تعديل المنتج
-                  </Text>
+                  تعديل المنتج
+                </Text>
 
-                  <AntDesign name="edit" size={24} color="#FFF" />
-                </TouchableOpacity>
-              </View>
-
-              <View style={{ width: "40%" }}>
-                <TouchableOpacity
-                  //onPress={() => deleteAdd(item.id)}
-                  style={{
-                    width: "100%",
-                    flexDirection: "row",
-                    height: 40,
-                    backgroundColor: "red",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    borderRadius: 10,
-                    paddingHorizontal: 10
-                  }}
-                >
-                  <Text
-                    style={{ color: "#FFF", fontFamily: "Bold", fontSize: 15 }}
-                  >
-                    تعطيل المنتج
-                  </Text>
-                  <Entypo name="eye-with-line" size={24} color="#FFF" />
-                </TouchableOpacity>
-              </View>
+                <AntDesign name="edit" size={24} color="#FFF" />
+              </TouchableOpacity>
             </View>
-          : <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                position: "absolute",
-                bottom: 10,
-                width: "100%",
-                paddingHorizontal: 10
-              }}
-            >
-              <View style={{ width: "20%" }}>
-                <TouchableOpacity
-                  onPress={() => toggleFavorite()}
-                  style={{
-                    width: 60,
-                    height: 60,
-                    backgroundColor: "#4BAE52",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 10
-                  }}
+
+            <View style={{ width: "40%" }}>
+              <TouchableOpacity
+                //onPress={() => deleteAdd(item.id)}
+                style={{
+                  width: "100%",
+                  flexDirection: "row",
+                  height: 40,
+                  backgroundColor: "red",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  borderRadius: 10,
+                  paddingHorizontal: 10
+                }}
+              >
+                <Text
+                  style={{ color: "#FFF", fontFamily: "Bold", fontSize: 15 }}
                 >
-                  <MaterialIcons
-                    name="favorite-border"
+                  تعطيل المنتج
+                </Text>
+                <Entypo name="eye-with-line" size={24} color="#FFF" />
+              </TouchableOpacity>
+            </View>
+          </View>
+          : <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              position: "absolute",
+              bottom: 10,
+              width: "100%",
+              paddingHorizontal: 10
+            }}
+          >
+            <View style={{ width: "20%" }}>
+              <TouchableOpacity
+                onPress={() => toggleFavorite()}
+                style={{
+                  width: 60,
+                  height: 60,
+                  backgroundColor: "#4BAE52",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 10
+                }}
+              >
+                <MaterialIcons
+                  name="favorite-border"
+                  size={24}
+                  color="#FFF"
+                />
+              </TouchableOpacity>
+            </View>
+
+            <View style={{ width: "60%" }}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Contact");
+                }}
+                style={{
+                  width: "100%",
+                  height: 60,
+                  backgroundColor: "#FE5722",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 10
+                }}
+              >
+                <Text
+                  style={{ color: "#FFF", fontFamily: "Bold", fontSize: 15 }}
+                >
+                  الإبلاغ عن مشكلة
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={{ width: "20%", alignItems: "flex-end" }}>
+              <TouchableOpacity
+                onPress={() =>
+                  _openChat(
+                    item.user_id,
+                    item.user !== null ? item.user.name : "مستخدم محذوف"
+                  )}
+                style={{
+                  width: 60,
+                  height: 60,
+                  backgroundColor: "#000",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 10
+                }}
+              >
+                {chatLoading
+                  ? <ActivityIndicator size="small" color="#FFF" />
+                  : <Ionicons
+                    name="chatbubbles-outline"
                     size={24}
                     color="#FFF"
-                  />
-                </TouchableOpacity>
-              </View>
-
-              <View style={{ width: "60%" }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("Contact");
-                  }}
-                  style={{
-                    width: "100%",
-                    height: 60,
-                    backgroundColor: "#FE5722",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 10
-                  }}
-                >
-                  <Text
-                    style={{ color: "#FFF", fontFamily: "Bold", fontSize: 15 }}
-                  >
-                    الإبلاغ عن مشكلة
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={{ width: "20%", alignItems: "flex-end" }}>
-                <TouchableOpacity
-                  onPress={() =>
-                    _openChat(
-                      item.user_id,
-                      item.user !== null ? item.user.name : "مستخدم محذوف"
-                    )}
-                  style={{
-                    width: 60,
-                    height: 60,
-                    backgroundColor: "#000",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 10
-                  }}
-                >
-                  {chatLoading
-                    ? <ActivityIndicator size="small" color="#FFF" />
-                    : <Ionicons
-                        name="chatbubbles-outline"
-                        size={24}
-                        color="#FFF"
-                      />}
-                </TouchableOpacity>
-              </View>
-            </View>}
+                  />}
+              </TouchableOpacity>
+            </View>
+          </View>}
       </View>
 
       <Modal transparent={true} animationType="slide" visible={input_modal}>
@@ -760,24 +815,24 @@ const AddDetail = ({ route, navigation }) => {
                 >
                   {buttonLoading == false
                     ? <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center"
+                      }}
+                    >
+                      <Text
                         style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "center"
+                          color: "white",
+                          textAlign: "center",
+                          fontFamily: "Bold",
+                          marginHorizontal: 10
                         }}
                       >
-                        <Text
-                          style={{
-                            color: "white",
-                            textAlign: "center",
-                            fontFamily: "Bold",
-                            marginHorizontal: 10
-                          }}
-                        >
-                          ارسال
-                        </Text>
-                        <Ionicons name="send" size={24} color="#FFF" />
-                      </View>
+                        ارسال
+                      </Text>
+                      <Ionicons name="send" size={24} color="#FFF" />
+                    </View>
                     : <ActivityIndicator size="large" color={"#FFF"} />}
                 </TouchableOpacity>
               </View>
@@ -856,63 +911,63 @@ const AddDetail = ({ route, navigation }) => {
                   >
                     {item.status == "waiting"
                       ? <View
+                        style={{
+                          width: "35%",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          flexDirection: "row"
+                        }}
+                      >
+                        <TouchableOpacity
+                          onPress={() => _acceptOffer(item.id)}
                           style={{
-                            width: "35%",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            flexDirection: "row"
-                          }}
-                        >
-                          <TouchableOpacity
-                            onPress={() => _acceptOffer(item.id)}
-                            style={{
-                              backgroundColor: "#34ace0",
-                              borderRadius: 5,
-                              padding: 5
-                            }}
-                          >
-                            <Text
-                              style={{ fontFamily: "Regular", color: "#FFF" }}
-                            >
-                              قبول
-                            </Text>
-                          </TouchableOpacity>
-
-                          <TouchableOpacity
-                            // onPress={() =>
-                            //   _openChat(item.user_id, item.user.name)}
-                            style={{
-                              backgroundColor: "green",
-                              borderRadius: 5,
-                              padding: 5
-                            }}
-                          >
-                            <Text
-                              style={{ fontFamily: "Regular", color: "#FFF" }}
-                            >
-                              محادثة
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
-                      : <View
-                          style={{
-                            backgroundColor: render_order(item.status).color,
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            padding: 5,
-                            borderTopRightRadius: 10
+                            backgroundColor: "#34ace0",
+                            borderRadius: 5,
+                            padding: 5
                           }}
                         >
                           <Text
-                            style={{
-                              fontFamily: "Regular",
-                              color: "#FFF"
-                            }}
+                            style={{ fontFamily: "Regular", color: "#FFF" }}
                           >
-                            {render_order(item.status).text}
+                            قبول
                           </Text>
-                        </View>}
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          // onPress={() =>
+                          //   _openChat(item.user_id, item.user.name)}
+                          style={{
+                            backgroundColor: "green",
+                            borderRadius: 5,
+                            padding: 5
+                          }}
+                        >
+                          <Text
+                            style={{ fontFamily: "Regular", color: "#FFF" }}
+                          >
+                            محادثة
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                      : <View
+                        style={{
+                          backgroundColor: render_order(item.status).color,
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          padding: 5,
+                          borderTopRightRadius: 10
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: "Regular",
+                            color: "#FFF"
+                          }}
+                        >
+                          {render_order(item.status).text}
+                        </Text>
+                      </View>}
 
                     <View
                       style={{

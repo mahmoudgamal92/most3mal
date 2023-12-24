@@ -47,7 +47,7 @@ export default function ChatScreen({ navigation, route }) {
   const { chat_id } = route.params;
   const [bottomSheetState, SetBottomSheetState] = useState(-1);
   const [image, setImage] = useState(null);
-  const [imageURI, setImageURI] = useState("null");
+  const [imageURI, setImageURI] = useState(null);
   useEffect(() => {
     _retrieveData();
   }, []);
@@ -65,6 +65,7 @@ export default function ChatScreen({ navigation, route }) {
       bottomSheetRef.current.close();
     }
   };
+
 
   const pickImage = async () => {
     try {
@@ -91,6 +92,7 @@ export default function ChatScreen({ navigation, route }) {
       console.log(E);
     }
   };
+  
   const _retrieveData = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
     setUserID(user_id);
@@ -155,15 +157,13 @@ export default function ChatScreen({ navigation, route }) {
 
     const user_id = await AsyncStorage.getItem("user_id");
 
-    let url = api.custom_url + "messaging/send.php";
-
+    let url = api.custom_url + "messaging/msg.php";
     let formData = new FormData();
     formData.append("sender_id",user_id);
     formData.append("conv_id",chat_id);
     formData.append("message",message);
-    formData.append("attatchments",imageURI);
+    formData.append("attachments",imageURI);
     formData.append("seen","0");
-
     try {
       fetch(url, {
         method: "POST",
@@ -240,18 +240,14 @@ export default function ChatScreen({ navigation, route }) {
             scrollEnabled={true}
             keyExtractor={item => item.adv_id}
             renderItem={({ item }) =>
-              <View
-                style={{
-                  width: "100%"
-                }}
-              >
+              <View style={{width: "100%"}}>
                 {item.sender_id == user_id
                   ? <View style={styles.leftMessageContainer}>
                       <View>
-                        {item.attatchments == null || item.attatchments == ""
+                        {item.attachment == null || item.attachment == "" || item.attachment == "null"
                           ? null
                           : <Image
-                              source={{ uri: item.attatchments }}
+                              source={{ uri: item.attachment }}
                               style={{
                                 width: 120,
                                 height: 120,
@@ -260,7 +256,7 @@ export default function ChatScreen({ navigation, route }) {
                               }}
                             />}
                       </View>
-
+                      {item.msg !== "" ?
                       <View
                         style={{
                           ...styles.messageTileleft,
@@ -274,7 +270,7 @@ export default function ChatScreen({ navigation, route }) {
                             fontFamily: "Regular"
                           }}
                         >
-                          {item.message}
+                          {item.msg}
                         </Text>
                         <Text
                           style={{
@@ -286,13 +282,16 @@ export default function ChatScreen({ navigation, route }) {
                           {moment(item.created_at).startOf("day").fromNow()}
                         </Text>
                       </View>
+                      :
+                      null 
+                        }
                     </View>
                   : <View style={styles.rightMessageContainer}>
                       <View>
-                        {item.attatchments == null || item.attatchments == ""
+                        {item.attachment == null || item.attachment == "" || item.attachment == "null"
                           ? null
                           : <Image
-                              source={{ uri: item.attatchments }}
+                              source={{ uri: item.attachment }}
                               style={{
                                 width: 100,
                                 height: 100,
@@ -301,12 +300,14 @@ export default function ChatScreen({ navigation, route }) {
                               }}
                             />}
                       </View>
+
+                      {item.msg !== "" ?
                       <View
                         style={{
                           ...styles.messageTileright,
                           backgroundColor: "#34ace0"
                         }}
-                      >
+                       >
                         <Text
                           style={{
                             fontSize: 15,
@@ -314,7 +315,7 @@ export default function ChatScreen({ navigation, route }) {
                             fontFamily: "Regular"
                           }}
                         >
-                          {item.message}
+                          {item.msg}
                         </Text>
                         <Text
                           style={{
@@ -326,6 +327,8 @@ export default function ChatScreen({ navigation, route }) {
                           {moment(item.created_at).startOf("day").fromNow()}
                         </Text>
                       </View>
+                      :
+                      null}
                     </View>}
               </View>}
           />
