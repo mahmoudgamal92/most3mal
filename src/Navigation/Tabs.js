@@ -18,7 +18,7 @@ export default TabNavigator = () => {
     const Tabs = createBottomTabNavigator();
   return (
     <Tabs.Navigator
-      initialRouteName="AppStack"
+      initialRouteName="TabsHome"
       backBehavior="initialRoute"
       backgroundColor="#34ace0"
       screenOptions={{
@@ -30,7 +30,7 @@ export default TabNavigator = () => {
       }}
     >
       <Tabs.Screen
-        name="HomePage"
+        name="TabsHome"
         component={AppStack}
         options={{
           tabBarLabel: ({ color, size }) =>

@@ -72,7 +72,7 @@ export default function SignIn({ route, navigation }) {
     AsyncStorage.setItem("user_name", item.name);
 
     setTimeout(() => {
-      navigation.replace("AppHome");
+      navigation.replace("DrawerStack");
      }, 2000);
 
   };

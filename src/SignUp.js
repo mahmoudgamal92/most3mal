@@ -108,7 +108,7 @@ export default function SignUp({ route, navigation }) {
     });
 
     setTimeout(() => {
-      navigation.navigate("AppHome");
+      navigation.navigate("DrawerStack");
     }, 1000);
   }
 
