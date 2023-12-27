@@ -25,6 +25,8 @@ export default function Adds({ route, navigation }) {
   const [cats, setCats] = useState([]);
   const [current_cat, setCurrentCat] = useState(null);
   const [loading, setLoading] = useState(false);
+// function to create a state object
+
 
   useEffect(() => {
     _retrieveCats();
@@ -56,19 +58,14 @@ export default function Adds({ route, navigation }) {
       });
   };
   const _retrieveData = async () => {
-    const user_token = await AsyncStorage.getItem("user_token");
     setLoading(true);
-    let url = "";
-    if (current_cat !== null && current_cat !== 0) {
-      url =
-        api.custom_url +
-        "ads/list.php?depart_id=" +
-        depart_id +
-        "&cat_id=" +
-        current_cat;
-    } else {
+    // let url = "";
+    // if (current_cat !== null && current_cat !== 0) {
+    //   url =
+    //     api.custom_url + "ads/list.php?depart_id=" + depart_id + "&cat_id=" + current_cat;
+    // } else {
       url = api.custom_url + "ads/list.php?depart_id=" + depart_id;
-    }
+   // }
     try {
       fetch(url, {
         method: "GET",
@@ -91,15 +88,21 @@ export default function Adds({ route, navigation }) {
     }
   };
 
+
   const changeCat = async cat_id => {
     setCurrentCat(cat_id);
-    const user_token = await AsyncStorage.getItem("user_token");
+    let url = "";
+
+    if (cat_id == 0 || cat_id == "0" || cat_id == "" || cat_id == null) {
+      url = api.custom_url + "ads/list.php?depart_id=" + depart_id;
+    } 
+
+    else
+     {
+      url = api.custom_url + "ads/list.php?depart_id=" + depart_id + "&cat_id=" + cat_id;
+     }
+
     setLoading(true);
-    let url =
-      "https://mestamal.com/api/ads?depart_id=" +
-      depart_id +
-      "&cat_id=" +
-      cat_id;
     try {
       fetch(url, {
         method: "GET",
@@ -109,14 +112,21 @@ export default function Adds({ route, navigation }) {
           "cache-control": "no-cache",
           "Accept-Encoding": "gzip, deflate, br",
           Connection: "keep-alive",
-          Authorization: "Bearer " + user_token
         }
       })
         .then(response => response.json())
         .then(json => {
-          setData(json);
+          if(json.success == true){
+          setData(json.data);
           setLoading(false);
           //alert(JSON.stringify(json));
+          }
+
+          else{
+            setData([]);
+            setLoading(false);
+            //alert(JSON.stringify(json));
+          }
         })
         .catch(error => console.error(error));
     } catch (error) {
@@ -211,12 +221,18 @@ export default function Adds({ route, navigation }) {
               style={{
                 fontFamily: "Bold",
                 color: current_cat == 0 ? "#FFF" : "#143656",
-                marginVertical: 5,
+                margin: 5,
                 fontFamily: "Bold"
               }}
             >
               الكل
             </Text>
+
+            <MaterialCommunityIcons
+                  name="check-decagram"
+                  size={24}
+                  color="#143656"
+                />
           </TouchableOpacity>
 
           {cats.map((item, index) => {
@@ -240,8 +256,9 @@ export default function Adds({ route, navigation }) {
                   style={{
                     fontFamily: "Bold",
                     color: current_cat == item.id ? "#FFF" : "#143656",
-                    marginVertical: 5,
-                    fontFamily: "Bold"
+                    margin: 5,
+                    fontFamily: "Bold",
+
                   }}
                 >
                   {JSON.parse(item.name).ar}

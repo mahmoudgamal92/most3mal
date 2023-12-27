@@ -20,6 +20,7 @@ import styles from "./../../constants/style";
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import toastConfig from "./../../constants/Toast";
 import { KeyboardAvoidingView } from "react-native";
+import api from "../../constants/constants";
 
 export default function Create({ route , navigation }) {
 
@@ -215,7 +216,7 @@ export default function Create({ route , navigation }) {
                             onPress={() => pickImage()}
                             style={styles.imgUploadContainer}>
                             <Image style={{ width: "100%", height: "100%", borderRadius: 50, borderWidth: 2, borderColor: "#34ace0", resizeMode: "contain" }}
-                            source={{ uri: "https://mestamal.com/uploads/" + item.main_image }} />
+                            source={{ uri: api.media_url + item.main_image }} />
                         </TouchableOpacity>
 
                     }

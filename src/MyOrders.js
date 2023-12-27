@@ -25,6 +25,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import moment from "moment";
 import api from "./../constants/constants";
+import Toast from "react-native-toast-message";
+import toastConfig from "./../constants/Toast";
 
 export default function MyOrders({ route, navigation }) {
   const [data, setData] = useState([]);
@@ -55,8 +57,6 @@ export default function MyOrders({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
-          //alert(JSON.stringify(json));
-
           if (json.success == true) {
             setData(json.data);
           } else {
@@ -286,7 +286,7 @@ export default function MyOrders({ route, navigation }) {
               <View style={{ width: "20%" }}>
                 <Image
                   source={{
-                    uri: "https://mestamal.com/uploads/" + item.ad.images
+                    uri: api.media_url + item.ad.images,
                   }}
                   style={{
                     width: 70,
@@ -416,6 +416,8 @@ export default function MyOrders({ route, navigation }) {
           </View>
         </View>
       </Modal>
+      <Toast config={toastConfig} />
+
     </View>
   );
 }

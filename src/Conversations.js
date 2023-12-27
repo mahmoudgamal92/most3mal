@@ -3,7 +3,8 @@ import {
   View,
   StatusBar,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  Image
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -22,6 +23,8 @@ export default function Conversations({ route, navigation }) {
       _retrieveData();
     }, [])
   );
+
+
 
   const _retrieveData = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
@@ -49,6 +52,34 @@ export default function Conversations({ route, navigation }) {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  
+  const handleEmptyProp = () => {
+    return (
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: 160
+        }}
+      >
+        <Image
+          source={require("./../assets/broken-heart.png")}
+          style={{ width: 200, height: 200 }}
+        />
+        <Text
+          style={{
+            fontFamily: "Regular",
+            color: "#c9c9c9",
+            fontSize: 18,
+            marginTop: 10
+          }}
+        >
+         لاتوجد لديك أي محادثات حاليا
+        </Text>
+      </View>
+    );
   };
 
   return (
@@ -82,6 +113,8 @@ export default function Conversations({ route, navigation }) {
       <FlatList
         style={{ width: "100%", marginTop: 20, paddingHorizontal: 10, flex: 1 }}
         data={data}
+        ListEmptyComponent={handleEmptyProp()}
+
         keyExtractor={item => item.conv_num}
         renderItem={({ item }) =>
           <TouchableOpacity
@@ -111,15 +144,12 @@ export default function Conversations({ route, navigation }) {
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
-                  height: 70,
-                  width: 70,
-                  borderRadius: 35,
-                  borderColor: "#34ace0",
-                  borderWidth: 2,
-                  backgroundColor: "#051A3A"
+                  height:70,
+                  width:70,
                 }}
               >
-                <Feather name="user" size={40} color="#FFF" style={{}} />
+                <Image source={require("./../assets/profile.png")}
+                  style={{ width: 70, height: 70,marginHorizontal: 5}}/>
               </View>
             </View>
 

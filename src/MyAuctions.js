@@ -80,7 +80,7 @@ export default function MyAuctions({ route, navigation }) {
         try {
             const user_token = await AsyncStorage.getItem("user_token");
             if (user_token !== null) {
-                fetch("https://mestamal.com/api/user/auctions/" + ad_id + "/delete", {
+                fetch(api.dynamic_url + "auctions/"+ad_id , {
                     method: "POST",
                     headers: {
                         Accept: "*/*",

@@ -159,7 +159,7 @@ export default function OrderInfo({ route, navigation }) {
     })
       .then(response => response.json())
       .then(json => {
-        alert(JSON.stringify(json))
+        //alert(JSON.stringify(json))
         setProfile(json.data[0]);
       })
       .catch(error => {
@@ -642,7 +642,7 @@ export default function OrderInfo({ route, navigation }) {
             <View style={{ width: "25%" }}>
               <Image
                 source={{
-                  uri: "https://mestamal.com/uploads/" + orderItem.images
+                  uri: api.media_url + orderItem.images
                 }}
                 style={{ width: 80, height: 80, borderRadius: 10 }}
               />
@@ -1097,7 +1097,6 @@ export default function OrderInfo({ route, navigation }) {
           transparent={true}
           visible={deliver_modal}
           onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
             SetdeliverModal(!deliver_modal);
           }}
         >

@@ -12,14 +12,16 @@ import {
   StatusBar,
   Modal,
   ImageBackground,
-  SafeAreaView
+  SafeAreaView,
+  Dimensions
 } from "react-native";
 import {
   FontAwesome,
   MaterialIcons,
   Ionicons,
   Feather,
-  AntDesign
+  AntDesign,
+  Entypo
 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
@@ -37,21 +39,25 @@ export default function AuctionDetails({ route, navigation }) {
 
   const [buttonLoading, setButtonLoading] = useState(false);
   const [offers, setOffers] = useState([]);
+  const [images, setImages] = useState([]);
 
   const countDownDate = new Date(item.end_date).getTime();
   const [countDown, setCountDown] = useState(
     countDownDate - new Date().getTime()
   );
-  
+
+  const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
+
   useFocusEffect(
     React.useCallback(() => {
       _retrieveData();
     }, [])
   );
 
-
-  useEffect(() => {
-     _retrieveData();
+  useEffect(
+    () => {
+      _retrieveData();
       const interval = setInterval(() => {
         setCountDown(countDownDate - new Date().getTime());
       }, 1000);
@@ -128,8 +134,8 @@ export default function AuctionDetails({ route, navigation }) {
     }
   };
 
-  
   const _retrieveData = async () => {
+    setImages(item.images.split(","));
     const user_token = await AsyncStorage.getItem("user_token");
     const user_id = await AsyncStorage.getItem("user_id");
     setUserID(user_id);
@@ -138,13 +144,13 @@ export default function AuctionDetails({ route, navigation }) {
 
   const _getOffers = () => {
     //alert(item.id);
-    let url = api.custom_url + "orders/auction/offers.php?item_id="+item.id;
+    let url = api.custom_url + "orders/auction/offers.php?item_id=" + item.id;
     try {
       fetch(url, {
         method: "GET",
         headers: {
           Accept: "*/*",
-          "cache-control": "no-cache",
+          "cache-control": "no-cache"
         }
       })
         .then(response => response.json())
@@ -152,14 +158,15 @@ export default function AuctionDetails({ route, navigation }) {
           if (json.success == true) {
             setOffers(json.data);
           } else {
-           alert("هناك مشكلة ");
+            setOffers([]);
+            //alert(JSON.stringify(json));
           }
         })
         .catch(error => console.error(error));
     } catch (error) {
       console.log(error);
     }
-  } 
+  };
 
   const sendOffer = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
@@ -183,7 +190,7 @@ export default function AuctionDetails({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
-          alert(JSON.stringify(json))
+          alert(JSON.stringify(json));
           if (json.success == true) {
             setInputModal(!input_modal);
             _getOffers();
@@ -408,18 +415,57 @@ export default function AuctionDetails({ route, navigation }) {
       </View>
 
       <View>
-        <ImageBackground source={{ uri: api.media_url + item.images.split(",")[0] }}
-          style={{ width: "100%", height: 280, resizeMode: "contain" }}
-        >
-          <View
-            style={{
-              paddingTop: Constants.statusBarHeight * 1.2,
-              flexDirection: "row",
-              width: "100%",
-              paddingHorizontal: 20
-            }}
-          />
-        </ImageBackground>
+        {images.length > 1
+          ? <ScrollView
+              horizontal
+              style={{
+                width: windowWidth,
+                height: 280
+              }}
+            >
+              {images.map(item => {
+                return (
+                  <ImageBackground
+                    source={{ uri: api.media_url + item }}
+                    style={{
+                      width: windowWidth,
+                      height: 280,
+                      alignItems: "flex-end",
+                      justifyContent: "flex-end",
+                      padding: 30
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 50,
+                        height: 40,
+                        flexDirection: "row",
+                        backgroundColor: "grey",
+                        borderRadius: 10,
+                        alignItems: "center",
+                        justifyContent: "center"
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontFamily: "Bold",
+                          color: "#FFF",
+                          margin: 5
+                        }}
+                      >
+                        {images.length}
+                      </Text>
+
+                      <Entypo name="images" size={24} color="#FFF" />
+                    </View>
+                  </ImageBackground>
+                );
+              })}
+            </ScrollView>
+          : <ImageBackground
+              source={{ uri: api.media_url + item.images.split(",")[0] }}
+              style={{ width: "100%", height: 280 }}
+            />}
       </View>
 
       <View
@@ -486,6 +532,7 @@ export default function AuctionDetails({ route, navigation }) {
           </View>
         </View>
         <ScrollView
+        nestedScrollEnabled={true}
           showsVerticalScrollIndicator={false}
           style={{ width: "100%", marginBottom: 50 }}
         >
@@ -581,6 +628,7 @@ export default function AuctionDetails({ route, navigation }) {
                     marginVertical: 10,
                     backgroundColor: "#FFF",
                     borderRadius: 5,
+                    padding: 10,
                     paddingHorizontal: 10,
                     alignItems: "center",
                     shadowColor: "#000",

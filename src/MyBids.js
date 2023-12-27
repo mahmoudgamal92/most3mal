@@ -280,7 +280,7 @@ export default function MyOrders({ route, navigation }) {
                             </View>
 
                             <View style={{ width: "20%" }}>
-                                <Image source={{ uri: "https://mestamal.com/uploads/" + item.auction.images }}
+                                <Image source={{ uri: api.media_url + item.auction.images }}
                                     style={{ width: 70, height: 70, resizeMode: "cover", borderRadius: 10 }} />
                             </View>
 

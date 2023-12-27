@@ -18,33 +18,20 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   FontAwesome,
   MaterialIcons,
-  Feather,
-  MaterialCommunityIcons
 } from "@expo/vector-icons";
 import styles from "./../../constants/style";
+import api from "./../../constants/constants";
 
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import toastConfig from "./../../constants/Toast";
-
-import {
-  NativeBaseProvider,
-  Select,
-  CheckIcon,
-  Checkbox,
-  Stack,
-  Radio,
-  extendTheme,
-  Picker
-} from "native-base";
+import {NativeBaseProvider,Radio} from "native-base";
 import { KeyboardAvoidingView } from "react-native";
 
 export default function Create({ navigation, route }) {
   const mapRef = useRef(null);
   const { depart_id, cat_id } = route.params;
-
-  // Image Data
-  const [image, setImage] = useState(null);
-  const [imageURI, setImageURI] = useState(null);
+  const [images, setImages] = useState([]);
+  const [coords, setCoords] = useState("");
 
   // Car Entered Data
   const [title, setTitle] = useState("");
@@ -101,6 +88,8 @@ export default function Create({ navigation, route }) {
   };
 
   const NewAdd = async () => {
+    const user_id = await AsyncStorage.getItem("user_id");
+
     if (title.length < 10) {
       alert("لايمكن إضافة إعلان أقل من 10 حروف");
     } else if (description == "" || price == "") {
@@ -109,40 +98,63 @@ export default function Create({ navigation, route }) {
       const user_token = await AsyncStorage.getItem("user_token");
       setLoading(true);
       let formData = new FormData();
+
+      formData.append("user_id", user_id);
+      formData.append("ad_number", parseInt(Math.random() * 100000));
       formData.append("title", title);
       formData.append("details", description);
-      formData.append("price", price);
-      formData.append("seats", seatNumber);
-      formData.append("address", address);
+      formData.append("price", parseInt(price));
+      formData.append("depart_id", parseInt(depart_id));
+      formData.append("cat_id", parseInt(cat_id));
+      formData.append("address", state + "," + city);
+      formData.append("coords", coords);
+      formData.append("seats_number", seatNumber);
+      formData.append("model", carModel);
       formData.append("car_gear", geer);
       formData.append("engine_type", engine);
       formData.append("drive_system", push_system);
-      formData.append("car_conditions", car_status);
-      formData.append("model", carModel);
-      formData.append("Category", cat_id);
-      formData.append("address", state + "," + city);
-      formData.append("country_id", 2);
-      formData.append("city_id", 1);
-      formData.append("images[]", image);
 
-      fetch("https://mestamal.com/api/ad/car/create", {
+      images.map((item, index) => {
+        formData.append("images[]", {
+          uri: item.uri,
+          name: item.name,
+          type: item.type
+        });
+      });
+
+      fetch(api.custom_url + "ads/create.php", {
         method: "POST",
         headers: {
           Accept: "*/*",
           "Content-type": "multipart/form-data;",
           "Accept-Encoding": "gzip, deflate, br",
           Connection: "keep-alive",
-          Authorization: "Bearer " + user_token
         },
         body: formData
       })
         .then(response => response.json())
         .then(json => {
-          if (json.status == true) {
-            alert("تم اضافة الإعلان بنجاح");
-            navigation.pop(3);
+          if (json.success == true) {
+            Toast.show({
+              type: "successToast",
+              text1: "تم إنشاء الإعلان بنجاح",
+              bottomOffset: 80,
+              visibilityTime: 2000
+            });
+
+            setLoading(false);
+
+            setTimeout(() => {
+              navigation.pop(3);
+            }, 1000);
           } else {
-            alert("هناك خطأ في إضافة الإعلان");
+            Toast.show({
+              type: "errorToast",
+              text1: "هناك مشكلة في إضافة الإعلان ",
+              bottomOffset: 80,
+              visibilityTime: 2000
+            });
+            setLoading(false);
           }
         })
         .catch(error => {
@@ -153,36 +165,38 @@ export default function Create({ navigation, route }) {
     }
   };
 
+ 
   const pickImage = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [4, 4],
+        aspect: [4, 3],
         quality: 1
       });
-
       if (!result.canceled) {
-        let localUri = result.assets[0].uri;
+        let localUri = result.uri;
         let filename = localUri.split("/").pop();
         let match = /\.(\w+)$/.exec(filename);
         let img_type = match ? `image/${match[1]}` : `image`;
-        setImageURI(localUri);
-        setImage({
-          uri: localUri,
-          name: filename,
-          type: img_type
-        });
-        console.log({
-          uri: localUri,
-          name: filename,
-          type: img_type
-        });
+        setImages([
+          ...images,
+          {
+            uri: localUri,
+            name: filename,
+            type: img_type
+          }
+        ]);
       }
     } catch (E) {
       console.log(E);
     }
   };
+
+  const _removeImg = async src => {
+    setImages(images.filter(item => item.uri !== src));
+  };
+
 
   return (
     <NativeBaseProvider>
@@ -225,32 +239,52 @@ export default function Create({ navigation, route }) {
               </Text>
             </View>
 
-            {imageURI !== null
-              ? <TouchableOpacity
-                  onPress={() => pickImage()}
-                  style={styles.imgUploadContainer}
-                >
+          
+            <TouchableOpacity
+            onPress={() => pickImage()}
+            style={styles.imgUploadContainer}
+          >
+            <Image
+              style={styles.imgUploadIcon}
+              source={require("./../../assets/camera.png")}
+            />
+          </TouchableOpacity>
+
+          <View
+            style={{
+              width: "100%",
+              marginBottom: 10,
+              flexDirection: "row-reverse",
+              flexWrap: "wrap",
+              alignItems:"center",
+              justifyContent:"center"
+            }}
+          >
+            {images.map((item, index) => {
+              return (
+                <View>
+                  <TouchableOpacity
+                    onPress={() => _removeImg(item.src)}
+                    style={{ marginBottom: -20, zIndex: 849849 }}
+                  >
+                    <Image
+                      source={require("./../../assets/cross.png")}
+                      style={{ width: 30, height: 30 }}
+                    />
+                  </TouchableOpacity>
                   <Image
+                    source={{ uri: item.uri }}
                     style={{
-                      width: "100%",
-                      height: "100%",
-                      borderRadius: 50,
-                      borderWidth: 2,
-                      borderColor: "#34ace0",
-                      resizeMode: "contain"
+                      width: 100,
+                      height: 100,
+                      borderRadius: 10,
+                      marginHorizontal: 5
                     }}
-                    source={{ uri: imageURI }}
                   />
-                </TouchableOpacity>
-              : <TouchableOpacity
-                  onPress={() => pickImage()}
-                  style={styles.imgUploadContainer}
-                >
-                  <Image
-                    style={styles.imgUploadIcon}
-                    source={require("./../../assets/camera.png")}
-                  />
-                </TouchableOpacity>}
+                </View>
+              );
+            })}
+          </View>
 
             <View style={styles.inputLabelContainer}>
               <Text style={{ fontFamily: "Bold", fontSize: 15 }}>
@@ -725,10 +759,10 @@ export default function Create({ navigation, route }) {
                   longitudeDelta: 1.0
                 }}
                 onRegionChangeComplete={region => {
-                  setAddress(
+                  setCoords(
                     parseFloat(region.latitude) +
-                      "," +
-                      parseFloat(region.longitude)
+                    "," +
+                    parseFloat(region.longitude)
                   );
                 }}
               />

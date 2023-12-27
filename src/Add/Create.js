@@ -23,8 +23,6 @@ import api from "./../../constants/constants";
 
 export default function Create({ route, navigation }) {
   const { depart_id, cat_id } = route.params;
-  const [image, setImage] = useState(null);
-  const [imageURI, setImageURI] = useState(null);
   const [images, setImages] = useState([]);
 
   const [title, setTitle] = useState("");
@@ -144,7 +142,7 @@ export default function Create({ route, navigation }) {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [4, 3],
+        aspect: [3, 3],
         quality: 1
       });
       if (!result.canceled) {

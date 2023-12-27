@@ -222,7 +222,7 @@ export default function HomePage({ route, navigation }) {
                 }}
               >
                 <Image
-                  source={{ uri: "https://mestamal.com/uploads/" + item.image }}
+                  source={{ uri: api.media_url + item.image }}
                   style={{
                     width: "100%",
                     height: "100%",
@@ -272,7 +272,7 @@ export default function HomePage({ route, navigation }) {
                     </View>
                   : <Image
                       source={{
-                        uri: "https://mestamal.com/uploads/" + item.image
+                        uri: api.media_url + item.image
                       }}
                       style={styles.catItem}
                     />}
