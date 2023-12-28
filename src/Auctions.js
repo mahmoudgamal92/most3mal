@@ -8,11 +8,7 @@ import {
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
 import moment from "moment";
-import {
-  Entypo,
-  AntDesign,
-  MaterialCommunityIcons
-} from "@expo/vector-icons";
+import { Entypo, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import { useFocusEffect } from "@react-navigation/native";
@@ -46,7 +42,7 @@ export default function HomePage({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
-          console.log(JSON.stringify(json));
+          //alert(JSON.stringify(json));
           setData(json.data);
           setLoading(false);
         })

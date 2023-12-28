@@ -26,6 +26,9 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import { useFocusEffect } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
+import toastConfig from "./../constants/Toast";
+
 import api from "../constants/constants";
 
 export default function AuctionDetails({ route, navigation }) {
@@ -190,12 +193,17 @@ export default function AuctionDetails({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
-          alert(JSON.stringify(json));
+          //alert(JSON.stringify(json));
           if (json.success == true) {
+            Toast.show({
+              type: "successToast",
+              text1: "تم إضافة العرض بنجاح ",
+              bottomOffset: 80,
+              visibilityTime: 2000
+            });
             setInputModal(!input_modal);
             _getOffers();
           } else {
-            // setBtnLoading(false);
             alert("هناك مشكلة ");
           }
         })
@@ -273,6 +281,34 @@ export default function AuctionDetails({ route, navigation }) {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleEmptyOffers = () => {
+    return (
+      <View
+        style={{
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            width: "80%",
+            borderColor: "#DDDDDD",
+            borderWidth: 2,
+            paddingVertical: 10,
+            borderRadius: 10
+          }}
+        >
+          <Text style={{ fontFamily: "Regular", color: "grey", fontSize: 20 }}>
+            لا يوجد عروض حتي الأن
+          </Text>
+        </View>
+      </View>
+    );
   };
 
   const CountdownTimer = () => {
@@ -532,9 +568,8 @@ export default function AuctionDetails({ route, navigation }) {
           </View>
         </View>
         <ScrollView
-        nestedScrollEnabled={true}
           showsVerticalScrollIndicator={false}
-          style={{ width: "100%", marginBottom: 50 }}
+          style={{ width: "100%" }}
         >
           <View style={{ paddingHorizontal: 20 }}>
             <Text style={{ fontFamily: "Bold", fontSize: 20, color: "#000" }}>
@@ -609,6 +644,7 @@ export default function AuctionDetails({ route, navigation }) {
               flex: 1,
               paddingBottom: 80
             }}
+            ListEmptyComponent={handleEmptyOffers}
             contentContainerStyle={{
               justifyContent: "center"
             }}
@@ -835,117 +871,127 @@ export default function AuctionDetails({ route, navigation }) {
                 </View>
               </View>}
           />
+
+          {item.user_id == user_id
+            ? <View
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: "#FFF",
+                  justifyContent: "space-between",
+                  width: "100%",
+                  paddingHorizontal: 10,
+                  marginBottom: 20
+                }}
+              >
+                <View style={{ width: "20%" }}>
+                  <TouchableOpacity
+                    style={{
+                      width: 60,
+                      height: 60,
+                      backgroundColor: "#4BAE52",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: 10
+                    }}
+                  >
+                    <AntDesign name="sharealt" size={24} color="#FFF" />
+                  </TouchableOpacity>
+                </View>
+
+                <View style={{ width: "80%" }}>
+                  <TouchableOpacity
+                    onPress={() => setReportModal(!input_modal)}
+                    style={{
+                      width: "100%",
+                      height: 60,
+                      backgroundColor: "#FE5722",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: 10
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#FFF",
+                        fontFamily: "Bold",
+                        fontSize: 18
+                      }}
+                    >
+                      الإبلاغ عن مشكلة
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            : <View
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: "#FFF",
+                  justifyContent: "space-between",
+                  width: "100%",
+                  paddingHorizontal: 10,
+                  marginBottom: 20
+                }}
+              >
+                <View style={{ width: "20%" }}>
+                  <TouchableOpacity
+                    style={{
+                      width: 60,
+                      height: 60,
+                      backgroundColor: "#4BAE52",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: 10
+                    }}
+                  >
+                    <AntDesign name="sharealt" size={24} color="#FFF" />
+                  </TouchableOpacity>
+                </View>
+
+                <View style={{ width: "60%" }}>
+                  <TouchableOpacity
+                    onPress={() => setReportModal(!input_modal)}
+                    style={{
+                      width: "100%",
+                      height: 60,
+                      backgroundColor: "#FE5722",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: 10
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#FFF",
+                        fontFamily: "Bold",
+                        fontSize: 18
+                      }}
+                    >
+                      الإبلاغ عن مشكلة
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View style={{ width: "20%", alignItems: "flex-end" }}>
+                  <TouchableOpacity
+                    onPress={() => _openChat(item.user_id, item.user.name)}
+                    style={{
+                      width: 60,
+                      height: 60,
+                      backgroundColor: "#000",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: 10
+                    }}
+                  >
+                    <Ionicons
+                      name="chatbubbles-outline"
+                      size={24}
+                      color="#FFF"
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>}
         </ScrollView>
-
-        {item.user_id == user_id
-          ? <View
-              style={{
-                flexDirection: "row",
-                backgroundColor: "#FFF",
-                justifyContent: "space-between",
-                position: "absolute",
-                bottom: 10,
-                width: "100%",
-                paddingHorizontal: 10
-              }}
-            >
-              <View style={{ width: "20%" }}>
-                <TouchableOpacity
-                  style={{
-                    width: 60,
-                    height: 60,
-                    backgroundColor: "#4BAE52",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 10
-                  }}
-                >
-                  <AntDesign name="sharealt" size={24} color="#FFF" />
-                </TouchableOpacity>
-              </View>
-
-              <View style={{ width: "80%" }}>
-                <TouchableOpacity
-                  onPress={() => setReportModal(!input_modal)}
-                  style={{
-                    width: "100%",
-                    height: 60,
-                    backgroundColor: "#FE5722",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 10
-                  }}
-                >
-                  <Text
-                    style={{ color: "#FFF", fontFamily: "Bold", fontSize: 18 }}
-                  >
-                    الإبلاغ عن مشكلة
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          : <View
-              style={{
-                flexDirection: "row",
-                backgroundColor: "#FFF",
-                justifyContent: "space-between",
-                position: "absolute",
-                bottom: 10,
-                width: "100%",
-                paddingHorizontal: 10
-              }}
-            >
-              <View style={{ width: "20%" }}>
-                <TouchableOpacity
-                  style={{
-                    width: 60,
-                    height: 60,
-                    backgroundColor: "#4BAE52",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 10
-                  }}
-                >
-                  <AntDesign name="sharealt" size={24} color="#FFF" />
-                </TouchableOpacity>
-              </View>
-
-              <View style={{ width: "60%" }}>
-                <TouchableOpacity
-                  onPress={() => setReportModal(!input_modal)}
-                  style={{
-                    width: "100%",
-                    height: 60,
-                    backgroundColor: "#FE5722",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 10
-                  }}
-                >
-                  <Text
-                    style={{ color: "#FFF", fontFamily: "Bold", fontSize: 18 }}
-                  >
-                    الإبلاغ عن مشكلة
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={{ width: "20%", alignItems: "flex-end" }}>
-                <TouchableOpacity
-                  onPress={() => _openChat(item.user_id, item.user.name)}
-                  style={{
-                    width: 60,
-                    height: 60,
-                    backgroundColor: "#000",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 10
-                  }}
-                >
-                  <Ionicons name="chatbubbles-outline" size={24} color="#FFF" />
-                </TouchableOpacity>
-              </View>
-            </View>}
       </View>
 
       <Modal transparent={true} animationType="slide" visible={input_modal}>
@@ -1151,10 +1197,10 @@ export default function AuctionDetails({ route, navigation }) {
           </View>
         </View>
       </Modal>
+      <Toast config={toastConfig} />
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
