@@ -108,18 +108,18 @@ const OtpScreen = ({ route, navigation }) => {
           <Text
             style={{
               color: "grey",
-              fontSize: 20,
+              fontSize: 18,
               fontFamily: "Regular",
               marginTop: 10
             }}
           >
-            تم إرسال رمز التفعيل إلي رقم هاتف
+            تم إرسال رمز التفعيل إلي بريدك الالكتروني
           </Text>
 
           <Text
             style={{
               color: "grey",
-              fontSize: 20,
+              fontSize: 18,
               fontFamily: "Regular",
               marginTop: 10
             }}

@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   },
 
   inputContainer: {
-    paddingHorizontal:10,
+    paddingHorizontal: 10,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     width: "90%",
     height: 60,
     fontFamily: "Regular",
-    
+
   },
 
   pwdInput: {
@@ -98,8 +98,8 @@ const styles = StyleSheet.create({
 
   newAddTextArea: {
     textAlign: "right",
-    alignItems:"center",
-    justifyContent:"center",
+    alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: 10,
     width: "100%",
     height: 160,
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 20,
     marginTop: 20,
-    marginBottom:10
+    marginBottom: 10
   },
   btnText: {
     fontSize: 15,
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
 
     elevation: 16
   },
-  
+
   toastIcon: {
     flexDirection: "row-reverse",
     width: "15%",
@@ -264,7 +264,30 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "100%"
-  }
+  },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    marginBottom: 50,
+    width: "80%",
+    backgroundColor: "white",
+    borderRadius: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
 });
 
 export default styles;

@@ -17,8 +17,7 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   Keyboard,
-  Dimensions,
-  ScrollView
+  Modal
 } from "react-native";
 import {
   FontAwesome,
@@ -41,19 +40,23 @@ export default function ChatScreen({ navigation, route }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [conv, setConversation] = useState([]);
+  const [img_modal, setImgModal] = useState(false);
+
   const [user_id, setUserID] = useState("");
   const [message, setMessage] = useState("");
   const [btnLoading, setBtnLoading] = useState(false);
   const { chat_id } = route.params;
   const [bottomSheetState, SetBottomSheetState] = useState(-1);
   const [image, setImage] = useState(null);
+
+
   const [imageURI, setImageURI] = useState(null);
   useEffect(() => {
     _retrieveData();
   }, []);
 
   const bottomSheetRef = useRef();
-  const handleSheetChanges = useCallback(index => {}, []);
+  const handleSheetChanges = useCallback(index => { }, []);
 
   const openBottomSheet = () => {
     SetBottomSheetState(0);
@@ -92,7 +95,7 @@ export default function ChatScreen({ navigation, route }) {
       console.log(E);
     }
   };
-  
+
   const _retrieveData = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
     setUserID(user_id);
@@ -142,7 +145,7 @@ export default function ChatScreen({ navigation, route }) {
         }
       })
         .then(response => response.json())
-        .then(json => {})
+        .then(json => { })
         .catch(error => console.error(error));
     } catch (error) {
       console.log(error);
@@ -159,11 +162,11 @@ export default function ChatScreen({ navigation, route }) {
 
     let url = api.custom_url + "messaging/msg.php";
     let formData = new FormData();
-    formData.append("sender_id",user_id);
-    formData.append("conv_id",chat_id);
-    formData.append("message",message);
-    formData.append("attachments",imageURI);
-    formData.append("seen","0");
+    formData.append("sender_id", user_id);
+    formData.append("conv_id", chat_id);
+    formData.append("message", message);
+    formData.append("attachments", imageURI);
+    formData.append("seen", "0");
     try {
       fetch(url, {
         method: "POST",
@@ -178,7 +181,7 @@ export default function ChatScreen({ navigation, route }) {
       })
         .then(response => response.json())
         .then(json => {
-          alert(JSON.stringify(json))
+          //alert(JSON.stringify(json))
           setBtnLoading(false);
           setMessage("");
           _retrieveData();
@@ -237,26 +240,34 @@ export default function ChatScreen({ navigation, route }) {
           <FlatList
             showsVerticalScrollIndicator={false}
             data={data}
-            scrollEnabled={true}
+            scroallEnabled={true}
             keyExtractor={item => item.adv_id}
             renderItem={({ item }) =>
-              <View style={{width: "100%"}}>
+              <View style={{ width: "100%" }}>
                 {item.sender_id == user_id
                   ? <View style={styles.leftMessageContainer}>
-                      <View>
-                        {item.attachment == null || item.attachment == "" || item.attachment == "null"
-                          ? null
-                          : <Image
-                              source={{ uri: item.attachment }}
-                              style={{
-                                width: 120,
-                                height: 120,
-                                borderRadius: 10,
-                                margin: 5
-                              }}
-                            />}
-                      </View>
-                      {item.msg !== "" ?
+                    <View>
+                      {item.attachment == null || item.attachment == "" || item.attachment == "null"
+                        ? null
+                        :
+                        <TouchableOpacity
+                          onPress={() => {
+                            setImage(item.attachment);
+                            setImgModal(true);
+                          }}>
+                          <Image
+                            source={{ uri: item.attachment }}
+                            style={{
+                              width: 120,
+                              height: 120,
+                              borderRadius: 10,
+                              margin: 5
+                            }}
+                          />
+                        </TouchableOpacity>
+                      }
+                    </View>
+                    {item.msg !== "" ?
                       <View
                         style={{
                           ...styles.messageTileleft,
@@ -283,31 +294,39 @@ export default function ChatScreen({ navigation, route }) {
                         </Text>
                       </View>
                       :
-                      null 
-                        }
-                    </View>
+                      null
+                    }
+                  </View>
                   : <View style={styles.rightMessageContainer}>
-                      <View>
-                        {item.attachment == null || item.attachment == "" || item.attachment == "null"
-                          ? null
-                          : <Image
-                              source={{ uri: item.attachment }}
-                              style={{
-                                width: 100,
-                                height: 100,
-                                borderRadius: 10,
-                                margin: 5
-                              }}
-                            />}
-                      </View>
+                    <View>
+                      {item.attachment == null || item.attachment == "" || item.attachment == "null"
+                        ? null
+                        :
+                        <TouchableOpacity
+                          onPress={() => {
+                            setImage(item.attachment);
+                            setImgModal(true);
+                          }}>
+                          <Image
+                            source={{ uri: item.attachment }}
+                            style={{
+                              width: 100,
+                              height: 100,
+                              borderRadius: 10,
+                              margin: 5
+                            }}
+                          />
+                        </TouchableOpacity>
+                      }
+                    </View>
 
-                      {item.msg !== "" ?
+                    {item.msg !== "" ?
                       <View
                         style={{
                           ...styles.messageTileright,
                           backgroundColor: "#34ace0"
                         }}
-                       >
+                      >
                         <Text
                           style={{
                             fontSize: 15,
@@ -329,7 +348,7 @@ export default function ChatScreen({ navigation, route }) {
                       </View>
                       :
                       null}
-                    </View>}
+                  </View>}
               </View>}
           />
         </View>
@@ -446,17 +465,17 @@ export default function ChatScreen({ navigation, route }) {
 
               {imageURI !== null && imageURI !== ""
                 ? <Image
-                    style={{
-                      width: 100,
-                      height: 100,
-                      borderRadius: 10,
-                      borderWidth: 2,
-                      borderColor: "#34ace0",
-                      resizeMode: "contain",
-                      margin: 5
-                    }}
-                    source={{ uri: imageURI }}
-                  />
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: 10,
+                    borderWidth: 2,
+                    borderColor: "#34ace0",
+                    resizeMode: "contain",
+                    margin: 5
+                  }}
+                  source={{ uri: imageURI }}
+                />
                 : null}
             </View>
 
@@ -498,6 +517,42 @@ export default function ChatScreen({ navigation, route }) {
           </View>
         </BottomSheet>
       </View>
+
+
+      <Modal transparent={true} animationType="slide" visible={img_modal}>
+        <View style={styles.centeredView}>
+          <View
+            style={[styles.modalView, { width: "90%", marginVertical: 100 }]}
+          >
+            <TouchableOpacity
+              style={{
+                width: "100%",
+                alignItems: "flex-end",
+                paddingHorizontal: 20,
+                marginVertical: -25,
+                zIndex: 1000
+              }}
+              onPress={() => setImgModal(!img_modal)}
+            >
+              <FontAwesome name="close" size={30} color="grey" />
+            </TouchableOpacity>
+            <View style={{
+              height: 400,
+              width: "100%"
+            }}>
+              <Image
+                source={{ uri: image }}
+                style={{
+                  height: 400,
+                  width: "100%",
+                  resizeMode: "cover"
+                }} />
+            </View>
+
+          </View>
+        </View>
+      </Modal>
+
     </KeyboardAvoidingView>
   );
-}
+} 
