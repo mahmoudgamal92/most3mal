@@ -24,7 +24,7 @@ export default function Splash({ route, navigation }) {
     if (token !== null)
     {
       setTimeout(() => {
-      navigation.replace('AppHome');
+      navigation.replace('DrawerStack');
       }, 1000);
 
     }

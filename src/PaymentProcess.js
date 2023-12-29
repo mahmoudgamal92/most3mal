@@ -8,6 +8,8 @@ import {
 } from "react-native";
 import { MaterialIcons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
+import api from "./../constants/constants";
+
 export default function PaymentProcess({ route, navigation }) {
     const { url } = route.params;
     return (
@@ -52,33 +54,18 @@ export default function PaymentProcess({ route, navigation }) {
                     const navigation_info = JSON.parse(JSON.stringify(e));
                     console.log(navigation_info);
                     const url = navigation_info.url;
-                    if (url.includes("https://mestamal.com/mahmoud/api/custom/payment/success.php")) {
+                    if (url.includes(api.payment_success)) {
                         setTimeout(() => {
                             navigation.replace("PaymentSuccess");
                         }, 2000);
                     }
-                    else if (url.includes("https://mestamal.com/mahmoud/api/custom/payment/erorr.php")) {
+                    else if (url.includes(api.payment_failure)) {
                         setTimeout(() => {
                             navigation.replace("PaymentErorr");
                         }, 2000);
                     }
                 }}
                 source={{ uri: url }} />
-            {/* <View style={{
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "#34ace0",
-                padding: 10
-            }}>
-
-                <TouchableOpacity
-                    onPress={() => createThreeButtonAlert()}
-                    style={{ backgroundColor: "#dc3545", width: "80%", borderRadius: 10 }}>
-                    <Text style={{ textAlign: "center", padding: 10, fontFamily: "Bold", color: "#FFF" }}>
-                        إنهاء عملية الدفع
-                    </Text>
-                </TouchableOpacity>
-            </View> */}
         </View>
     );
 }

@@ -14,6 +14,7 @@ import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import api from "./../constants/constants";
+import moment from "moment";
 
 export default function Favourite({ route, navigation }) {
   const [data, setData] = useState([]);
@@ -158,70 +159,63 @@ export default function Favourite({ route, navigation }) {
             }}
           >
             {item.ad !== null
-              ? <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("AddDetails", {
-                      item: item
-                    });
+              ?  <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("AddDetails", {
+                  item: item
+                });
+              }}
+              style={styles.itemContainer}
+            >
+              <ImageBackground
+                imageStyle={styles.itemImg}
+                source={{ uri: api.media_url + item.images.split(",")[0] }}
+              >
+                <View style={styles.itemContent} />
+              </ImageBackground>
+
+              <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
+                <Text
+                  style={{
+                    fontFamily: "Bold",
+                    color: "#000",
+                    textAlign: "left",
+                    fontSize: 12
                   }}
-                  style={styles.itemContainer}
                 >
-                  <ImageBackground
-                    imageStyle={styles.itemImg}
-                    source={{ uri: api.media_url + item.images.split(",")[0] }}
-                  >
-                    <View style={styles.itemContent}>
-                      <TouchableOpacity
-                        onPress={() => toggleFavorite(item.id)}
-                      >
-                        <MaterialIcons name="favorite" size={30} color="red" />
-                      </TouchableOpacity>
-                    </View>
-                  </ImageBackground>
+                  {item.title}
+                </Text>
+              </View>
 
-                  <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
-                    <Text
-                      style={{
-                        fontFamily: "Bold",
-                        color: "#000",
-                        textAlign: "left",
-                        fontSize: 12
-                      }}
-                    >
-                      {item.title}
-                    </Text>
+              <View style={{ paddingHorizontal: 10 }}>
+                <Text
+                  style={{
+                    fontFamily: "Bold",
+                    color: "#34ace0",
+                    textAlign: "left",
+                    fontSize: 16
+                  }}
+                >
+                  {item.price} SR
+                </Text>
+              </View>
 
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        width: "100%",
-                        marginTop: 10,
-                        alignItems: "center"
-                      }}
-                    >
-                      <Entypo name="location-pin" size={24} color="grey" />
-                      <Text style={{ fontFamily: "Regular", color: "grey" }}>
-                        عرض الموقع
-                      </Text>
-                    </View>
-                  </View>
-
-                  <View
-                    style={{
-                      width: "100%",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      paddingHorizontal: 10,
-                      marginVertical: 10
-                    }}
-                  >
-                    <Text style={{ fontFamily: "Bold", color: "#34ace0" }}>
-                      {item.price} SR
-                    </Text>
-
-                    <AntDesign name="shoppingcart" size={24} color="black" />
-                  </View>
-                </TouchableOpacity>
+              <View
+                style={{
+                  width: "100%",
+                  flexDirection: "row-reverse",
+                  justifyContent: "space-between",
+                  paddingHorizontal: 10,
+                  marginVertical: 10,
+                  alignItems: "center"
+                }}
+              >
+                <Text style={{ fontFamily: "Bold", color: "grey" }}>
+                  {moment(item.created_at).startOf("day").fromNow()}
+                </Text>
+                <AntDesign name="shoppingcart" size={24} color="grey" />
+              </View>
+            </TouchableOpacity>
               : null}
           </View>}
       />

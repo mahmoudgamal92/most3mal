@@ -30,7 +30,7 @@ export default function EditProfile({ route, navigation }) {
 
     useEffect(() => {
         if (item.image !== null) {
-            setImageURI("https://mestamal.com/uploads/" + item.image);
+            setImageURI(api.media_url + item.image);
         }
         else {
             setImageURI(null);

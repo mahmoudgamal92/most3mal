@@ -113,7 +113,6 @@ export default function ChatScreen({ navigation, route }) {
       })
         .then(response => response.json())
         .then(json => {
-          //alert(JSON.stringify(json))
           setData(json.messages);
           setConversation(json.conversation);
           setLoading(false);
@@ -157,7 +156,6 @@ export default function ChatScreen({ navigation, route }) {
     closeBottomSheet();
     setImageURI(null);
     setBtnLoading(true);
-
     const user_id = await AsyncStorage.getItem("user_id");
 
     let url = api.custom_url + "messaging/msg.php";

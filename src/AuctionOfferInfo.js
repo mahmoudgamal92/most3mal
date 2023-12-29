@@ -1,14 +1,12 @@
-import React, { Component, useState, useEffect } from "react";
+import React, {useState, useEffect } from "react";
 import {
     Image,
     TouchableOpacity,
     Text,
     View,
     StyleSheet,
-    FlatList,
     Modal,
     Alert,
-    ActivityIndicator,
     ScrollView
 } from "react-native";
 import { Feather, MaterialIcons, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -483,7 +481,7 @@ export default function AuctionOfferInfo({ route, navigation }) {
                         <View style={{ width: "25%" }}>
                             <Image 
                            source={{
-                            uri: "https://mestamal.com/uploads/" + orderItem.images
+                            uri: api.media_url + orderItem.images
                           }}
                                 style={{ width: 80, height: 80, borderRadius: 10 }} />
                         </View>

@@ -23,8 +23,6 @@ import api from "./../../constants/constants";
 
 export default function Create({ route, navigation }) {
   const { depart_id, cat_id } = route.params;
-  const [image, setImage] = useState(null);
-  const [imageURI, setImageURI] = useState(null);
   const [images, setImages] = useState([]);
 
   const [title, setTitle] = useState("");

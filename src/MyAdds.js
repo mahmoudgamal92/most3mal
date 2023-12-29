@@ -118,7 +118,7 @@ export default function MyAdds({ route, navigation }) {
 
     const updateStatus = async (id, status) => {
 
-        let url = "https://mestamal.com/mahmoud/api/api.php/records/ads/" + id;
+        let url = api.dynamic_url +"ads/" + id;
         const body = JSON.stringify({
             "status": status == "active" ? "inactive" : "active",
         });

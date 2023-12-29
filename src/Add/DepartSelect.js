@@ -115,7 +115,7 @@ export default function CatSelect({ route, navigation }) {
                                     </View>
                                     :
                                     <Image
-                                        source={{ uri: "https://mestamal.com/uploads/" + item.image }} style={{ width: 40, height: 40, resizeMode: "contain" }} />
+                                        source={{ uri: api.media_url + item.image }} style={{ width: 40, height: 40, resizeMode: "contain" }} />
                                 }
                                 <Text
                                     style={{ fontFamily: "Bold", fontSize: 18, color: "black" }}>

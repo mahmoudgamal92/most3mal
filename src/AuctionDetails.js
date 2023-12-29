@@ -12,18 +12,23 @@ import {
   StatusBar,
   Modal,
   ImageBackground,
-  SafeAreaView
+  SafeAreaView,
+  Dimensions
 } from "react-native";
 import {
   FontAwesome,
   MaterialIcons,
   Ionicons,
   Feather,
-  AntDesign
+  AntDesign,
+  Entypo
 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import { useFocusEffect } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
+import toastConfig from "./../constants/Toast";
+
 import api from "../constants/constants";
 
 export default function AuctionDetails({ route, navigation }) {
@@ -37,21 +42,25 @@ export default function AuctionDetails({ route, navigation }) {
 
   const [buttonLoading, setButtonLoading] = useState(false);
   const [offers, setOffers] = useState([]);
+  const [images, setImages] = useState([]);
 
   const countDownDate = new Date(item.end_date).getTime();
   const [countDown, setCountDown] = useState(
     countDownDate - new Date().getTime()
   );
-  
+
+  const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
+
   useFocusEffect(
     React.useCallback(() => {
       _retrieveData();
     }, [])
   );
 
-
-  useEffect(() => {
-     _retrieveData();
+  useEffect(
+    () => {
+      _retrieveData();
       const interval = setInterval(() => {
         setCountDown(countDownDate - new Date().getTime());
       }, 1000);
@@ -128,8 +137,8 @@ export default function AuctionDetails({ route, navigation }) {
     }
   };
 
-  
   const _retrieveData = async () => {
+    setImages(item.images.split(","));
     const user_token = await AsyncStorage.getItem("user_token");
     const user_id = await AsyncStorage.getItem("user_id");
     setUserID(user_id);
@@ -138,13 +147,13 @@ export default function AuctionDetails({ route, navigation }) {
 
   const _getOffers = () => {
     //alert(item.id);
-    let url = api.custom_url + "orders/auction/offers.php?item_id="+item.id;
+    let url = api.custom_url + "orders/auction/offers.php?item_id=" + item.id;
     try {
       fetch(url, {
         method: "GET",
         headers: {
           Accept: "*/*",
-          "cache-control": "no-cache",
+          "cache-control": "no-cache"
         }
       })
         .then(response => response.json())
@@ -152,14 +161,15 @@ export default function AuctionDetails({ route, navigation }) {
           if (json.success == true) {
             setOffers(json.data);
           } else {
-           alert("هناك مشكلة ");
+            setOffers([]);
+            //alert(JSON.stringify(json));
           }
         })
         .catch(error => console.error(error));
     } catch (error) {
       console.log(error);
     }
-  } 
+  };
 
   const sendOffer = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
@@ -183,12 +193,17 @@ export default function AuctionDetails({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
-          alert(JSON.stringify(json))
+          //alert(JSON.stringify(json));
           if (json.success == true) {
+            Toast.show({
+              type: "successToast",
+              text1: "تم إضافة العرض بنجاح ",
+              bottomOffset: 80,
+              visibilityTime: 2000
+            });
             setInputModal(!input_modal);
             _getOffers();
           } else {
-            // setBtnLoading(false);
             alert("هناك مشكلة ");
           }
         })
@@ -266,6 +281,34 @@ export default function AuctionDetails({ route, navigation }) {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleEmptyOffers = () => {
+    return (
+      <View
+        style={{
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            width: "80%",
+            borderColor: "#DDDDDD",
+            borderWidth: 2,
+            paddingVertical: 10,
+            borderRadius: 10
+          }}
+        >
+          <Text style={{ fontFamily: "Regular", color: "grey", fontSize: 20 }}>
+            لا يوجد عروض حتي الأن
+          </Text>
+        </View>
+      </View>
+    );
   };
 
   const CountdownTimer = () => {
@@ -408,18 +451,57 @@ export default function AuctionDetails({ route, navigation }) {
       </View>
 
       <View>
-        <ImageBackground source={{ uri: api.media_url + item.images.split(",")[0] }}
-          style={{ width: "100%", height: 280, resizeMode: "contain" }}
-        >
-          <View
-            style={{
-              paddingTop: Constants.statusBarHeight * 1.2,
-              flexDirection: "row",
-              width: "100%",
-              paddingHorizontal: 20
-            }}
-          />
-        </ImageBackground>
+        {images.length > 1
+          ? <ScrollView
+              horizontal
+              style={{
+                width: windowWidth,
+                height: 280
+              }}
+            >
+              {images.map(item => {
+                return (
+                  <ImageBackground
+                    source={{ uri: api.media_url + item }}
+                    style={{
+                      width: windowWidth,
+                      height: 280,
+                      alignItems: "flex-end",
+                      justifyContent: "flex-end",
+                      padding: 30
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 50,
+                        height: 40,
+                        flexDirection: "row",
+                        backgroundColor: "grey",
+                        borderRadius: 10,
+                        alignItems: "center",
+                        justifyContent: "center"
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontFamily: "Bold",
+                          color: "#FFF",
+                          margin: 5
+                        }}
+                      >
+                        {images.length}
+                      </Text>
+
+                      <Entypo name="images" size={24} color="#FFF" />
+                    </View>
+                  </ImageBackground>
+                );
+              })}
+            </ScrollView>
+          : <ImageBackground
+              source={{ uri: api.media_url + item.images.split(",")[0] }}
+              style={{ width: "100%", height: 280 }}
+            />}
       </View>
 
       <View
@@ -487,7 +569,7 @@ export default function AuctionDetails({ route, navigation }) {
         </View>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          style={{ width: "100%", marginBottom: 50 }}
+          style={{ width: "100%" }}
         >
           <View style={{ paddingHorizontal: 20 }}>
             <Text style={{ fontFamily: "Bold", fontSize: 20, color: "#000" }}>
@@ -562,6 +644,7 @@ export default function AuctionDetails({ route, navigation }) {
               flex: 1,
               paddingBottom: 80
             }}
+            ListEmptyComponent={handleEmptyOffers}
             contentContainerStyle={{
               justifyContent: "center"
             }}
@@ -581,6 +664,7 @@ export default function AuctionDetails({ route, navigation }) {
                     marginVertical: 10,
                     backgroundColor: "#FFF",
                     borderRadius: 5,
+                    padding: 10,
                     paddingHorizontal: 10,
                     alignItems: "center",
                     shadowColor: "#000",
@@ -787,117 +871,127 @@ export default function AuctionDetails({ route, navigation }) {
                 </View>
               </View>}
           />
+
+          {item.user_id == user_id
+            ? <View
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: "#FFF",
+                  justifyContent: "space-between",
+                  width: "100%",
+                  paddingHorizontal: 10,
+                  marginBottom: 20
+                }}
+              >
+                <View style={{ width: "20%" }}>
+                  <TouchableOpacity
+                    style={{
+                      width: 60,
+                      height: 60,
+                      backgroundColor: "#4BAE52",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: 10
+                    }}
+                  >
+                    <AntDesign name="sharealt" size={24} color="#FFF" />
+                  </TouchableOpacity>
+                </View>
+
+                <View style={{ width: "80%" }}>
+                  <TouchableOpacity
+                    onPress={() => setReportModal(!input_modal)}
+                    style={{
+                      width: "100%",
+                      height: 60,
+                      backgroundColor: "#FE5722",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: 10
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#FFF",
+                        fontFamily: "Bold",
+                        fontSize: 18
+                      }}
+                    >
+                      الإبلاغ عن مشكلة
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            : <View
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: "#FFF",
+                  justifyContent: "space-between",
+                  width: "100%",
+                  paddingHorizontal: 10,
+                  marginBottom: 20
+                }}
+              >
+                <View style={{ width: "20%" }}>
+                  <TouchableOpacity
+                    style={{
+                      width: 60,
+                      height: 60,
+                      backgroundColor: "#4BAE52",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: 10
+                    }}
+                  >
+                    <AntDesign name="sharealt" size={24} color="#FFF" />
+                  </TouchableOpacity>
+                </View>
+
+                <View style={{ width: "60%" }}>
+                  <TouchableOpacity
+                    onPress={() => setReportModal(!input_modal)}
+                    style={{
+                      width: "100%",
+                      height: 60,
+                      backgroundColor: "#FE5722",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: 10
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#FFF",
+                        fontFamily: "Bold",
+                        fontSize: 18
+                      }}
+                    >
+                      الإبلاغ عن مشكلة
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View style={{ width: "20%", alignItems: "flex-end" }}>
+                  <TouchableOpacity
+                    onPress={() => _openChat(item.user_id, item.user.name)}
+                    style={{
+                      width: 60,
+                      height: 60,
+                      backgroundColor: "#000",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: 10
+                    }}
+                  >
+                    <Ionicons
+                      name="chatbubbles-outline"
+                      size={24}
+                      color="#FFF"
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>}
         </ScrollView>
-
-        {item.user_id == user_id
-          ? <View
-              style={{
-                flexDirection: "row",
-                backgroundColor: "#FFF",
-                justifyContent: "space-between",
-                position: "absolute",
-                bottom: 10,
-                width: "100%",
-                paddingHorizontal: 10
-              }}
-            >
-              <View style={{ width: "20%" }}>
-                <TouchableOpacity
-                  style={{
-                    width: 60,
-                    height: 60,
-                    backgroundColor: "#4BAE52",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 10
-                  }}
-                >
-                  <AntDesign name="sharealt" size={24} color="#FFF" />
-                </TouchableOpacity>
-              </View>
-
-              <View style={{ width: "80%" }}>
-                <TouchableOpacity
-                  onPress={() => setReportModal(!input_modal)}
-                  style={{
-                    width: "100%",
-                    height: 60,
-                    backgroundColor: "#FE5722",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 10
-                  }}
-                >
-                  <Text
-                    style={{ color: "#FFF", fontFamily: "Bold", fontSize: 18 }}
-                  >
-                    الإبلاغ عن مشكلة
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          : <View
-              style={{
-                flexDirection: "row",
-                backgroundColor: "#FFF",
-                justifyContent: "space-between",
-                position: "absolute",
-                bottom: 10,
-                width: "100%",
-                paddingHorizontal: 10
-              }}
-            >
-              <View style={{ width: "20%" }}>
-                <TouchableOpacity
-                  style={{
-                    width: 60,
-                    height: 60,
-                    backgroundColor: "#4BAE52",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 10
-                  }}
-                >
-                  <AntDesign name="sharealt" size={24} color="#FFF" />
-                </TouchableOpacity>
-              </View>
-
-              <View style={{ width: "60%" }}>
-                <TouchableOpacity
-                  onPress={() => setReportModal(!input_modal)}
-                  style={{
-                    width: "100%",
-                    height: 60,
-                    backgroundColor: "#FE5722",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 10
-                  }}
-                >
-                  <Text
-                    style={{ color: "#FFF", fontFamily: "Bold", fontSize: 18 }}
-                  >
-                    الإبلاغ عن مشكلة
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={{ width: "20%", alignItems: "flex-end" }}>
-                <TouchableOpacity
-                  onPress={() => _openChat(item.user_id, item.user.name)}
-                  style={{
-                    width: 60,
-                    height: 60,
-                    backgroundColor: "#000",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 10
-                  }}
-                >
-                  <Ionicons name="chatbubbles-outline" size={24} color="#FFF" />
-                </TouchableOpacity>
-              </View>
-            </View>}
       </View>
 
       <Modal transparent={true} animationType="slide" visible={input_modal}>
@@ -1103,10 +1197,10 @@ export default function AuctionDetails({ route, navigation }) {
           </View>
         </View>
       </Modal>
+      <Toast config={toastConfig} />
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,

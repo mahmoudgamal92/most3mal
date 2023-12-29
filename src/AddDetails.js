@@ -555,7 +555,7 @@ const AddDetail = ({ route, navigation }) => {
 
               <View
                 style={{
-                  flexDirection: "row-reverse",
+                  flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "space-between",
                   marginTop: 10
@@ -563,7 +563,7 @@ const AddDetail = ({ route, navigation }) => {
               >
                 <View
                   style={{
-                    flexDirection: "row-reverse",
+                    flexDirection: "row",
                     alignItems: "center"
                   }}
                 >
