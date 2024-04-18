@@ -10,7 +10,8 @@ import {
   ActivityIndicator,
   TextInput,
   ScrollView,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Platform
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
@@ -35,7 +36,8 @@ export default function AddAuction({ route, navigation }) {
   const [description, setDescription] = useState("");
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
   const [latitude, setLatitude] = useState(24.7136);
   const [longitude, setLongitude] = useState(46.6753);
 
@@ -63,11 +65,11 @@ export default function AddAuction({ route, navigation }) {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [3, 3],
+        //aspect: [3, 3],
         quality: 1
       });
       if (!result.canceled) {
-        let localUri = result.uri;
+        let localUri = result.assets[0].uri;
         let filename = localUri.split("/").pop();
         let match = /\.(\w+)$/.exec(filename);
         let img_type = match ? `image/${match[1]}` : `image`;
@@ -99,6 +101,7 @@ export default function AddAuction({ route, navigation }) {
     formData.append("title", title);
     formData.append("user_id", user_id);
     formData.append("details", description);
+    formData.append("address", state + "," + city);
     formData.append("start_date", moment().format());
     formData.append("end_date", moment().add(7, "days").format());
     formData.append("duration", 7);
@@ -125,11 +128,23 @@ export default function AddAuction({ route, navigation }) {
       .then(json => {
         setLoading(false);
         if (json.success == true) {
-          alert("تم إضافة المزاد بنجاح ");
+
+          Toast.show({
+            type: "successToast",
+            text1: "تم إضافة المزاد بنجاح ",
+            bottomOffset: 80,
+            visibilityTime: 2000
+          });
           navigation.goBack();
           console.log(json);
         } else {
-          alert("هناك خطأ في البيانات المدخلة");
+
+          Toast.show({
+            type: "erorrToast",
+            text1: "هناك خطأ في البيانات المدخلة",
+            bottomOffset: 80,
+            visibilityTime: 2000
+          });
         }
       })
       .catch(error => {
@@ -245,6 +260,9 @@ export default function AddAuction({ route, navigation }) {
               </Text>
             </View>
 
+
+
+
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.newAddTextArea}
@@ -253,6 +271,35 @@ export default function AddAuction({ route, navigation }) {
                 multiline={true}
               />
             </View>
+
+
+
+            <View style={styles.inputLabelContainer}>
+              <Text style={{ fontFamily: "Bold", textAlign: "left" }}>
+                المدينة
+              </Text>
+            </View>
+
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.newAddinput}
+                onChangeText={text => setState(text)}
+                placeholder="أدخل المدينة"
+              />
+            </View>
+
+            <View style={styles.inputLabelContainer}>
+              <Text style={{ fontFamily: "Bold", textAlign: "left" }}>الحي</Text>
+            </View>
+
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.newAddinput}
+                onChangeText={text => setCity(text)}
+                placeholder="أدخل الحي"
+              />
+            </View>
+
 
             <View style={styles.inputLabelContainer}>
               <Text style={{ fontFamily: "Bold", marginVertical: 10 }}>
@@ -311,8 +358,8 @@ export default function AddAuction({ route, navigation }) {
                 onRegionChangeComplete={region => {
                   setAddress(
                     parseFloat(region.latitude) +
-                      "," +
-                      parseFloat(region.longitude)
+                    "," +
+                    parseFloat(region.longitude)
                   );
                 }}
               />
@@ -328,8 +375,11 @@ export default function AddAuction({ route, navigation }) {
               </View>
             </View>
 
+
             <TouchableOpacity
-              style={styles.primaryBtn}
+              style={[styles.primaryBtn, {
+                marginBottom: 60
+              }]}
               onPress={() => AddAuction()}
             >
               {loading == true

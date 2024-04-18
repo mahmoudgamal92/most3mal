@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Image,
     TouchableOpacity,
@@ -9,12 +9,12 @@ import {
     Alert,
     ScrollView
 } from "react-native";
-import { Feather, MaterialIcons, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, MaterialIcons, FontAwesome5, MaterialCommunityIcons, Ionicons, Entypo } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
-import moment from 'moment';
+import MapView, { Marker } from "react-native-maps";
 import api from "./../constants/constants";
 
 export default function AuctionOfferInfo({ route, navigation }) {
@@ -29,13 +29,36 @@ export default function AuctionOfferInfo({ route, navigation }) {
     const [user_id, setUserID] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [deliver_modal, SetdeliverModal] = useState(false);
-
+    const [lat, setLat] = useState(24.7136);
+    const [long, setLong] = useState(46.6753);
 
     useEffect(() => {
         _retrieveData();
         getProfile();
     }, []);
+    const openAddressOnMap = (label, lat, lng) => {
+        const scheme = Platform.select({
+            ios: "maps:0,0?q=",
+            android: "geo:0,0?q="
+        });
+        const latLng = `${lat},${lng}`;
+        //const label = label;
+        const url = Platform.select({
+            ios: `${scheme}${label}@${latLng}`,
+            android: `${scheme}${latLng}(${label})`
+        });
+        Linking.openURL(url);
+    };
 
+    const _navigateChat = async () => {
+        const user_id = await AsyncStorage.getItem("user_id");
+
+        if (user_id == orderClient.id) {
+            _openChat(itemSeller.id, itemSeller.name);
+        } else if (user_id == itemSeller.id) {
+            _openChat(orderClient.id, orderClient.name);
+        }
+    };
 
     const render_order = (val) => {
         switch (val) {
@@ -62,19 +85,24 @@ export default function AuctionOfferInfo({ route, navigation }) {
             case "delivering":
                 return {
                     color: "green",
-                    text: "جاري توصيل الطلب "
+                    text: "جاري إستلام الطلب "
+                };
+            case "go_pay":
+                return {
+                    color: "grey",
+                    text: "إدفع المبلغ"
                 };
 
             case "delivered":
                 return {
                     color: "green",
-                    text: "تم توصيل الطلب "
+                    text: "تم إستلام الطلب "
                 };
 
             default:
                 return {
                     color: "#119fbf",
-                    text: "حالة غير معروفة"
+                    text: val
                 };
 
         }
@@ -85,17 +113,17 @@ export default function AuctionOfferInfo({ route, navigation }) {
             const user_id = await AsyncStorage.getItem("user_id");
             setUserToken(user_token);
             setUserID(user_id);
-            fetch(api.custom_url+"orders/index.php?auction_offer_id="+offer_id,
-            {
-                method: "GET",
-                headers: {
-                    Accept: "*/*",
-                    "Content-type": "multipart/form-data;",
-                    "Accept-Encoding": "gzip, deflate, br",
-                    "cache-control": "no-cache",
-                    Connection: "keep-alive",
-                }
-            })
+            fetch(api.custom_url + "orders/index.php?auction_offer_id=" + offer_id,
+                {
+                    method: "GET",
+                    headers: {
+                        Accept: "*/*",
+                        "Content-type": "multipart/form-data;",
+                        "Accept-Encoding": "gzip, deflate, br",
+                        "cache-control": "no-cache",
+                        Connection: "keep-alive",
+                    }
+                })
                 .then(response => response.json())
                 .then(json => {
                     if (json.success == "true") {
@@ -121,24 +149,24 @@ export default function AuctionOfferInfo({ route, navigation }) {
     const getProfile = async () => {
         const user_id = await AsyncStorage.getItem("user_id");
         fetch(api.custom_url + "user/info.php?user_id=" + user_id, {
-          method: "GET",
-          headers: {
-            Accept: "*/*",
-            "Content-type": "multipart/form-data;",
-            "cache-control": "no-cache",
-            "Accept-Encoding": "gzip, deflate, br",
-            Connection: "keep-alive"
-          }
+            method: "GET",
+            headers: {
+                Accept: "*/*",
+                "Content-type": "multipart/form-data;",
+                "cache-control": "no-cache",
+                "Accept-Encoding": "gzip, deflate, br",
+                Connection: "keep-alive"
+            }
         })
-          .then(response => response.json())
-          .then(json => {
-            //alert(JSON.stringify(json))
-            setProfile(json.data[0]);
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      };
+            .then(response => response.json())
+            .then(json => {
+                //alert(JSON.stringify(json))
+                setProfile(json.data[0]);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    };
 
     const deliverOrder = async (offer_id) => {
         let url = api.custom_url + "orders/auction/deliver.php?auction_offer_id=" + offer_id;
@@ -151,7 +179,8 @@ export default function AuctionOfferInfo({ route, navigation }) {
                     "cache-control": "no-cache",
                     "Accept-Encoding": "gzip, deflate, br",
                     Connection: "keep-alive",
-                }})
+                }
+            })
                 .then(response => response.json())
                 .then(json => {
                     SetdeliverModal(false);
@@ -344,40 +373,99 @@ export default function AuctionOfferInfo({ route, navigation }) {
                             alignItems: "center"
                         }}
                     >
-                        <Text
-                            style={{
-                                backgroundColor: render_order(orderInfo.status).color,
-                                color: "#FFF",
-                                paddingHorizontal: 10,
-                                paddingVertical: 5,
-                                borderRadius: 5,
-                                fontFamily: "Bold",
-                                marginBottom: 5,
-                                fontSize: 9
-                            }}
-                        >
-                            {render_order(orderInfo.status).text}
-                        </Text>
 
-                        <Text
+                        <TouchableOpacity
+                            onPress={() => _navigateChat()}
                             style={{
-                                backgroundColor: "#DADCE4",
-                                color: "#000",
+                                backgroundColor: "#41A2D8",
                                 paddingHorizontal: 10,
+                                width: 100,
                                 paddingVertical: 5,
                                 borderRadius: 5,
-                                fontFamily: "Bold",
-                                marginBottom: 5
+                                marginVertical: 15,
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                shadowColor: "#000",
+                                shadowOffset: {
+                                    width: 0,
+                                    height: 9
+                                },
+                                shadowOpacity: 0.5,
+                                shadowRadius: 12.35,
+                                elevation: 19
                             }}
                         >
-                            {moment(orderInfo.created_at).format("MMM Do YY")}
-                        </Text>
+                            <Text
+                                style={{
+                                    color: "#FFF",
+                                    fontFamily: "Bold",
+                                    marginHorizontal: 5
+                                }}
+                            >
+                                محادثة
+                            </Text>
+                            <Ionicons name="chatbox-ellipses-sharp" size={24} color="#FFF" />
+                        </TouchableOpacity>
+
+                        {orderInfo.status == "pending" && orderInfo.user_id == user_id ?
+
+                            <View
+                                style={{
+                                    height: 35,
+                                    width: "100%",
+                                    backgroundColor: render_order(orderInfo.status).color,
+                                    paddingHorizontal: 10,
+                                    paddingVertical: 5,
+                                    borderRadius: 5,
+                                    marginBottom: 5,
+                                    alignItems: "center",
+                                    justifyContent: "center"
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        color: "#FFF",
+                                        fontFamily: "Bold",
+                                        fontSize: 12
+                                    }}
+                                >
+                                    {render_order("go_pay").text}
+                                </Text>
+                            </View>
+                            :
+
+                            <View
+                                style={{
+                                    height: 35,
+                                    width: 100,
+                                    backgroundColor: render_order(orderInfo.status).color,
+                                    paddingHorizontal: 10,
+                                    paddingVertical: 5,
+                                    borderRadius: 5,
+                                    marginBottom: 5,
+                                    alignItems: "center",
+                                    justifyContent: "center"
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        color: "#FFF",
+                                        fontFamily: "Bold",
+                                        fontSize: 9
+                                    }}
+                                >
+                                    {render_order(orderInfo.status).text}
+                                </Text>
+                            </View>
+                        }
 
 
                     </View>
+
                 </TouchableOpacity>
 
-                <View style={{ width: "100%", paddingHorizontal: 20, marginTop: 10 }}>
+                <View style={{ width: "100%", paddingHorizontal: 20 }}>
                     <Text style={{ fontFamily: "Bold", fontSize: 18 }}>
                         بيانات العرض :
                     </Text>
@@ -446,9 +534,50 @@ export default function AuctionOfferInfo({ route, navigation }) {
 
                         </View>
 
+                        {orderInfo.status == "delivering" && orderInfo.user_id == user_id ?
+                            <View style={{
+                                flexDirection: "row-reverse",
+                                width: "100%",
+                                paddingHorizontal: 20,
+                                justifyContent: "space-between",
+                            }}>
+                                <TouchableOpacity
+                                    onPress={() => SetdeliverModal(true)}
+                                    style={styles.primaryBtn}>
+                                    <Text style={styles.btnText}>
+                                        إستلام الطلب
+                                    </Text>
+                                    <MaterialCommunityIcons name="truck-delivery-outline" size={24} color="#FFF" />
+                                </TouchableOpacity>
+                            </View>
+                            :
+                            null
+                        }
+
+
+                        {orderInfo.status == "pending" && orderInfo.user_id == user_id ?
+                            <View style={{
+                                flexDirection: "row-reverse",
+                                width: "100%",
+                                paddingHorizontal: 20,
+                                justifyContent: "space-between",
+                            }}>
+                                <TouchableOpacity
+                                    onPress={() => setModalVisible(true)}
+                                    style={styles.primaryBtn}>
+                                    <Text style={styles.btnText}>
+                                        دفع المبلغ
+                                    </Text>
+                                    <MaterialIcons name="attach-money" size={24} color="#FFF" />
+                                </TouchableOpacity>
+                            </View>
+                            :
+                            null
+                        }
+
                     </View>
                 </TouchableOpacity>
-                <View style={{ width: "100%", paddingHorizontal: 20, marginVertical: 10 }}>
+                <View style={{ width: "100%", paddingHorizontal: 20, }}>
                     <Text style={{ fontFamily: "Bold", fontSize: 18 }}>
                         بيانات المنتج
                     </Text>
@@ -479,16 +608,16 @@ export default function AuctionOfferInfo({ route, navigation }) {
                         }}>
 
                         <View style={{ width: "25%" }}>
-                            <Image 
-                           source={{
-                            uri: api.media_url + orderItem.images
-                          }}
+                            <Image
+                                source={{
+                                    uri: api.media_url + orderItem.images
+                                }}
                                 style={{ width: 80, height: 80, borderRadius: 10 }} />
                         </View>
 
 
                         <View style={{ width: "60%", paddingHorizontal: 10 }}>
-                            <Text style={{ fontFamily: "Bold", fontSize: 12,textAlign:"left" }}>
+                            <Text style={{ fontFamily: "Bold", fontSize: 12, textAlign: "left" }}>
                                 {orderItem.title}
                             </Text>
                         </View>
@@ -496,7 +625,7 @@ export default function AuctionOfferInfo({ route, navigation }) {
                     </TouchableOpacity>
                 </View>
 
-              
+
                 {orderInfo.status == "delivering" && itemSeller.id == user_id ?
                     <View style={{
                         width: "100%",
@@ -517,45 +646,69 @@ export default function AuctionOfferInfo({ route, navigation }) {
                     null
                 }
 
-                {orderInfo.status == "pending" && orderInfo.user_id == user_id ?
-                    <View style={{
-                        flexDirection: "row-reverse",
-                        width: "100%",
-                        paddingHorizontal: 20,
-                        justifyContent: "space-between",
-                    }}>
-                        <TouchableOpacity
-                            onPress={() => setModalVisible(true)}
-                            style={styles.primaryBtn}>
-                            <Text style={styles.btnText}>
-                                دفع المبلغ
-                            </Text>
-                            <MaterialIcons name="attach-money" size={24} color="#FFF" />
-                        </TouchableOpacity>
-                    </View>
-                    :
-                    null
-                }
 
-                {orderInfo.status == "delivering" && orderInfo.user_id == user_id ?
-                    <View style={{
-                        flexDirection: "row-reverse",
-                        width: "100%",
-                        paddingHorizontal: 20,
-                        justifyContent: "space-between",
-                    }}>
+
+
+                {orderInfo.status == "delivering" && orderInfo.user_id == user_id
+                    ? <View
+                        style={{
+                            width: "100%",
+                            paddingHorizontal: 20,
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontFamily: "Bold",
+                                marginVertical: 10
+                            }}
+                        >
+                            موقع الإستلام : انقر على الخريطة
+                        </Text>
                         <TouchableOpacity
-                            onPress={() => SetdeliverModal(true)}
-                            style={styles.primaryBtn}>
-                            <Text style={styles.btnText}>
-                                إستلام الطلب
-                            </Text>
-                            <MaterialCommunityIcons name="truck-delivery-outline" size={24} color="#FFF" />
+                            onPress={() =>
+                                openAddressOnMap(
+                                    orderItem.title,
+                                    parseFloat(lat),
+                                    parseFloat(long)
+                                )}
+                            style={{
+                                width: "100%",
+                                height: 300,
+                                borderRadius: 20,
+                                overflow: "hidden"
+                            }}
+                        >
+                            <MapView
+                                style={{
+                                    flex: 1,
+                                    width: "100%",
+                                    height: "100%",
+                                    borderRadius: 20
+                                }}
+                                rotateEnabled={false}
+                                scrollEnabled={false}
+                                initialRegion={{
+                                    latitude: parseFloat(lat) || 0,
+                                    longitude: parseFloat(long) || 0,
+                                    latitudeDelta: 0.0922,
+                                    longitudeDelta: 0.0421
+                                }}
+                            >
+                                <Marker
+                                    key={"7484"}
+                                    coordinate={{
+                                        latitude: parseFloat(lat) || 0,
+                                        longitude: parseFloat(long) || 0
+                                    }}
+                                >
+                                    <Entypo name="location-pin" size={50} color="black" />
+                                </Marker>
+                            </MapView>
                         </TouchableOpacity>
+
+
                     </View>
-                    :
-                    null
-                }
+                    : null}
 
 
             </ScrollView>
@@ -637,10 +790,15 @@ export default function AuctionOfferInfo({ route, navigation }) {
                                     alignItems: "center",
                                 }}>
                                     <View>
-                                        <Text style={{
-                                            fontFamily: "Regular"
-                                        }}>
-                                            عميلنا العزيز , يرجي العلم أن أي مبالغ تقوم بتحريرها للبائع , ستظل في حسابنا حتي تقوم بإستلام طلبك من البائع و تأكيد إستلام الطلب من التطبيق
+                                        <Text
+                                            style={{
+                                                fontFamily: "Regular"
+                                            }}
+                                        >
+                                            عميلنا العزيز , يرجي العلم أن أي مبالغ تقوم بتحريرها
+                                            للبائع ,ستحفظ في محفظتك على مستعمل . كوم حتى
+                                            تقوم بإستلام طلبك من البائع و تأكيد إستلام الطلب من
+                                            التطبيق
                                         </Text>
                                     </View>
 
@@ -716,11 +874,11 @@ export default function AuctionOfferInfo({ route, navigation }) {
                                     }}>
                                         عزيزي مستخدم مستعمل .كوم في حال الضغط على استلام الطلب فأنت تتحمل المسؤوليه كامله عن استلامكم المنتج او الخدمه في وضعها السليم بعد فحصكم لها وتوافق على تحرير المبلغ من قبل منصة مستعمل . كوم لحساب البائع أو مقدم الخدمه ولا تتحمل منصة مستعمل . كوم ادنى مسؤوليه تجاه ذلك ..
                                     </Text>
-                                  
+
                                 </View>
 
                                 <TouchableOpacity
-                                  onPress={() => deliverOrder(orderInfo.id)}
+                                    onPress={() => deliverOrder(orderInfo.id)}
                                     style={{
                                         flexDirection: "row-reverse",
                                         backgroundColor: "#41A2D8",

@@ -55,7 +55,7 @@ export default function MyAdds({ route, navigation }) {
             case "active":
                 return {
                     color: "#54B7D3",
-                    text: "نشط"
+                    text: "نـــشـط"
                 };
 
             case "inactive":
@@ -88,7 +88,7 @@ export default function MyAdds({ route, navigation }) {
     const _retrieveData = async () => {
         const user_id = await AsyncStorage.getItem("user_id");
         setLoading(true);
-        let url = api.custom_url +"user/ads.php?user_id="+user_id;
+        let url = api.custom_url + "user/ads.php?user_id=" + user_id;
         try {
             fetch(url, {
                 method: "GET",
@@ -118,7 +118,7 @@ export default function MyAdds({ route, navigation }) {
 
     const updateStatus = async (id, status) => {
 
-        let url = api.dynamic_url +"ads/" + id;
+        let url = api.dynamic_url + "ads/" + id;
         const body = JSON.stringify({
             "status": status == "active" ? "inactive" : "active",
         });
@@ -145,7 +145,7 @@ export default function MyAdds({ route, navigation }) {
         }
     };
 
- 
+
 
     const handleEmptyProp = () => {
         return (
@@ -276,24 +276,24 @@ export default function MyAdds({ route, navigation }) {
                                 fontFamily: "Regular",
                                 color: '#FFF',
                                 backgroundColor: render_order(item.status).color,
-                                paddingHorizontal:10,
-                                paddingVertical:2,
+                                paddingHorizontal: 10,
+                                paddingVertical: 2,
                                 borderRadius: 5
                             }}>
                                 {render_order(item.status).text}
                             </Text>
                         </View>
 
-                        <View style={{ 
-                            paddingHorizontal: 10, 
+                        <View style={{
+                            paddingHorizontal: 10,
                             marginVertical: 10,
-                            width:"100%",
-                             }}>
+                            width: "100%",
+                        }}>
 
                             <Text style={{
                                 fontFamily: "Bold",
                                 color: '#000',
-                                fontSize:12
+                                fontSize: 12
                             }}>
                                 {item.title}
                             </Text>
@@ -307,7 +307,7 @@ export default function MyAdds({ route, navigation }) {
                             }}>
                                 <Entypo name="location-pin" size={24} color="grey" />
                                 <Text style={{ fontFamily: "Regular", color: 'grey' }}>
-                                {item.address}
+                                    {item.address}
                                 </Text>
                             </View>
                         </View>

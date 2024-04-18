@@ -24,7 +24,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import moment from "moment";
 import { ScrollView } from "react-native-gesture-handler";
-
+import Toast from "react-native-toast-message";
+import toastConfig from "./../constants/Toast";
 const AddDetail = ({ route, navigation }) => {
 
   const windowWidth = Dimensions.get('window').width;
@@ -45,7 +46,6 @@ const AddDetail = ({ route, navigation }) => {
   const [amount, setAmount] = useState("");
 
   useEffect(() => {
-    //alert(JSON.stringify(item));
     _retriveData();
     getadOffers();
   }, []);
@@ -135,11 +135,11 @@ const AddDetail = ({ route, navigation }) => {
       })
         .then(response => response.json())
         .then(json => {
-          //alert(JSON.stringify(json));
+
           if (json.success == true) {
             setOffers(json.data);
             // setOffers([]);
-            // alert(JSON.stringify(json));
+
           } else {
             setOffers([]);
           }
@@ -180,7 +180,13 @@ const AddDetail = ({ route, navigation }) => {
         .then(response => response.json())
         .then(json => {
           setInputModal(false);
-          alert("تم طلبك عرضك بنجاح");
+          Toast.show({
+            type: "successToast",
+            text1: "تم تقديم عرضك بنجاح !",
+            bottomOffset: 160,
+            visibilityTime: 10000
+          });
+          //alert("تم إضافة عرضك بنجاح");
           getadOffers();
         })
         .catch(error => console.error(error));
@@ -209,7 +215,6 @@ const AddDetail = ({ route, navigation }) => {
       })
         .then(response => response.json())
         .then(json => {
-          // alert(JSON.stringify(json));
           setInputModal(false);
           alert("تم قبول العرض");
           navigation.navigate("OfferInfo", {
@@ -340,6 +345,7 @@ const AddDetail = ({ route, navigation }) => {
         {images.length > 1 ?
           <ScrollView
             horizontal
+            pagingEnabled
             style={{
               width: windowWidth,
               height: 280,
@@ -468,11 +474,11 @@ const AddDetail = ({ route, navigation }) => {
                       <Text
                         style={{
                           color: "#FFF",
-                          fontFamily: "Regular",
+                          fontFamily: "Bold",
                           fontSize: 15
                         }}
                       >
-                        تم إضافة طلب
+                        تم إضافة طلبك
                       </Text>
 
                       <AntDesign
@@ -929,7 +935,7 @@ const AddDetail = ({ route, navigation }) => {
                           <Text
                             style={{ fontFamily: "Regular", color: "#FFF" }}
                           >
-                            قبول
+                            قـبـول
                           </Text>
                         </TouchableOpacity>
 
@@ -1036,6 +1042,8 @@ const AddDetail = ({ route, navigation }) => {
           </View>
         </View>
       </Modal>
+      <Toast config={toastConfig} />
+
     </View>
   );
 };

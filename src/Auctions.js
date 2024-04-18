@@ -160,7 +160,10 @@ export default function HomePage({ route, navigation }) {
 
               <View style={{}}>
                 <Image
-                  source={{ uri: api.media_url + item.images.split(",")[0] }}
+                  source={{
+                    uri:
+                      api.media_url + item.images?.split(",")[0]
+                  }}
                   style={{
                     width: 100,
                     height: 100,
@@ -219,7 +222,7 @@ export default function HomePage({ route, navigation }) {
         <Text
           style={{ fontFamily: "Bold", color: "#FFF", marginHorizontal: 5 }}
         >
-          مناقصاتي
+          مزايداتي
         </Text>
       </TouchableOpacity>
     </View>

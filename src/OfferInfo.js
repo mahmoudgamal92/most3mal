@@ -5,7 +5,7 @@ import {
   Text,
   View,
   StyleSheet,
-  FlatList,
+  Platform,
   Modal,
   Alert,
   ActivityIndicator,
@@ -43,7 +43,7 @@ export default function OrderInfo({ route, navigation }) {
   const [deliver_modal, SetdeliverModal] = useState(false);
   const [chat_loading, setChatLoading] = useState(false);
   const [rating_text, setRatingText] = useState("");
-  const [rating_val, setRatingValue] = useState("");
+  const [rating_val, setRatingValue] = useState(0);
 
   const [lat, setLat] = useState(24.7136);
   const [long, setLong] = useState(46.6753);
@@ -83,19 +83,25 @@ export default function OrderInfo({ route, navigation }) {
       case "pending":
         return {
           color: "grey",
-          text: "بإنتظار شحن الرصيد"
+          text: "بإنتظار إيـداع المبلغ"
         };
 
+
+      case "go_pay":
+        return {
+          color: "grey",
+          text: "إدفع المبلغ"
+        };
       case "delivering":
         return {
           color: "green",
-          text: "جاري توصيل الطلب "
+          text: "جاري إستلام الطلب "
         };
 
       case "delivered":
         return {
           color: "green",
-          text: "تم توصيل الطلب "
+          text: "تم إستلام الطلب"
         };
 
       default:
@@ -112,7 +118,7 @@ export default function OrderInfo({ route, navigation }) {
       const user_id = await AsyncStorage.getItem("user_id");
       setUserToken(user_token);
       setUserID(user_id);
-      fetch(api.custom_url+"orders/index.php?offer_id="+offer_id,
+      fetch(api.custom_url + "orders/index.php?offer_id=" + offer_id,
         {
           method: "GET",
           headers: {
@@ -144,7 +150,7 @@ export default function OrderInfo({ route, navigation }) {
     }
   };
 
- 
+
   const getProfile = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
     fetch(api.custom_url + "user/info.php?user_id=" + user_id, {
@@ -260,7 +266,7 @@ export default function OrderInfo({ route, navigation }) {
         .then(response => response.json())
         .then(json => {
           setModalVisible(false);
-          alert("تم الايداع بنجاح");
+          alert("تم الإيداع بنجاح");
           _retrieveData();
         })
         .catch(error => console.error(error));
@@ -290,7 +296,7 @@ export default function OrderInfo({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
-          alert("شكرا علي تقييمك");
+          alert("شكرا على تقييمك");
           _retrieveData();
         })
         .catch(error => console.error(error));
@@ -476,29 +482,6 @@ export default function OrderInfo({ route, navigation }) {
               alignItems: "center"
             }}
           >
-            <View
-              style={{
-                height: 35,
-                backgroundColor: render_order(orderInfo.status).color,
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-                borderRadius: 5,
-                marginBottom: 5,
-                alignItems: "center",
-                justifyContent: "center"
-              }}
-            >
-              <Text
-                style={{
-                  color: "#FFF",
-                  fontFamily: "Bold",
-                  fontSize: 9
-                }}
-              >
-                {render_order(orderInfo.status).text}
-              </Text>
-            </View>
-
             <TouchableOpacity
               onPress={() => _navigateChat()}
               style={{
@@ -507,10 +490,18 @@ export default function OrderInfo({ route, navigation }) {
                 width: 100,
                 paddingVertical: 5,
                 borderRadius: 5,
-                marginVertical: 5,
+                marginVertical: 15,
                 flexDirection: "row",
                 alignItems: "center",
-                justifyContent: "center"
+                justifyContent: "center",
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 9
+                },
+                shadowOpacity: 0.5,
+                shadowRadius: 12.35,
+                elevation: 19
               }}
             >
               <Text
@@ -524,6 +515,61 @@ export default function OrderInfo({ route, navigation }) {
               </Text>
               <Ionicons name="chatbox-ellipses-sharp" size={24} color="#FFF" />
             </TouchableOpacity>
+
+
+            {orderInfo.status == "pending" && orderInfo.user_id == user_id ?
+
+              <View
+                style={{
+                  height: 35,
+                  width: "100%",
+                  backgroundColor: render_order(orderInfo.status).color,
+                  paddingHorizontal: 10,
+                  paddingVertical: 5,
+                  borderRadius: 5,
+                  marginBottom: 5,
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#FFF",
+                    fontFamily: "Bold",
+                    fontSize: 12
+                  }}
+                >
+                  {render_order("go_pay").text}
+                </Text>
+              </View>
+              :
+
+              <View
+                style={{
+                  height: 35,
+                  width: 100,
+                  backgroundColor: render_order(orderInfo.status).color,
+                  paddingHorizontal: 10,
+                  paddingVertical: 5,
+                  borderRadius: 5,
+                  marginBottom: 5,
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#FFF",
+                    fontFamily: "Bold",
+                    fontSize: 9
+                  }}
+                >
+                  {render_order(orderInfo.status).text}
+                </Text>
+              </View>
+            }
+
+
           </View>
         </TouchableOpacity>
 
@@ -609,6 +655,44 @@ export default function OrderInfo({ route, navigation }) {
                 {moment(orderInfo.created_at).format("MMM Do YY")}
               </Text>
             </View>
+
+
+            {orderInfo.status == "pending" && orderInfo.user_id == user_id
+              ? <View
+                style={{
+                  flexDirection: "row-reverse",
+                  width: "100%",
+                  paddingHorizontal: 20,
+                  justifyContent: "space-between"
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => setModalVisible(true)}
+                  style={styles.primaryBtn}
+                >
+                  <Text style={styles.btnText}>دفع المبلغ</Text>
+                  <MaterialIcons name="attach-money" size={24} color="#FFF" />
+                </TouchableOpacity>
+              </View>
+              : null}
+
+
+
+            {orderInfo.status == "delivering" && orderInfo.user_id == user_id
+              ?
+              <TouchableOpacity
+                onPress={() => SetdeliverModal(true)}
+                style={styles.primaryBtn}
+              >
+                <Text style={styles.btnText}>إستلام الطلب</Text>
+                <MaterialCommunityIcons
+                  name="truck-delivery-outline"
+                  size={24}
+                  color="#FFF"
+                />
+              </TouchableOpacity>
+
+              : null}
           </View>
         </TouchableOpacity>
         <View
@@ -661,298 +745,285 @@ export default function OrderInfo({ route, navigation }) {
         </View>
         {orderInfo.status == "delivering" && itemSeller.id == user_id
           ? <View
-              style={{
-                width: "100%",
-                paddingHorizontal: 20,
-                paddingVertical: 10,
-                marginVertical: 20,
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "green"
-              }}>
-              <Text style={{ fontFamily: "Bold", color: "#FFF",fontSize:13 }}>
-                تم شحن الرصيد و إيداعة في محفظتك لدي مستعمل . كوم
-              </Text>
-            </View>
+            style={{
+              width: "100%",
+              paddingHorizontal: 20,
+              paddingVertical: 10,
+              marginVertical: 20,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "green"
+            }}>
+            <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 13 }}>
+              تم شحن الرصيد و إيداعة في محفظتك لدي مستعمل . كوم
+            </Text>
+          </View>
           : null}
 
-        {orderInfo.status == "pending" && orderInfo.user_id == user_id
-          ? <View
-              style={{
-                flexDirection: "row-reverse",
-                width: "100%",
-                paddingHorizontal: 20,
-                justifyContent: "space-between"
-              }}
-            >
-              <TouchableOpacity
-                onPress={() => setModalVisible(true)}
-                style={styles.primaryBtn}
-              >
-                <Text style={styles.btnText}>دفع المبلغ</Text>
-                <MaterialIcons name="attach-money" size={24} color="#FFF" />
-              </TouchableOpacity>
-            </View>
-          : null}
+
 
         {orderInfo.status == "delivering" && orderInfo.user_id == user_id
           ? <View
+            style={{
+              width: "100%",
+              paddingHorizontal: 20,
+              marginVertical: 20
+            }}
+          >
+            <Text
               style={{
-                width: "100%",
-                paddingHorizontal: 20,
-                marginVertical: 20
+                fontFamily: "Bold",
+                marginVertical: 10
               }}
             >
-              <Text
+              موقع الإستلام : انقر على الخريطة
+            </Text>
+            <TouchableOpacity
+              onPress={() =>
+                openAddressOnMap(
+                  orderItem.title,
+                  parseFloat(lat),
+                  parseFloat(long)
+                )}
+              style={{
+                width: "100%",
+                height: 300,
+                borderRadius: 20,
+                overflow: "hidden"
+              }}
+            >
+              <MapView
                 style={{
-                  fontFamily: "Bold",
-                  marginVertical: 10
-                }}
-              >
-                موقع الإستلام : انقر علي الخريطة
-              </Text>
-              <TouchableOpacity
-                onPress={() =>
-                  openAddressOnMap(
-                    orderItem.title,
-                    parseFloat(lat),
-                    parseFloat(long)
-                  )}
-                style={{
+                  flex: 1,
                   width: "100%",
-                  height: 300,
-                  borderRadius: 20,
-                  overflow: "hidden"
+                  height: "100%",
+                  borderRadius: 20
+                }}
+                rotateEnabled={false}
+                scrollEnabled={false}
+                initialRegion={{
+                  latitude: parseFloat(lat) || 0,
+                  longitude: parseFloat(long) || 0,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421
                 }}
               >
-                <MapView
-                  style={{
-                    flex: 1,
-                    width: "100%",
-                    height: "100%",
-                    borderRadius: 20
-                  }}
-                  rotateEnabled={false}
-                  scrollEnabled={false}
-                  initialRegion={{
+                <Marker
+                  key={"7484"}
+                  coordinate={{
                     latitude: parseFloat(lat) || 0,
-                    longitude: parseFloat(long) || 0,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421
+                    longitude: parseFloat(long) || 0
                   }}
                 >
-                  <Marker
-                    key={"7484"}
-                    coordinate={{
-                      latitude: parseFloat(lat) || 0,
-                      longitude: parseFloat(long) || 0
-                    }}
-                  >
-                    <Entypo name="location-pin" size={50} color="black" />
-                  </Marker>
-                </MapView>
-              </TouchableOpacity>
+                  <Entypo name="location-pin" size={50} color="black" />
+                </Marker>
+              </MapView>
+            </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={() => SetdeliverModal(true)}
-                style={styles.primaryBtn}
-              >
-                <Text style={styles.btnText}>إستلام الطلب</Text>
-                <MaterialCommunityIcons
-                  name="truck-delivery-outline"
-                  size={24}
-                  color="#FFF"
-                />
-              </TouchableOpacity>
-            </View>
+
+          </View>
           : null}
 
         {orderInfo.status == "delivered" && orderInfo.user_id == user_id
           ? <View
-              style={{
-                width: "100%",
-                paddingHorizontal: 20,
-                marginVertical: 20
-              }}
-            >
-              {orderInfo.rating_val == "" || orderInfo.rating_val == "0"
-                ? <View
-                    style={{
-                      width: "100%"
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontFamily: "Bold",
-                        marginVertical: 10
-                      }}
-                    >
-                      تقييم البائع :
+            style={{
+              width: "100%",
+              paddingHorizontal: 20,
+              marginVertical: 20
+            }}
+          >
+            {orderInfo.rating_val == "" || orderInfo.rating_val == "0"
+              ? <View
+                style={{
+                  width: "100%"
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "Bold",
+                    marginVertical: 10
+                  }}
+                >
+                  تقييم البائع :
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: "Regular",
+                    marginTop: 10
+                  }}
+                >
+                  اترك تقييم للبائع , حتى تساعده على تحسين جوده منتجه و ايضا
+                  مساعدة الأخرين على اتخاذ قرارات أفضل ..
+                </Text>
+
+
+                {/* {
+                  rating_val == 0 ?
+                    <Text style={{
+                      color: "#000",
+                      fontFamily: "Bolds"
+                    }}>
+                      بدون تقييم
                     </Text>
-                    <Text
-                      style={{
-                        fontFamily: "Regular",
-                        marginVertical: 10
-                      }}
-                    >
-                      اترك تقييم للبائع , حتي تساعدة علي تحسين جودة منتجة و ايضا
-                      مساعدة الأخرين علي اتخاذ قرارات أفضل
-                    </Text>
+                    :
+                    null
+                } */}
+                <AirbnbRating
+                  style={{
+                    fontFamily: "Bold"
+                  }}
+                  count={5}
+                  defaultRating={0}
+                  onFinishRating={rating => setRatingValue(rating)}
+                  reviews={[
+                    "سيئ للغاية",
+                    "مقبول",
+                    "متوسط الجوده",
+                    "جوده جيدة",
+                    "جوده ممتازه"
+                  ]}
+                  size={20}
+                />
 
-                    <AirbnbRating
-                      style={{
-                        fontFamily: "Bold"
-                      }}
-                      count={5}
-                      onFinishRating={rating => setRatingValue(rating)}
-                      reviews={[
-                        "سيئ للغاية",
-                        "مقبول",
-                        "متوسط الجودة",
-                        "جودة جيدة",
-                        "جودة ممتازة"
-                      ]}
-                      size={20}
-                    />
-
-                    <View
-                      style={{
-                        marginVertical: 10
-                      }}
-                    >
-                      <TextInput
-                        onChangeText={value => setRatingText(value)}
-                        style={{
-                          width: "100%",
-                          color: "#000",
-                          backgroundColor: "#FFF",
-                          borderRadius: 20,
-                          height: 80,
-                          paddingHorizontal: 20
-                        }}
-                      />
-
-                      <TouchableOpacity
-                        onPress={() => _rateOrder(orderInfo.id)}
-                        style={{
-                          backgroundColor: "#41A2D8",
-                          marginVertical: 10,
-                          alignItems: "center",
-                          justifyContent: "center",
-                          borderRadius: 20,
-                          padding: 10
-                        }}
-                      >
-                        <Text
-                          style={{
-                            fontFamily: "Bold",
-                            color: "#FFF"
-                          }}
-                        >
-                          تقييم
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                : <View
+                <View
+                  style={{
+                    marginVertical: 10
+                  }}
+                >
+                  <TextInput
+                    onChangeText={value => setRatingText(value)}
                     style={{
+                      width: "100%",
+                      color: "#000",
                       backgroundColor: "#FFF",
-                      borderRadius: 10
+                      fontFamily: "Bold",
+                      borderRadius: 20,
+                      height: 80,
+                      paddingHorizontal: 20
+                    }}
+                  />
+
+                  <TouchableOpacity
+                    onPress={() => _rateOrder(orderInfo.id)}
+                    style={{
+                      backgroundColor: "#41A2D8",
+                      marginVertical: 10,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: 20,
+                      padding: 10
                     }}
                   >
                     <Text
                       style={{
                         fontFamily: "Bold",
-                        textAlign: "center"
+                        color: "#FFF"
                       }}
                     >
-                      تم تقييم البائع
+                      تقييم
                     </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              : <View
+                style={{
+                  backgroundColor: "#FFF",
+                  borderRadius: 10
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "Bold",
+                    textAlign: "center"
+                  }}
+                >
+                  تم تقييم البائع
+                </Text>
 
-                    <AirbnbRating
-                      style={{
-                        fontFamily: "Bold"
-                      }}
-                      defaultRating={parseInt(orderInfo.rating_val)}
-                      isDisabled={true}
-                      count={5}
-                      reviews={[
-                        "سيئ للغاية",
-                        "علي غير المستوي المرجو",
-                        "متوسط الجودة",
-                        "جودة جيدة",
-                        "جودة ممتازة"
-                      ]}
-                      size={20}
-                    />
+                <AirbnbRating
+                  style={{
+                    fontFamily: "Bold"
+                  }}
+                  defaultRating={parseInt(orderInfo.rating_val)}
+                  isDisabled={true}
+                  count={5}
+                  reviews={[
+                    "سيئ للغاية",
+                    "على غير المستوي المرجو",
+                    "متوسط الجوده",
+                    "جوده جيدة",
+                    "جوده ممتازة"
+                  ]}
+                  size={20}
+                />
 
-                    <Text
-                      style={{
-                        fontFamily: "Bold",
-                        textAlign: "center",
-                        marginVertical: 5
-                      }}
-                    >
-                      {orderInfo.rating_text}
-                    </Text>
-                  </View>}
-            </View>
+                <Text
+                  style={{
+                    fontFamily: "Bold",
+                    textAlign: "center",
+                    marginVertical: 5
+                  }}
+                >
+                  {orderInfo.rating_text}
+                </Text>
+              </View>}
+          </View>
           : null}
 
         {orderInfo.status == "delivered" &&
-        orderInfo.user_id !== user_id &&
-        orderInfo.rating_val !== ""
+          orderInfo.user_id !== user_id &&
+          orderInfo.rating_val !== ""
           ? <View
-              style={{
-                width: "100%",
-                paddingHorizontal: 20,
-                marginVertical: 20
-              }}
-            >
-              {orderInfo.rating_val !== ""
-                ? <View
-                    style={{
-                      backgroundColor: "#FFF",
-                      borderRadius: 10
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontFamily: "Bold",
-                        textAlign: "center"
-                      }}
-                    >
-                      تم التقييم من قبل المشتري
-                    </Text>
+            style={{
+              width: "100%",
+              paddingHorizontal: 20,
+              marginVertical: 20
+            }}
+          >
+            {orderInfo.rating_val !== ""
+              ? <View
+                style={{
+                  backgroundColor: "#FFF",
+                  borderRadius: 10
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "Bold",
+                    textAlign: "center"
+                  }}
+                >
+                  تم التقييم من قبل المشتري
+                </Text>
 
-                    <AirbnbRating
-                      style={{
-                        fontFamily: "Bold"
-                      }}
-                      isDisabled={true}
-                      count={5}
-                      reviews={[
-                        "سيئ للغاية",
-                        "علي غير المستوي المرجو",
-                        "متوسط الجودة",
-                        "جودة جيدة",
-                        "جودة ممتازة"
-                      ]}
-                      size={20}
-                    />
+                <AirbnbRating
+                  style={{
+                    fontFamily: "Bold"
+                  }}
+                  isDisabled={true}
+                  count={5}
+                  reviews={[
+                    "سيئ للغاية",
+                    "على غير المستوي المرجو",
+                    "متوسط الجوده",
+                    "جوده جيدة",
+                    "جوده ممتازة"
+                  ]}
+                  size={20}
+                />
 
-                    <Text
-                      style={{
-                        fontFamily: "Bold",
-                        textAlign: "center",
-                        marginVertical: 5
-                      }}
-                    >
-                      {orderInfo.rating_text}
-                    </Text>
-                  </View>
-                : null}
-            </View>
+                <Text
+                  style={{
+                    fontFamily: "Bold",
+                    textAlign: "center",
+                    marginVertical: 5
+                  }}
+                >
+                  {orderInfo.rating_text}
+                </Text>
+              </View>
+              : null}
+          </View>
           : null}
       </ScrollView>
 
@@ -993,101 +1064,101 @@ export default function OrderInfo({ route, navigation }) {
               </View>
               {parseInt(profile.current_balance) < parseInt(orderItem.price)
                 ? <View
-                    style={{
-                      width: "100%",
-                      justifyContent: "center",
-                      alignItems: "center"
-                    }}
-                  >
-                    <View>
-                      <Text
-                        style={{
-                          fontFamily: "Regular"
-                        }}
-                      >
-                        عميلنا العزيز , رصيدك الحالي لا يسمح بدفع المبلغ المطلوب
-                        , الراجاء الشحن و إعادة المحاولة
-                      </Text>
-                    </View>
-
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate("MyWallet")}
+                  style={{
+                    width: "100%",
+                    justifyContent: "center",
+                    alignItems: "center"
+                  }}
+                >
+                  <View>
+                    <Text
                       style={{
-                        flexDirection: "row-reverse",
-                        backgroundColor: "#41A2D8",
-                        width: "100%",
-                        height: 50,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        borderRadius: 5,
-                        marginTop: 20
+                        fontFamily: "Regular"
                       }}
                     >
-                      <Text
-                        style={{
-                          textAlign: "center",
-                          fontFamily: "Bold",
-                          color: "#FFF"
-                        }}
-                      >
-                        شحن رصيدك
-                      </Text>
-                      <MaterialIcons
-                        name="attach-money"
-                        size={24}
-                        color="#FFF"
-                      />
-                    </TouchableOpacity>
+                      عميلنا العزيز , رصيدك الحالي لا يسمح بدفع المبلغ المطلوب
+                      ,  الرجاء شحن الرصيد و إعادة المحاولة
+                    </Text>
                   </View>
-                : <View
+
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate("MyWallet")}
                     style={{
+                      flexDirection: "row-reverse",
+                      backgroundColor: "#41A2D8",
                       width: "100%",
+                      height: 50,
                       justifyContent: "center",
-                      alignItems: "center"
+                      alignItems: "center",
+                      borderRadius: 5,
+                      marginTop: 20
                     }}
                   >
-                    <View>
-                      <Text
-                        style={{
-                          fontFamily: "Regular"
-                        }}
-                      >
-                        عميلنا العزيز , يرجي العلم أن أي مبالغ تقوم بتحريرها
-                        للبائع , ستظل في ستظل في محفظتك على مستعمل . كوم حتي
-                        تقوم بإستلام طلبك من البائع و تأكيد إستلام الطلب من
-                        التطبيق
-                      </Text>
-                    </View>
-
-                    <TouchableOpacity
-                      onPress={() => _payForOrder(orderInfo.id)}
+                    <Text
                       style={{
-                        flexDirection: "row-reverse",
-                        backgroundColor: "#41A2D8",
-                        width: "100%",
-                        height: 50,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        borderRadius: 5,
-                        marginTop: 20
+                        textAlign: "center",
+                        fontFamily: "Bold",
+                        color: "#FFF"
+                      }}
+                    >ر
+                      اشحن صيدك
+                    </Text>
+                    <MaterialIcons
+                      name="attach-money"
+                      size={24}
+                      color="#FFF"
+                    />
+                  </TouchableOpacity>
+                </View>
+                : <View
+                  style={{
+                    width: "100%",
+                    justifyContent: "center",
+                    alignItems: "center"
+                  }}
+                >
+                  <View>
+                    <Text
+                      style={{
+                        fontFamily: "Regular"
                       }}
                     >
-                      <Text
-                        style={{
-                          textAlign: "center",
-                          fontFamily: "Bold",
-                          color: "#FFF"
-                        }}
-                      >
-                        تحرير المبلغ
-                      </Text>
-                      <MaterialIcons
-                        name="attach-money"
-                        size={24}
-                        color="#FFF"
-                      />
-                    </TouchableOpacity>
-                  </View>}
+                      عميلنا العزيز , يرجي العلم أن أي مبالغ تقوم بتحريرها
+                      للبائع ,ستحفظ في محفظتك على مستعمل . كوم حتى
+                      تقوم بإستلام طلبك من البائع و تأكيد إستلام الطلب من
+                      التطبيق
+                    </Text>
+                  </View>
+
+                  <TouchableOpacity
+                    onPress={() => _payForOrder(orderInfo.id)}
+                    style={{
+                      flexDirection: "row-reverse",
+                      backgroundColor: "#41A2D8",
+                      width: "100%",
+                      height: 50,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderRadius: 5,
+                      marginTop: 20
+                    }}
+                  >
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontFamily: "Bold",
+                        color: "#FFF"
+                      }}
+                    >
+                      تحرير المبلغ
+                    </Text>
+                    <MaterialIcons
+                      name="attach-money"
+                      size={24}
+                      color="#FFF"
+                    />
+                  </TouchableOpacity>
+                </View>}
             </View>
           </View>
         </Modal>
@@ -1211,7 +1282,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 5,
-    marginTop: 20
+    marginTop: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 9
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 12.35,
+    elevation: 19
   },
 
   modalPrimaryBtn: {

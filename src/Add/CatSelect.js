@@ -8,7 +8,7 @@ import {
     FlatList
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import {Feather, MaterialIcons } from '@expo/vector-icons';
+import { Feather, MaterialIcons } from '@expo/vector-icons';
 import styles from "./../../constants/style";
 import api from "./../../constants/constants";
 
@@ -53,7 +53,7 @@ export default function CatSelect({ route, navigation }) {
     }
 
     const _retrieveData = async () => {
-        fetch(api.dynamic_url+"categories", {
+        fetch(api.dynamic_url + "categories", {
             method: "GET",
             headers: {
                 Accept: "*/*",
@@ -120,7 +120,7 @@ export default function CatSelect({ route, navigation }) {
                     ماذا تريد أن تبيع أو تعلن؟
                 </Text>
 
-                <View style={{ width: "80%",flex:1 }}>
+                <View style={{ width: "80%", flex: 1 }}>
                     <FlatList
                         data={data}
                         keyExtractor={item => item.id}
@@ -152,7 +152,7 @@ export default function CatSelect({ route, navigation }) {
                                     }
                                     <Text
                                         style={{ fontFamily: "Bold", fontSize: 18, color: "black" }}>
-                                        {JSON.parse(item.name).ar}
+                                        {item.name_ar}
                                     </Text>
 
                                 </TouchableOpacity>

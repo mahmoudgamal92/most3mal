@@ -1,4 +1,4 @@
-import {StyleSheet,Linking, I18nManager } from "react-native";
+import { StyleSheet, Linking, I18nManager, Text } from "react-native";
 import { useFonts } from "expo-font";
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -8,7 +8,9 @@ import AuthStack from "./src/Navigation/AuthStack";
 export default function App() {
   I18nManager.forceRTL(true);
   I18nManager.allowRTL(true);
-
+  if (Text.defaultProps == null)
+    Text.defaultProps = {};
+  Text.defaultProps.allowFontScaling = false;
   let [fontsLoaded] = useFonts({
     Bold: require("./fonts/Bold.ttf"),
     Light: require("./fonts/Light.ttf"),
@@ -20,12 +22,10 @@ export default function App() {
     return null;
   }
 
-
- 
   return (
     <NavigationContainer>
-    <AuthStack />
-  </NavigationContainer>
+      <AuthStack />
+    </NavigationContainer>
   );
 }
 const styles = StyleSheet.create({

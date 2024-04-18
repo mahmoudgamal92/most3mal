@@ -6,10 +6,11 @@ import SignIn from "./../SignIn";
 import SignUp from "./../SignUp";
 import OtpScreen from "./../OtpScreen";
 import ForgotPwd from "./../ForgotPwd";
+import NewPwd from "./../NewPwd";
 
 
 export default AuthenticationStack = () => {
-    const AuthStack = createStackNavigator();
+  const AuthStack = createStackNavigator();
   return (
     <AuthStack.Navigator
       initialRouteName="Splash"
@@ -21,6 +22,8 @@ export default AuthenticationStack = () => {
       <AuthStack.Screen name="SignIn" component={SignIn} />
       <AuthStack.Screen name="SignUp" component={SignUp} />
       <AuthStack.Screen name="ForgotPwd" component={ForgotPwd} />
+      <AuthStack.Screen name="NewPwd" component={NewPwd} />
+
       <AuthStack.Screen name="OtpScreen" component={OtpScreen} />
       <AuthStack.Screen name="DrawerStack" component={DrawerStack} />
     </AuthStack.Navigator>

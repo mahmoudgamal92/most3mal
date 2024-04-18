@@ -59,7 +59,7 @@ export default function HomePage({ route, navigation }) {
 
   const _retrieveData = async () => {
     setLoading(true);
-    let url = api.dynamic_url +"departments";
+    let url = api.dynamic_url + "departments";
     try {
       fetch(url, {
         method: "GET",
@@ -81,7 +81,7 @@ export default function HomePage({ route, navigation }) {
   };
 
   _fetchBanners = () => {
-    let url = api.dynamic_url +"banners";
+    let url = api.dynamic_url + "banners";
     try {
       fetch(url, {
         method: "GET",
@@ -122,7 +122,8 @@ export default function HomePage({ route, navigation }) {
               alignItems: "flex-end"
             }}
           >
-            <Ionicons name="md-notifications-outline" size={40} color="#FFF" />
+
+            <Ionicons name="notifications" size={40} color="#FFF" />
           </TouchableOpacity>
 
           <View style={{ width: "60%" }}>
@@ -252,32 +253,32 @@ export default function HomePage({ route, navigation }) {
                 onPress={() =>
                   navigation.navigate("Adds", {
                     depart_id: item.id,
-                    depart_name: JSON.parse(item.name).ar
+                    depart_name: item.name_ar
                   })}
                 style={styles.cat}
               >
                 {item.image == null
                   ? <View
-                      style={{
-                        borderColor: "grey",
-                        borderWidth: 2,
-                        borderRadius: 20,
-                        width: 40,
-                        height: 40,
-                        alignItems: "center",
-                        justifyContent: "center"
-                      }}
-                    >
-                      <Feather name="image" size={25} color="grey" />
-                    </View>
+                    style={{
+                      borderColor: "grey",
+                      borderWidth: 2,
+                      borderRadius: 20,
+                      width: 40,
+                      height: 40,
+                      alignItems: "center",
+                      justifyContent: "center"
+                    }}
+                  >
+                    <Feather name="image" size={25} color="grey" />
+                  </View>
                   : <Image
-                      source={{
-                        uri: api.media_url + item.image
-                      }}
-                      style={styles.catItem}
-                    />}
+                    source={{
+                      uri: api.media_url + item.image
+                    }}
+                    style={styles.catItem}
+                  />}
                 <Text style={styles.catText}>
-                  {JSON.parse(item.name).ar}
+                  {item.name_ar}
                 </Text>
               </TouchableOpacity>
             )}

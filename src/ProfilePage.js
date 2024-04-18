@@ -116,18 +116,18 @@ export default function ProfilePage({ route }) {
         <TouchableOpacity style={styles.profileImgContainer}>
           {data.image !== null
             ? <View style={{ alignItems: "center", justifyContent: "center" }}>
-                <Image
-                  style={{
-                    width: 150,
-                    height: 150,
-                    resizeMode: "contain",
-                    borderRadius: 75,
-                    borderWidth: 2,
-                    borderColor: "#0393ce"
-                  }}
-                  source={{ uri: "https://mestamal.com/uploads/" + data.image }}
-                />
-              </View>
+              <Image
+                style={{
+                  width: 150,
+                  height: 150,
+                  resizeMode: "contain",
+                  borderRadius: 75,
+                  borderWidth: 2,
+                  borderColor: "#0393ce"
+                }}
+                source={{ uri: api.media_url + data.image }}
+              />
+            </View>
             : <Feather name="user" size={70} color="#FFF" />}
         </TouchableOpacity>
 

@@ -26,7 +26,7 @@ export default function CatSelect({ route, navigation }) {
 
 
     const _retrieveData = async () => {
-        fetch(api.dynamic_url+"departments", {
+        fetch(api.dynamic_url + "departments", {
             method: "GET",
             headers: {
                 Accept: "*/*",
@@ -85,7 +85,7 @@ export default function CatSelect({ route, navigation }) {
                     ماذا تريد أن تبيع أو تعلن؟
                 </Text>
 
-                <View style={{ width: "80%",flex:1 }}>
+                <View style={{ width: "80%", flex: 1 }}>
                     <FlatList
                         data={data}
                         keyExtractor={item => item.id}
@@ -94,7 +94,7 @@ export default function CatSelect({ route, navigation }) {
                             <TouchableOpacity
                                 onPress={() => {
                                     setCurrentItem(item.id);
-                                    setItemName(JSON.parse(item.name).ar);
+                                    setItemName(item.name_ar);
                                 }}
                                 style={{
                                     height: 60,
@@ -119,7 +119,7 @@ export default function CatSelect({ route, navigation }) {
                                 }
                                 <Text
                                     style={{ fontFamily: "Bold", fontSize: 18, color: "black" }}>
-                                    {JSON.parse(item.name).ar}
+                                    {item.name_ar}
                                 </Text>
 
                             </TouchableOpacity>

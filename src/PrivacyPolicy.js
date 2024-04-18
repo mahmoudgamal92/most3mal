@@ -9,6 +9,8 @@ import {
 import React, { useEffect, useState } from "react";
 import { MaterialIcons, SimpleLineIcons } from '@expo/vector-icons';
 import styles from "../constants/style";
+import api from "./../constants/constants";
+
 export default function PrivacyPolicy({ route, navigation }) {
     const [privacy, setPrivacy] = useState("");
     useEffect(() => {
@@ -16,7 +18,7 @@ export default function PrivacyPolicy({ route, navigation }) {
     }, []);
 
     const _retriveData = async () => {
-        fetch("https://www.mestamal.com/api/uses/ar", {
+        fetch(api.custom_url + "settings/index.php?key=privacy_ar", {
             method: "GET",
             headers: {
                 Accept: "*/*",
@@ -28,7 +30,7 @@ export default function PrivacyPolicy({ route, navigation }) {
             .then(response => response.json())
             .then(json => {
                 const regex = /<[^>]*>/mgi
-                setPrivacy(json.description.replace(regex, ""));
+                setPrivacy(json.data[0].val.replace(regex, ""));
             }
             )
             .catch(error => {
@@ -36,6 +38,7 @@ export default function PrivacyPolicy({ route, navigation }) {
             }
             );
     }
+
 
 
     return (
@@ -73,7 +76,7 @@ export default function PrivacyPolicy({ route, navigation }) {
                     </TouchableOpacity>
 
                     <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 16, marginLeft: 20 }}>
-                       الشروط و الأحكام
+                        الشروط و الأحكام
                     </Text>
                 </View>
 

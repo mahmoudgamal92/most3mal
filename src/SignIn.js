@@ -73,7 +73,7 @@ export default function SignIn({ route, navigation }) {
 
     setTimeout(() => {
       navigation.replace("DrawerStack");
-     }, 2000);
+    }, 2000);
 
   };
 
@@ -153,7 +153,7 @@ export default function SignIn({ route, navigation }) {
         </TouchableOpacity>
 
         <Text style={{ fontFamily: "Regular", color: "grey" }}>
-          اصدار رقم : {Constants.manifest.version}
+          اصدار رقم : {Constants.version}
         </Text>
       </View>
       <Toast config={toastConfig} />

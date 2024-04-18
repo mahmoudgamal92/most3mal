@@ -12,19 +12,18 @@ import {
     ScrollView
 } from "react-native";
 import React, { useEffect, useState } from "react";
-
-import { MaterialIcons, Feather, SimpleLineIcons } from '@expo/vector-icons';
+import { MaterialIcons, SimpleLineIcons } from '@expo/vector-icons';
 import styles from "../constants/style";
+import api from "./../constants/constants";
+
 export default function PrivacyPolicy({ route, navigation }) {
     const [privacy, setPrivacy] = useState("");
-
-
     useEffect(() => {
         _retriveData();
     }, []);
 
     const _retriveData = async () => {
-        fetch("https://www.mestamal.com/api/How_does_work/ar", {
+        fetch(api.custom_url + "settings/index.php?key=how_works_ar", {
             method: "GET",
             headers: {
                 Accept: "*/*",
@@ -36,7 +35,7 @@ export default function PrivacyPolicy({ route, navigation }) {
             .then(response => response.json())
             .then(json => {
                 const regex = /<[^>]*>/mgi
-                setPrivacy(json.departs.replace(regex, ""));
+                setPrivacy(json.data[0].val.replace(regex, ""));
             }
             )
             .catch(error => {

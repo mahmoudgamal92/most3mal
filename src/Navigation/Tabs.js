@@ -15,7 +15,7 @@ import Auctions from "./../Auctions";
 
 
 export default TabNavigator = () => {
-    const Tabs = createBottomTabNavigator();
+  const Tabs = createBottomTabNavigator();
   return (
     <Tabs.Navigator
       initialRouteName="TabsHome"
@@ -62,7 +62,7 @@ export default TabNavigator = () => {
           tabBarLabel: ({ color, size }) =>
             <Text style={{ fontFamily: "Regular", color }}>المحادثات</Text>,
           tabBarIcon: ({ color, size }) =>
-            <Ionicons name="ios-chatbubbles-outline" size={22} color={color} />
+            <Ionicons name="chatbubbles-outline" size={22} color={color} />
         }}
       />
 
@@ -88,7 +88,7 @@ export default TabNavigator = () => {
           tabBarLabel: ({ color, size }) =>
             <Text style={{ fontFamily: "Regular", color }}>المزادات </Text>,
           tabBarIcon: ({ color, size }) =>
-            <Ionicons name="md-hand-right-outline" size={24} color={color} />
+            <Ionicons name="hand-right-outline" size={24} color={color} />
         }}
       />
     </Tabs.Navigator>

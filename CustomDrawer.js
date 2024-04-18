@@ -15,15 +15,15 @@ import {
   DrawerItem,
 } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AntDesign,Ionicons } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import Constants from "expo-constants";
 import { StatusBar } from 'native-base';
 
-const CustomDrawer = (props,{navigation}) => {
+const CustomDrawer = (props, { navigation }) => {
 
-// This Comment Added to test Github Push
+  // This Comment Added to test Github Push
 
-    const _removeSession = async () => {
+  const _removeSession = async () => {
     try {
       AsyncStorage.getAllKeys()
         .then(keys => AsyncStorage.multiRemove(keys))
@@ -47,45 +47,46 @@ const CustomDrawer = (props,{navigation}) => {
       fontFamily: "Bold",
     }}>
       <StatusBar style="auto" backgroundColor="#34ACE0" />
-      <View style={{ 
-        backgroundColor: "#34ACE0", 
-        height: 200, 
-        alignItems: "center", 
-        justifyContent: "center", }}>
+      <View style={{
+        backgroundColor: "#34ACE0",
+        height: 200,
+        alignItems: "center",
+        justifyContent: "center",
+      }}>
         <TouchableOpacity
-        onPress={() => toggleDrawer()} 
-        style={{ position: "absolute", top: 10, right: 10 }}>
+          onPress={() => toggleDrawer()}
+          style={{ position: "absolute", top: 10, right: 10 }}>
           <AntDesign name="closecircle" size={24} color="#FFF" />
 
         </TouchableOpacity>
         <Image
-          source={require("./assets/man.png")}
+          source={require("./assets/white_logo.png")}
           style={styles.sideMenuProfileIcon}
         />
-        <Text style={{ color: "#FFF", fontFamily: "Bold" }}>
-         أهلا بك في مستعمل
-          </Text>
-        
-        <TouchableOpacity 
-        onPress={() => _removeSession()}
-        style={{
-          backgroundColor: "#FFF", 
-          borderRadius: 20, 
-          padding: 5, 
-          marginVertical: 10,
-          paddingHorizontal: 20,
+        <Text style={{ color: "#FFF", fontFamily: "Bold", marginTop: 10 }}>
+          أهلا بكم في مستعمل.كوم
+        </Text>
+
+        <TouchableOpacity
+          onPress={() => _removeSession()}
+          style={{
+            backgroundColor: "#FFF",
+            borderRadius: 20,
+            padding: 5,
+            marginTop: 10,
+            paddingHorizontal: 20,
           }}>
-          <Text style={{ color: "#0f95b3", fontSize: 12, fontFamily: "Bold",color:"#34ACE0" }}>
-           تسجيل الخروج
+          <Text style={{ color: "#0f95b3", fontSize: 12, fontFamily: "Bold", color: "#34ACE0" }}>
+            تسجيل الخروج
           </Text>
         </TouchableOpacity>
 
       </View>
 
       <DrawerContentScrollView {...props}>
-        <DrawerItemList {...props}/>
-     
-     
+        <DrawerItemList {...props} />
+
+
       </DrawerContentScrollView>
 
     </SafeAreaView>
@@ -94,9 +95,9 @@ const CustomDrawer = (props,{navigation}) => {
 
 const styles = StyleSheet.create({
   sideMenuProfileIcon: {
-    resizeMode: 'contain',
-    width: 120,
-    height: 120,
+    resizeMode: 'stretch',
+    width: "90%",
+    height: 85,
     alignSelf: 'center',
   },
   logout: {

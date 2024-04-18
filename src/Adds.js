@@ -25,7 +25,7 @@ export default function Adds({ route, navigation }) {
   const [cats, setCats] = useState([]);
   const [current_cat, setCurrentCat] = useState(null);
   const [loading, setLoading] = useState(false);
-// function to create a state object
+  // function to create a state object
 
 
   useEffect(() => {
@@ -57,15 +57,10 @@ export default function Adds({ route, navigation }) {
         console.error(error);
       });
   };
+
   const _retrieveData = async () => {
     setLoading(true);
-    // let url = "";
-    // if (current_cat !== null && current_cat !== 0) {
-    //   url =
-    //     api.custom_url + "ads/list.php?depart_id=" + depart_id + "&cat_id=" + current_cat;
-    // } else {
-      url = api.custom_url + "ads/list.php?depart_id=" + depart_id;
-   // }
+    url = api.custom_url + "ads/list.php?depart_id=" + depart_id;
     try {
       fetch(url, {
         method: "GET",
@@ -95,12 +90,11 @@ export default function Adds({ route, navigation }) {
 
     if (cat_id == 0 || cat_id == "0" || cat_id == "" || cat_id == null) {
       url = api.custom_url + "ads/list.php?depart_id=" + depart_id;
-    } 
+    }
 
-    else
-     {
+    else {
       url = api.custom_url + "ads/list.php?depart_id=" + depart_id + "&cat_id=" + cat_id;
-     }
+    }
 
     setLoading(true);
     try {
@@ -116,13 +110,13 @@ export default function Adds({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
-          if(json.success == true){
-          setData(json.data);
-          setLoading(false);
-          //alert(JSON.stringify(json));
+          if (json.success == true) {
+            setData(json.data);
+            setLoading(false);
+            //alert(JSON.stringify(json));
           }
 
-          else{
+          else {
             setData([]);
             setLoading(false);
             //alert(JSON.stringify(json));
@@ -229,10 +223,10 @@ export default function Adds({ route, navigation }) {
             </Text>
 
             <MaterialCommunityIcons
-                  name="check-decagram"
-                  size={24}
-                  color="#143656"
-                />
+              name="check-decagram"
+              size={24}
+              color="#143656"
+            />
           </TouchableOpacity>
 
           {cats.map((item, index) => {
@@ -261,7 +255,7 @@ export default function Adds({ route, navigation }) {
 
                   }}
                 >
-                  {JSON.parse(item.name).ar}
+                  {item.name_ar}
                 </Text>
 
                 <MaterialCommunityIcons
@@ -286,62 +280,62 @@ export default function Adds({ route, navigation }) {
         renderItem={({ item }) =>
           item.status == "active"
             ? <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("AddDetails", {
-                    item: item
-                  });
-                }}
-                style={styles.itemContainer}
+              onPress={() => {
+                navigation.navigate("AddDetails", {
+                  item: item
+                });
+              }}
+              style={styles.itemContainer}
+            >
+              <ImageBackground
+                imageStyle={styles.itemImg}
+                source={{ uri: api.media_url + item.images.split(",")[0] }}
               >
-                <ImageBackground
-                  imageStyle={styles.itemImg}
-                  source={{ uri: api.media_url + item.images.split(",")[0] }}
-                >
-                  <View style={styles.itemContent} />
-                </ImageBackground>
+                <View style={styles.itemContent} />
+              </ImageBackground>
 
-                <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
-                  <Text
-                    style={{
-                      fontFamily: "Bold",
-                      color: "#000",
-                      textAlign: "left",
-                      fontSize: 12
-                    }}
-                  >
-                    {item.title}
-                  </Text>
-                </View>
-
-                <View style={{ paddingHorizontal: 10 }}>
-                  <Text
-                    style={{
-                      fontFamily: "Bold",
-                      color: "#34ace0",
-                      textAlign: "left",
-                      fontSize: 16
-                    }}
-                  >
-                    {item.price} SR
-                  </Text>
-                </View>
-
-                <View
+              <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
+                <Text
                   style={{
-                    width: "100%",
-                    flexDirection: "row-reverse",
-                    justifyContent: "space-between",
-                    paddingHorizontal: 10,
-                    marginVertical: 10,
-                    alignItems: "center"
+                    fontFamily: "Bold",
+                    color: "#000",
+                    textAlign: "left",
+                    fontSize: 12
                   }}
                 >
-                  <Text style={{ fontFamily: "Bold", color: "grey" }}>
-                    {moment(item.created_at).startOf("day").fromNow()}
-                  </Text>
-                  <AntDesign name="shoppingcart" size={24} color="grey" />
-                </View>
-              </TouchableOpacity>
+                  {item.title}
+                </Text>
+              </View>
+
+              <View style={{ paddingHorizontal: 10 }}>
+                <Text
+                  style={{
+                    fontFamily: "Bold",
+                    color: "#34ace0",
+                    textAlign: "left",
+                    fontSize: 16
+                  }}
+                >
+                  {item.price} SR
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  width: "100%",
+                  flexDirection: "row-reverse",
+                  justifyContent: "space-between",
+                  paddingHorizontal: 10,
+                  marginVertical: 10,
+                  alignItems: "center"
+                }}
+              >
+                <Text style={{ fontFamily: "Bold", color: "grey" }}>
+                  {moment(item.created_at).startOf("day").fromNow()}
+                </Text>
+                <AntDesign name="shoppingcart" size={24} color="grey" />
+              </View>
+            </TouchableOpacity>
             : null}
       />
     </View>
@@ -407,7 +401,7 @@ const styles = StyleSheet.create({
 
   itemImg: {
     width: "100%",
-    resizeMode: "cover",
+    resizeMode: "stretch",
     height: 160,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10

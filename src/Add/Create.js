@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   TextInput,
-  ScrollView
+  ScrollView,
+  Platform
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import * as ImagePicker from "expo-image-picker";
@@ -99,7 +100,7 @@ export default function Create({ route, navigation }) {
           type: item.type
         });
       });
-      
+
       fetch(api.custom_url + "ads/create.php", {
         method: "POST",
         body: formData
@@ -140,13 +141,18 @@ export default function Create({ route, navigation }) {
   const pickImage = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
-        aspect: [3, 3],
-        quality: 1
+        //aspect: [4, 3],
+        quality: 1,
       });
+
+      // if (!result.canceled) {
+      //   setImage(result.assets[0].uri);
+      // }
+
       if (!result.canceled) {
-        let localUri = result.uri;
+        let localUri = result.assets[0].uri;
         let filename = localUri.split("/").pop();
         let match = /\.(\w+)$/.exec(filename);
         let img_type = match ? `image/${match[1]}` : `image`;
@@ -228,8 +234,8 @@ export default function Create({ route, navigation }) {
               marginBottom: 10,
               flexDirection: "row-reverse",
               flexWrap: "wrap",
-              alignItems:"center",
-              justifyContent:"center"
+              alignItems: "center",
+              justifyContent: "center"
             }}
           >
             {images.map((item, index) => {
@@ -418,7 +424,9 @@ export default function Create({ route, navigation }) {
             </View>
           </View>
 
-          <TouchableOpacity style={styles.primaryBtn} onPress={() => NewAdd()}>
+          <TouchableOpacity style={[styles.primaryBtn, {
+            marginBottom: 60
+          }]} onPress={() => NewAdd()}>
             {loading == true
               ? <ActivityIndicator size={40} color="#FFF" />
               : <Text style={styles.btnText}>إنشاء الإعلان</Text>}

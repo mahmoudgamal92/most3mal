@@ -54,7 +54,7 @@ export default function MyAuctions({ route, navigation }) {
         .then(json => {
           setData(json.data);
           setLoading(false);
-         // alert(JSON.stringify(json));
+          // alert(JSON.stringify(json));
         })
         .catch(error => console.error(error));
     } catch (error) {
@@ -190,7 +190,7 @@ export default function MyAuctions({ route, navigation }) {
           ListEmptyComponent={handleEmptyProp()}
           renderItem={({ item }) =>
             <TouchableOpacity
-            onPress={() =>
+              onPress={() =>
                 navigation.navigate("AuctionDetails", {
                   item: item
                 })}
@@ -259,7 +259,7 @@ export default function MyAuctions({ route, navigation }) {
 
               <View style={{ width: "20%" }}>
                 <Image
-                  source={{ uri: api.media_url + item.images.split(",")[0] }}
+                  source={{ uri: api.media_url + item.images?.split(",")[0] }}
                   style={{
                     width: 70,
                     height: 70,
@@ -297,7 +297,7 @@ export default function MyAuctions({ route, navigation }) {
       <Toast config={toastConfig} />
     </View>
   );
- }
+}
 
 const styles = StyleSheet.create({
   container: {

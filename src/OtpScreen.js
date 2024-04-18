@@ -13,15 +13,15 @@ import {
 import React, { useState } from "react";
 import OtpInput from "./../components/otp";
 import Constants from "expo-constants";
-import Toast from "react-native-toast-message";
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import Toast from "react-native-toast-message";
 import toastConfig from "./../constants/Toast";
 // I18nManager.forceRTL(false);
 // I18nManager.allowRTL(false);
 const OtpScreen = ({ route, navigation }) => {
-  const { code,user } = route.params;
+  const { code, user } = route.params;
   const [resend_loading, setResendLoading] = useState(false);
   const [resend_status, setResendStatus] = useState(true);
 
@@ -34,19 +34,30 @@ const OtpScreen = ({ route, navigation }) => {
   };
 
 
-  const _saveCredintials = async item => {
-    AsyncStorage.setItem("user_token", item.token);
-    AsyncStorage.setItem("user_id", item.id.toString());
-    AsyncStorage.setItem("user_name", item.name);
-    alert("تم التأكد من هويتك بنجاح , يمكنك الأن إعادة تعيين كلمة المرور ");
-    navigation.replace("ResetPwd");
-
-  };
+  // const _saveCredintials = async item => {
+  //   AsyncStorage.setItem("user_token", item.token);
+  //   AsyncStorage.setItem("user_id", item.id.toString());
+  //   AsyncStorage.setItem("user_name", item.name);
+  //   alert("تم التأكد من هويتك بنجاح , يمكنك الأن إعادة تعيين كلمة المرور ");
+  //   navigation.replace("ResetPwd");
+  // };
 
 
   const handleOtpComplete = otp => {
     if (otp == code) {
-        _saveCredintials(user);
+      Toast.show({
+        type: "successToast",
+        text1: "تم التأكد من كود التفعيل بنجاح",
+        bottomOffset: 80,
+        visibilityTime: 2000
+      });
+
+      setTimeout(() => {
+        navigation.replace("NewPwd", {
+          user: user
+        });
+      }, 3000);
+
     } else {
       Toast.show({
         type: "erorrToast",
@@ -142,7 +153,7 @@ const OtpScreen = ({ route, navigation }) => {
             justifyContent: "center"
           }}
         >
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => resend_code()}
             style={{
               backgroundColor: "#34ace0",
@@ -161,23 +172,23 @@ const OtpScreen = ({ route, navigation }) => {
             >
               اعادة ارسال الرمز
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <View>
             {resend_status == true
               ? <View />
               : <CountDown
-                  size={15}
-                  until={50}
-                  onFinish={() => setResendStatus(true)}
-                  digitStyle={{ backgroundColor: "#FFF" }}
-                  digitTxtStyle={{ color: "#230D33" }}
-                  timeLabelStyle={{ color: "red", fontWeight: "Regular" }}
-                  separatorStyle={{ color: "#230D33" }}
-                  timeToShow={["M", "S"]}
-                  timeLabels={{ m: null, s: null }}
-                  showSeparator
-                />}
+                size={15}
+                until={50}
+                onFinish={() => setResendStatus(true)}
+                digitStyle={{ backgroundColor: "#FFF" }}
+                digitTxtStyle={{ color: "#230D33" }}
+                timeLabelStyle={{ color: "red", fontWeight: "Regular" }}
+                separatorStyle={{ color: "#230D33" }}
+                timeToShow={["M", "S"]}
+                timeLabels={{ m: null, s: null }}
+                showSeparator
+              />}
           </View>
         </View>
       </ScrollView>

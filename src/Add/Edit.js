@@ -5,6 +5,7 @@ import {
   Text,
   View,
   StyleSheet,
+  Platform,
   StatusBar,
   TouchableOpacity,
   ActivityIndicator,
@@ -138,7 +139,7 @@ export default function Create({ route, navigation }) {
         quality: 1
       });
       if (!result.canceled) {
-        let localUri = result.uri;
+        let localUri = result.assets[0].uri;
         let filename = localUri.split("/").pop();
         let match = /\.(\w+)$/.exec(filename);
         let img_type = match ? `image/${match[1]}` : `image`;
@@ -194,6 +195,37 @@ export default function Create({ route, navigation }) {
         contentContainerStyle={{ alignItems: "center" }}
       >
         <View style={[styles.loginBox, { marginTop: 10 }]}>
+          <View style={{
+            width: "100%",
+            paddingHorizontal: 10
+          }}>
+            <Text style={{
+              fontFamily: "Bold",
+              marginVertical: 20
+            }}>
+              الصور الحالية للمنتج
+            </Text>
+            <ScrollView
+              horizontal
+            >
+              {item.images.split(",").map((item, index) => {
+                return (
+                  <Image
+                    source={{ uri: api.media_url + item }}
+                    style={{
+                      width: 100,
+                      height: 100,
+                      borderRadius: 10,
+                      marginHorizontal: 5
+                    }}
+                  />
+                );
+              })}
+            </ScrollView>
+
+          </View>
+
+
           <TouchableOpacity
             onPress={() => pickImage()}
             style={styles.imgUploadContainer}
@@ -290,7 +322,7 @@ export default function Create({ route, navigation }) {
 
           <View style={styles.inputLabelContainer}>
             <Text style={{ fontFamily: "Bold", textAlign: "left" }}>
-              المنطقة
+              المدينة
             </Text>
           </View>
 
@@ -305,7 +337,7 @@ export default function Create({ route, navigation }) {
 
           <View style={styles.inputLabelContainer}>
             <Text style={{ fontFamily: "Bold", textAlign: "left" }}>
-              المدينة
+              الحي
             </Text>
           </View>
 
@@ -387,8 +419,8 @@ export default function Create({ route, navigation }) {
               onRegionChangeComplete={region => {
                 setCoords(
                   parseFloat(region.latitude) +
-                    "," +
-                    parseFloat(region.longitude)
+                  "," +
+                  parseFloat(region.longitude)
                 );
               }}
             />

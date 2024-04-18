@@ -15,6 +15,9 @@ import {
 import React, { useEffect, useState } from "react";
 import { FontAwesome5, MaterialIcons, FontAwesome, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
 import styles from "../constants/style";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import api from "./../constants/constants";
+
 export default function Contact({ route, navigation }) {
 
     const [body, setBody] = useState("");
@@ -24,18 +27,51 @@ export default function Contact({ route, navigation }) {
     const whatsapp = "";
     const email = "info@mestamal.com";
 
-    const _contactManagment = () => {
+    const _contactManagment = async () => {
         if (contact_email == "" || body == "") {
             alert("من فضلك قم بإدخال البيانات كاملة");
         }
         else {
             setLoading(true);
+
+            const user_id = await AsyncStorage.getItem("user_id");
+            let formData = new FormData();
+            formData.append("email", contact_email);
+            formData.append("message", body);
+            //formData.append("user_id", user_id);
+
+            fetch(api.custom_url + "contact/insert.php", {
+                method: "POST",
+                headers: {
+                    Accept: "*/*",
+                    "Content-type": "multipart/form-data;",
+                    "Accept-Encoding": "gzip, deflate, br",
+                    Connection: "keep-alive"
+                },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(json => {
+                    setLoading(false);
+                    if (json.success == true) {
+                        alert("تم الإرسال للإدارة , سيتم الرد في أقرب وقت");
+                        setBody("");
+                        setContactEmail("");
+                    } else {
+                        alert("هناك خطأ في البيانات المدخلة");
+                    }
+                })
+                .catch(error => {
+                    setLoading(false);
+                    console.error(error);
+                });
+
+
+            setLoading(true);
             const interval = setInterval(() => {
                 setLoading(false);
             }, 1000);
-            alert("تم الإرسال للإدارة , سيتم الرد في أقرب وقت");
-            setBody("");
-            setContactEmail("");
+
         }
     }
     return (

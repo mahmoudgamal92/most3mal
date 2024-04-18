@@ -72,7 +72,7 @@ export default function MyWallet({ route, navigation }) {
 
   const _retriveTransactions = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
-    fetch(api.dynamic_url+"payment_process?filter=user_id,eq," + user_id,
+    fetch(api.dynamic_url + "payment_process?filter=user_id,eq," + user_id,
       {
         method: "GET",
         headers: {
@@ -95,42 +95,10 @@ export default function MyWallet({ route, navigation }) {
   };
 
   const orderWithdraw = async () => {
-    const user_id = await AsyncStorage.getItem("user_id");
-    let url = api.dynamic_url+ "payment_process";
-    const body = JSON.stringify({
-      payment_token: "none",
-      payment_type: "withdraw",
-      payment_status: "pending",
-      payment_gateway: "none",
-      amount: amount,
-      user_id: user_id,
-      created_at: new Date().toString()
+    navigation.navigate("ChooseBank", {
+      balance: amount
     });
-    try {
-      fetch(url, {
-        method: "POST",
-        headers: {
-          Accept: "*/*",
-          "Content-type": "multipart/form-data;",
-          "cache-control": "no-cache",
-          "Accept-Encoding": "gzip, deflate, br",
-          Connection: "keep-alive"
-        },
-        body: body
-      })
-        .then(response => response.json())
-        .then(json => {
-          setInputModal(false);
-          alert(
-            "تم تسجيل طلب سحب الرصيد , سيتم خصم الرصيد عند التحويل من الإدارة"
-          );
-          //alert(JSON.stringify(json));
-          _retriveTransactions();
-        })
-        .catch(error => console.error(error));
-    } catch (error) {
-      console.log(error);
-    }
+
   };
 
   const handleEmptyProp = () => {
@@ -354,13 +322,13 @@ export default function MyWallet({ route, navigation }) {
               >
                 {item.payment_type == "deposite"
                   ? <Image
-                      source={require("./../assets/deposite.png")}
-                      style={{ width: 50, height: 50 }}
-                    />
+                    source={require("./../assets/deposite.png")}
+                    style={{ width: 50, height: 50 }}
+                  />
                   : <Image
-                      source={require("./../assets/withdraw.png")}
-                      style={{ width: 50, height: 50 }}
-                    />}
+                    source={require("./../assets/withdraw.png")}
+                    style={{ width: 50, height: 50 }}
+                  />}
               </View>
               <View
                 style={{
@@ -379,11 +347,11 @@ export default function MyWallet({ route, navigation }) {
                 >
                   {item.payment_type == "deposite"
                     ? <Text style={{ color: "green", fontFamily: "Bold" }}>
-                        عملية إيداع
-                      </Text>
+                      عملية إيداع
+                    </Text>
                     : <Text style={{ color: "red", fontFamily: "Bold" }}>
-                        عملية سحب
-                      </Text>}
+                      عملية سحب
+                    </Text>}
                   <Text
                     style={{ fontFamily: "Bold", fontSize: 15, color: "#000" }}
                   >
@@ -507,24 +475,24 @@ export default function MyWallet({ route, navigation }) {
                 >
                   {buttonLoading == false
                     ? <View
+                      style={{
+                        flexDirection: "row-reverse",
+                        alignItems: "center",
+                        justifyContent: "center"
+                      }}
+                    >
+                      <Text
                         style={{
-                          flexDirection: "row-reverse",
-                          alignItems: "center",
-                          justifyContent: "center"
+                          color: "white",
+                          textAlign: "center",
+                          fontFamily: "Bold",
+                          marginHorizontal: 10
                         }}
                       >
-                        <Text
-                          style={{
-                            color: "white",
-                            textAlign: "center",
-                            fontFamily: "Bold",
-                            marginHorizontal: 10
-                          }}
-                        >
-                          سحب
-                        </Text>
-                        <Ionicons name="send" size={24} color="#FFF" />
-                      </View>
+                        سحب
+                      </Text>
+                      <Ionicons name="send" size={24} color="#FFF" />
+                    </View>
                     : <ActivityIndicator size="large" color={"#FFF"} />}
                 </TouchableOpacity>
               </View>
@@ -588,7 +556,7 @@ export default function MyWallet({ route, navigation }) {
                       color: "red"
                     }}
                   >
-                    أدخ المبلغ المراد شحنة
+                    أدخل المبلغ المراد شحنة
                   </Text>
                 </View>
 
@@ -624,24 +592,24 @@ export default function MyWallet({ route, navigation }) {
                 >
                   {buttonLoading == false
                     ? <View
+                      style={{
+                        flexDirection: "row-reverse",
+                        alignItems: "center",
+                        justifyContent: "center"
+                      }}
+                    >
+                      <Text
                         style={{
-                          flexDirection: "row-reverse",
-                          alignItems: "center",
-                          justifyContent: "center"
+                          color: "white",
+                          textAlign: "center",
+                          fontFamily: "Bold",
+                          marginHorizontal: 10
                         }}
                       >
-                        <Text
-                          style={{
-                            color: "white",
-                            textAlign: "center",
-                            fontFamily: "Bold",
-                            marginHorizontal: 10
-                          }}
-                        >
-                          متابعة
-                        </Text>
-                        <Ionicons name="send" size={24} color="#FFF" />
-                      </View>
+                        متابعة
+                      </Text>
+                      <Ionicons name="send" size={24} color="#FFF" />
+                    </View>
                     : <ActivityIndicator size="large" color={"#FFF"} />}
                 </TouchableOpacity>
               </View>

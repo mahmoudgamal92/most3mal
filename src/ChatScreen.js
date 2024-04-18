@@ -22,7 +22,7 @@ import {
 import {
   FontAwesome,
   MaterialIcons,
-  Feather,
+  AntDesign,
   Ionicons,
   Entypo
 } from "@expo/vector-icons";
@@ -84,8 +84,6 @@ export default function ChatScreen({ navigation, route }) {
         let match = /\.(\w+)$/.exec(filename);
         let img_type = match ? `image/${match[1]}` : `image`;
         setImageURI(localUri);
-
-        // Read the selected image file and convert it to base64
         const base64String = await FileSystem.readAsStringAsync(localUri, {
           encoding: FileSystem.EncodingType.Base64
         });
@@ -179,7 +177,7 @@ export default function ChatScreen({ navigation, route }) {
       })
         .then(response => response.json())
         .then(json => {
-          //alert(JSON.stringify(json))
+          // alert(JSON.stringify(json))
           setBtnLoading(false);
           setMessage("");
           _retrieveData();
@@ -245,16 +243,16 @@ export default function ChatScreen({ navigation, route }) {
                 {item.sender_id == user_id
                   ? <View style={styles.leftMessageContainer}>
                     <View>
-                      {item.attachment == null || item.attachment == "" || item.attachment == "null"
+                      {item.attatchments == null || item.attatchments == "" || item.attatchments == "null"
                         ? null
                         :
                         <TouchableOpacity
                           onPress={() => {
-                            setImage(item.attachment);
+                            setImage(item.attatchments);
                             setImgModal(true);
                           }}>
                           <Image
-                            source={{ uri: item.attachment }}
+                            source={{ uri: item.attatchments }}
                             style={{
                               width: 120,
                               height: 120,
@@ -265,7 +263,7 @@ export default function ChatScreen({ navigation, route }) {
                         </TouchableOpacity>
                       }
                     </View>
-                    {item.msg !== "" ?
+                    {item.message !== "" ?
                       <View
                         style={{
                           ...styles.messageTileleft,
@@ -279,7 +277,7 @@ export default function ChatScreen({ navigation, route }) {
                             fontFamily: "Regular"
                           }}
                         >
-                          {item.msg}
+                          {item.message}
                         </Text>
                         <Text
                           style={{
@@ -297,16 +295,19 @@ export default function ChatScreen({ navigation, route }) {
                   </View>
                   : <View style={styles.rightMessageContainer}>
                     <View>
-                      {item.attachment == null || item.attachment == "" || item.attachment == "null"
+                      {item.attatchments == null || item.attatchments == "" || item.attatchments == "null"
                         ? null
                         :
                         <TouchableOpacity
                           onPress={() => {
-                            setImage(item.attachment);
+                            setImage(item.attatchments);
                             setImgModal(true);
                           }}>
+                          <Text>
+                            {item.attatchments}
+                          </Text>
                           <Image
-                            source={{ uri: item.attachment }}
+                            source={{ uri: item.attatchments }}
                             style={{
                               width: 100,
                               height: 100,
@@ -318,7 +319,7 @@ export default function ChatScreen({ navigation, route }) {
                       }
                     </View>
 
-                    {item.msg !== "" ?
+                    {item.message !== "" ?
                       <View
                         style={{
                           ...styles.messageTileright,
@@ -332,7 +333,7 @@ export default function ChatScreen({ navigation, route }) {
                             fontFamily: "Regular"
                           }}
                         >
-                          {item.msg}
+                          {item.message}
                         </Text>
                         <Text
                           style={{
@@ -413,7 +414,7 @@ export default function ChatScreen({ navigation, route }) {
           ref={bottomSheetRef}
           index={bottomSheetState}
           enableOverDrag={true}
-          snapPoints={["40%"]}
+          snapPoints={["55%"]}
           handleComponent={() => null}
           enableContentPanningGesture={true}
           onChange={handleSheetChanges}
@@ -423,18 +424,34 @@ export default function ChatScreen({ navigation, route }) {
             style={{
               paddingHorizontal: 20,
               alignItems: "center",
-              justifyContent: "center"
+              justifyContent: "center",
+              alignItems: "center",
+              flex: 1
             }}
           >
-            <TouchableOpacity
-              onPress={() => closeBottomSheet()}
-              style={{
-                marginTop: 20,
-                width: "100%"
-              }}
-            >
-              <Text style={{ fontFamily: "Bold", fontSize: 15 }}>إغلاق</Text>
-            </TouchableOpacity>
+
+            <View style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%"
+            }}>
+              <Text style={{ fontFamily: "Bold", fontSize: 15 }}>
+                إختر الصور
+              </Text>
+
+              <TouchableOpacity
+                onPress={() => closeBottomSheet()}
+                style={{
+                  marginTop: 20,
+                }}
+              >
+                <AntDesign name="close" size={24} color="black" />
+              </TouchableOpacity>
+
+
+            </View>
+
 
             <View
               style={{
@@ -499,7 +516,8 @@ export default function ChatScreen({ navigation, route }) {
             <TouchableOpacity
               onPress={() => sendMessage()}
               style={{
-                marginTop: 20,
+                marginTop: 10,
+                marginBottom: 20,
                 backgroundColor: "#34ace0",
                 width: "100%",
                 borderRadius: 10,
