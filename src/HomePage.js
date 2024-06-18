@@ -72,6 +72,7 @@ export default function HomePage({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
+          //console.log(json.records);
           setDeparts(json.records);
         })
         .catch(error => console.error(error));

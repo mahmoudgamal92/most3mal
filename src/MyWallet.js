@@ -72,7 +72,7 @@ export default function MyWallet({ route, navigation }) {
 
   const _retriveTransactions = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
-    fetch(api.dynamic_url + "payment_process?filter=user_id,eq," + user_id,
+    fetch(api.dynamic_url + "payment_process?filter=user_id,eq," + user_id + "&order=payment_id,desc",
       {
         method: "GET",
         headers: {
@@ -86,7 +86,7 @@ export default function MyWallet({ route, navigation }) {
     )
       .then(response => response.json())
       .then(json => {
-        setPayments(json.records.reverse());
+        setPayments(json.records);
         console.log(json);
       })
       .catch(error => {
@@ -95,10 +95,15 @@ export default function MyWallet({ route, navigation }) {
   };
 
   const orderWithdraw = async () => {
-    navigation.navigate("ChooseBank", {
-      balance: amount
-    });
+    if (data.current_balance == null || parseInt(amount) > parseInt(data.current_balance)) {
+      alert("لا يوجد لديك رصيد لسحب المبلغ المطلوب")
+    }
 
+    else {
+      navigation.navigate("ChooseBank", {
+        balance: amount
+      });
+    }
   };
 
   const handleEmptyProp = () => {
@@ -294,7 +299,7 @@ export default function MyWallet({ route, navigation }) {
         </Text>
 
         <FlatList
-          data={payments.reverse()}
+          data={payments}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={handleEmptyProp()}
           keyExtractor={(item, index) => index.toString()}

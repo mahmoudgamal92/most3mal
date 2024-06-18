@@ -10,7 +10,7 @@ import {
     Alert,
     Modal
 } from "react-native";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Ionicons,
     MaterialIcons,
@@ -32,7 +32,7 @@ export default function MyOrders({ route, navigation }) {
     const [input_modal, setInputModal] = React.useState(false);
     const [buttonLoading, setButtonLoading] = React.useState(false);
     const [current_item, setCurrentItem] = useState("0");
-    const [amount,setAmount] = useState("0");
+    const [amount, setAmount] = useState("0");
 
     useEffect(() => {
         _retrieveData();
@@ -54,7 +54,7 @@ export default function MyOrders({ route, navigation }) {
             })
                 .then(response => response.json())
                 .then(json => {
-                   //alert(JSON.stringify(json))
+                    //alert(JSON.stringify(json))
                     if (json.success == true) {
                         setData(json.data);
                     }
@@ -68,43 +68,42 @@ export default function MyOrders({ route, navigation }) {
         }
     };
 
-    
+
     const updateOrder = async () => {
-        if(amount !== "0" && current_item !== "0")
-        {
-        try {
-            fetch(api.dynamic_url + "offers/" + current_item, {
-                method: "PUT",
-                headers: {
-                    Accept: "*/*",
-                    "Content-type": "multipart/form-data;",
-                    "Accept-Encoding": "gzip, deflate, br",
-                },
-                body : JSON.stringify({
-                    amount : amount
+        if (amount !== "0" && current_item !== "0") {
+            try {
+                fetch(api.dynamic_url + "offers/" + current_item, {
+                    method: "PUT",
+                    headers: {
+                        Accept: "*/*",
+                        "Content-type": "multipart/form-data;",
+                        "Accept-Encoding": "gzip, deflate, br",
+                    },
+                    body: JSON.stringify({
+                        amount: amount
+                    })
                 })
-            })
-                .then(response => response.json())
-                .then(responseJson => {
-                    setInputModal(false);
-                    alert("تم تعديل العرض بنجاح");
-                    _retrieveData();
-                });
+                    .then(response => response.json())
+                    .then(responseJson => {
+                        setInputModal(false);
+                        alert("تم تعديل العرض بنجاح");
+                        _retrieveData();
+                    });
 
-        } catch (error) {
-            console.log(error);
+            } catch (error) {
+                console.log(error);
+            }
         }
-    }
 
-    else {
-        alert("لابد من إضافة السعر");
-    }
+        else {
+            alert("لابد من إضافة السعر");
+        }
     };
 
 
     const deleteOrder = async (id) => {
         try {
-            fetch(api.dynamic_url +"offers/" + id, {
+            fetch(api.dynamic_url + "offers/" + id, {
                 method: "DELETE",
                 headers: {
                     Accept: "*/*",
@@ -188,7 +187,7 @@ export default function MyOrders({ route, navigation }) {
                     </TouchableOpacity>
 
                     <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 20, marginLeft: 20 }}>
-                    مناقصاتي
+                        مناقصاتي
                     </Text>
                 </View>
 
@@ -207,9 +206,9 @@ export default function MyOrders({ route, navigation }) {
                     renderItem={({ item }) => (
 
                         <TouchableOpacity
-                        onPress={() => navigation.navigate("AuctionOfferInfo",{
-                            "offer_id" : item.id
-                        })}
+                            onPress={() => navigation.navigate("AuctionOfferInfo", {
+                                "offer_id": item.id
+                            })}
                             style={{
                                 flexDirection: "row-reverse",
                                 borderColor: "#DDDDDD",
@@ -242,12 +241,11 @@ export default function MyOrders({ route, navigation }) {
 
                             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
                                 <TouchableOpacity
-                                    onPress={() => 
-                                        {
+                                    onPress={() => {
                                         setInputModal(true);
                                         setCurrentItem(item.id);
                                     }
-                                }
+                                    }
                                 >
                                     <AntDesign name="edit" size={30} color="#000" />
                                 </TouchableOpacity>
@@ -280,10 +278,10 @@ export default function MyOrders({ route, navigation }) {
                             </View>
 
                             <View style={{ width: "20%" }}>
-                                <Image source={{ uri: api.media_url + item.auction.images }}
+                                <Image
+                                    source={{ uri: api.media_url + item.auction.images }}
                                     style={{ width: 70, height: 70, resizeMode: "cover", borderRadius: 10 }} />
                             </View>
-
                         </TouchableOpacity>
 
                     )}

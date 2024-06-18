@@ -118,7 +118,13 @@ const AddDetail = ({ route, navigation }) => {
       })
         .then(response => response.json())
         .then(responseJson => {
-          alert(responseJson.message);
+
+          Toast.show({
+            type: "successToast",
+            text1: responseJson.message,
+            bottomOffset: 160,
+            visibilityTime: 10000
+          });
         });
     } catch (error) {
       console.log(error);
@@ -186,7 +192,6 @@ const AddDetail = ({ route, navigation }) => {
             bottomOffset: 160,
             visibilityTime: 10000
           });
-          //alert("تم إضافة عرضك بنجاح");
           getadOffers();
         })
         .catch(error => console.error(error));
@@ -216,7 +221,13 @@ const AddDetail = ({ route, navigation }) => {
         .then(response => response.json())
         .then(json => {
           setInputModal(false);
-          alert("تم قبول العرض");
+
+          Toast.show({
+            type: "successToast",
+            text1: "تم قبول العرض",
+            bottomOffset: 160,
+            visibilityTime: 10000
+          });
           navigation.navigate("OfferInfo", {
             offer_id: offer_id
           });
@@ -256,7 +267,7 @@ const AddDetail = ({ route, navigation }) => {
               chat_id: json.id
             });
           } else {
-            alert(JSON.stringify(json));
+            console.log(JSON.stringify(json));
           }
         })
         .catch(error => console.error(error));

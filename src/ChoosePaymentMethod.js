@@ -12,15 +12,15 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import React, { useState, useRef, useEffect } from "react";
-import { MaterialIcons,Ionicons,SimpleLineIcons } from '@expo/vector-icons';
+import { MaterialIcons, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import Constants from "expo-constants";
 import api from "./../constants/constants";
 
 export default function ChoosePaymentMethod({ route, navigation }) {
     const [loading, setLoading] = useState(false);
     const [selected_id, setSelectedId] = useState([]);
-    const [user_id , setUserID] = useState([]);
-    const {invoice_value} = route.params;
+    const [user_id, setUserID] = useState([]);
+    const { invoice_value } = route.params;
     const data = [
         {
             id: "1",
@@ -48,9 +48,9 @@ export default function ChoosePaymentMethod({ route, navigation }) {
 
 
     const _proceedPayment = async () => {
-        const user_id = await AsyncStorage.getItem("user_id");3
+        const user_id = await AsyncStorage.getItem("user_id");
         setLoading(true);
-        let url = api.custom_url +"payment/payment.php?user_id="+user_id+"&invoice_value="+invoice_value;
+        let url = api.custom_url + "payment/payment.php?user_id=" + user_id + "&invoice_value=" + invoice_value;
         try {
             fetch(url, {
                 method: "GET",
@@ -81,41 +81,41 @@ export default function ChoosePaymentMethod({ route, navigation }) {
 
     return (
         <View style={styles.container}>
-        <StatusBar backgroundColor="#34ace0" />
+            <StatusBar backgroundColor="#34ace0" />
             <View style={{
-                  paddingTop: Constants.statusBarHeight * 1.3,
-                    flexDirection: "row-reverse",
-                    width: "100%",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    backgroundColor:"#34ace0",
-                    paddingBottom:10
-                 }}>
+                paddingTop: Constants.statusBarHeight * 1.3,
+                flexDirection: "row-reverse",
+                width: "100%",
+                alignItems: "center",
+                justifyContent: "space-between",
+                backgroundColor: "#34ace0",
+                paddingBottom: 10
+            }}>
 
-                    <View style={{ width: "20%", justifyContent: "center", alignItems: "center" }}>
-                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                <View style={{ width: "20%", justifyContent: "center", alignItems: "center" }}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
                         <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
-                        </TouchableOpacity>
-                    </View>
-
-
-
-                    <View style={{ width: "80%",paddingLeft:15 }}>
-                        <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 20 }}>
-                            أختر وسيلة الدفع
-                        </Text>
-                    </View>
-
-
-                  
+                    </TouchableOpacity>
                 </View>
 
-            <View style={{ 
-                alignItems: "center", 
-                justifyContent: "center", 
-                marginTop: 30, 
+
+
+                <View style={{ width: "80%", paddingLeft: 15 }}>
+                    <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 20 }}>
+                        أختر وسيلة الدفع
+                    </Text>
+                </View>
+
+
+
+            </View>
+
+            <View style={{
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: 30,
                 marginBottom: 50,
-                 }}>
+            }}>
                 <Text style={{ fontSize: 20, fontFamily: "Bold" }}>
                     أختر وسيلة الدفع المناسبة لك
                 </Text>
@@ -131,7 +131,7 @@ export default function ChoosePaymentMethod({ route, navigation }) {
                 }}
                 numColumns={2}
                 data={data}
-                style={{ width: "100%",marginBottom:100 }}
+                style={{ width: "100%", marginBottom: 100 }}
                 keyExtractor={(item, index) => item.id}
                 renderItem={({ item }) =>
                     <TouchableOpacity

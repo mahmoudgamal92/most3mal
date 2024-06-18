@@ -116,7 +116,6 @@ export default function Create({ route, navigation }) {
             });
 
             setLoading(false);
-
             setTimeout(() => {
               navigation.pop(3);
             }, 1000);

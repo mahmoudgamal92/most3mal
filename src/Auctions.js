@@ -42,7 +42,7 @@ export default function HomePage({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
-          //alert(JSON.stringify(json));
+          console.log(JSON.stringify(json));
           setData(json.data);
           setLoading(false);
         })

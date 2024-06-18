@@ -70,7 +70,12 @@ export default function AuctionDetails({ route, navigation }) {
   );
 
   const reportProblem = () => {
-    alert("تم ارسال مشكلتك للإدارة بنجاح , سيتم التواصل معك في اقرب وقت ");
+    Toast.show({
+      type: "successToast",
+      text1: "تم ارسال مشكلتك للإدارة بنجاح , سيتم التواصل معك في اقرب وقت ",
+      bottomOffset: 80,
+      visibilityTime: 2000
+    });
     setReportModal(!report_modal);
   };
 
@@ -138,15 +143,15 @@ export default function AuctionDetails({ route, navigation }) {
   };
 
   const _retrieveData = async () => {
-    setImages(item.images.split(","));
+    setImages(item.images?.split(","));
     const user_token = await AsyncStorage.getItem("user_token");
     const user_id = await AsyncStorage.getItem("user_id");
     setUserID(user_id);
     _getOffers();
   };
 
-  const _getOffers = () => {
-    //alert(item.id);
+  const _getOffers = async () => {
+    const user_id = await AsyncStorage.getItem("user_id");
     let url = api.custom_url + "orders/auction/offers.php?item_id=" + item.id;
     try {
       fetch(url, {
@@ -160,11 +165,13 @@ export default function AuctionDetails({ route, navigation }) {
         .then(json => {
           if (json.success == true) {
             setOffers(json.data);
-            //setPrevOffer();
-            console.log(json.data.filter(obj => obj.user_id === user_id))
+            setPrevOffer(json.data.filter(obj => obj.user_id === user_id.toString()).length);
+            console.log(json.data);
+            console.log("------------------------")
+            console.log()
           } else {
             setOffers([]);
-            //alert(JSON.stringify(json));
+            console.log(JSON.stringify(json));
           }
         })
         .catch(error => console.error(error));
@@ -195,7 +202,7 @@ export default function AuctionDetails({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
-          //alert(JSON.stringify(json));
+          console.log(JSON.stringify(json));
           if (json.success == true) {
             Toast.show({
               type: "successToast",
@@ -206,7 +213,12 @@ export default function AuctionDetails({ route, navigation }) {
             setInputModal(!input_modal);
             _getOffers();
           } else {
-            alert("هناك مشكلة ");
+            Toast.show({
+              type: "successToast",
+              text1: "نأسف هناك مشكلة من طرفنا",
+              bottomOffset: 80,
+              visibilityTime: 2000
+            });
           }
         })
         .catch(error => console.error(error));
@@ -236,7 +248,12 @@ export default function AuctionDetails({ route, navigation }) {
         .then(response => response.json())
         .then(json => {
           setInputModal(false);
-          alert("تم قبول العرض ");
+          Toast.show({
+            type: "successToast",
+            text1: "تم قبول العرض ",
+            bottomOffset: 80,
+            visibilityTime: 2000
+          });
           navigation.navigate("AuctionOfferInfo", {
             offer_id: offer_id
           });
@@ -276,7 +293,7 @@ export default function AuctionDetails({ route, navigation }) {
               chat_id: json.id
             });
           } else {
-            alert(JSON.stringify(json));
+            console.log(JSON.stringify(json));
           }
         })
         .catch(error => console.error(error));
@@ -453,7 +470,7 @@ export default function AuctionDetails({ route, navigation }) {
       </View>
 
       <View>
-        {images.length > 1
+        {images?.length > 1
           ? <ScrollView
             horizontal
             style={{
@@ -558,21 +575,17 @@ export default function AuctionDetails({ route, navigation }) {
                 <Text
                   style={{ fontFamily: "Bold", color: "#FFF", fontSize: 18 }}
                 >
-                  {prev_offer}
+                  تعديل عرضك
                 </Text>
-
                 :
-
                 <Text
                   style={{ fontFamily: "Bold", color: "#FFF", fontSize: 18 }}
                 >
-                  {prev_offer}
+                  أضف عرض
                 </Text>
-
               }
             </TouchableOpacity>
           }
-
           <View
             style={{
               justifyContent: "space-around",

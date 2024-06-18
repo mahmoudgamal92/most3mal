@@ -58,7 +58,7 @@ export default function SignIn({ route, navigation }) {
         } else {
           Toast.show({
             type: "erorrToast",
-            text1: "خطأ في البريد الإلكتروني أو كلمة المرور",
+            text1: responseJson.message,
             bottomOffset: 80,
             visibilityTime: 2000
           });

@@ -63,7 +63,7 @@ export default function AddBank({ route, navigation }) {
             .then(json => {
                 setLoading(false);
                 if (json.success == true) {
-                    alert("تم إضافة المزاد بنجاح ");
+                    alert("تم إضافة الحساب بنجاح ");
                     navigation.goBack();
                     console.log(json);
                 } else {

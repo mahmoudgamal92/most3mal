@@ -177,7 +177,7 @@ export default function ChatScreen({ navigation, route }) {
       })
         .then(response => response.json())
         .then(json => {
-          // alert(JSON.stringify(json))
+          console.log(JSON.stringify(json))
           setBtnLoading(false);
           setMessage("");
           _retrieveData();

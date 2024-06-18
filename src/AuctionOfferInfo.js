@@ -6,8 +6,8 @@ import {
     View,
     StyleSheet,
     Modal,
-    Alert,
-    ScrollView
+    ScrollView,
+    TextInput
 } from "react-native";
 import { Feather, MaterialIcons, FontAwesome5, MaterialCommunityIcons, Ionicons, Entypo } from "@expo/vector-icons";
 import Constants from "expo-constants";
@@ -16,10 +16,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import MapView, { Marker } from "react-native-maps";
 import api from "./../constants/constants";
-
+import { Rating, AirbnbRating } from "react-native-ratings";
+import Toast from "react-native-toast-message";
+import toastConfig from "./../constants/Toast";
 export default function AuctionOfferInfo({ route, navigation }) {
     const { offer_id } = route.params;
-
     const [profile, setProfile] = useState([]);
     const [orderInfo, setOrderInfo] = useState([]);
     const [orderClient, setOrderClient] = useState([]);
@@ -31,11 +32,15 @@ export default function AuctionOfferInfo({ route, navigation }) {
     const [deliver_modal, SetdeliverModal] = useState(false);
     const [lat, setLat] = useState(24.7136);
     const [long, setLong] = useState(46.6753);
+    const [rating_text, setRatingText] = useState("");
+    const [rating_val, setRatingValue] = useState(0);
 
     useEffect(() => {
         _retrieveData();
         getProfile();
     }, []);
+
+
     const openAddressOnMap = (label, lat, lng) => {
         const scheme = Platform.select({
             ios: "maps:0,0?q=",
@@ -59,6 +64,43 @@ export default function AuctionOfferInfo({ route, navigation }) {
             _openChat(orderClient.id, orderClient.name);
         }
     };
+
+
+    const _rateOrder = async offer_id => {
+        let url = api.dynamic_url + "offers/" +
+            offer_id;
+        const body = JSON.stringify({
+            rating_text: rating_text,
+            rating_val: rating_val
+        });
+        try {
+            fetch(url, {
+                method: "PUT",
+                headers: {
+                    Accept: "*/*",
+                    "Content-type": "multipart/form-data;",
+                    "cache-control": "no-cache",
+                    "Accept-Encoding": "gzip, deflate, br",
+                    Connection: "keep-alive"
+                },
+                body: body
+            })
+                .then(response => response.json())
+                .then(json => {
+                    Toast.show({
+                        type: "successToast",
+                        text1: "شكرا على تقييمك",
+                        bottomOffset: 80,
+                        visibilityTime: 2000
+                    });
+                    _retrieveData();
+                })
+                .catch(error => console.error(error));
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
 
     const render_order = (val) => {
         switch (val) {
@@ -160,7 +202,7 @@ export default function AuctionOfferInfo({ route, navigation }) {
         })
             .then(response => response.json())
             .then(json => {
-                //alert(JSON.stringify(json))
+                console.log(JSON.stringify(json))
                 setProfile(json.data[0]);
             })
             .catch(error => {
@@ -184,7 +226,12 @@ export default function AuctionOfferInfo({ route, navigation }) {
                 .then(response => response.json())
                 .then(json => {
                     SetdeliverModal(false);
-                    alert("تم إستلام الطلب  بنجاح");
+                    Toast.show({
+                        type: "successToast",
+                        text1: "تم إستلام الطلب  بنجاح",
+                        bottomOffset: 80,
+                        visibilityTime: 2000
+                    });
                     _retrieveData();
                 })
                 .catch(error => console.error(error));
@@ -218,7 +265,12 @@ export default function AuctionOfferInfo({ route, navigation }) {
                 .then(response => response.json())
                 .then(json => {
                     setModalVisible(false);
-                    alert("تم الايداع بنجاح");
+                    Toast.show({
+                        type: "successToast",
+                        text1: "تم الايداع بنجاح",
+                        bottomOffset: 80,
+                        visibilityTime: 2000
+                    });
                     _retrieveData();
                 })
                 .catch(error => console.error(error));
@@ -707,9 +759,148 @@ export default function AuctionOfferInfo({ route, navigation }) {
                         </TouchableOpacity>
 
 
+
+
+
                     </View>
                     : null}
 
+                {orderInfo.status == "delivered" && orderInfo.user_id == user_id
+                    ? <View
+                        style={{
+                            width: "100%",
+                            paddingHorizontal: 20,
+                            marginVertical: 20
+                        }}
+                    >
+                        {orderInfo.rating_val == "" || orderInfo.rating_val == "0"
+                            ? <View
+                                style={{
+                                    width: "100%"
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        fontFamily: "Bold",
+                                        marginVertical: 10
+                                    }}
+                                >
+                                    تقييم البائع :
+                                </Text>
+                                <Text
+                                    style={{
+                                        fontFamily: "Regular",
+                                        marginTop: 10
+                                    }}
+                                >
+                                    اترك تقييم للبائع , حتى تساعده على تحسين جوده منتجه و ايضا
+                                    مساعدة الأخرين على اتخاذ قرارات أفضل ..
+                                </Text>
+                                <AirbnbRating
+                                    style={{
+                                        fontFamily: "Bold"
+                                    }}
+                                    count={5}
+                                    defaultRating={0}
+                                    onFinishRating={rating => setRatingValue(rating)}
+                                    reviews={[
+                                        "سيئ للغاية",
+                                        "مقبول",
+                                        "متوسط الجوده",
+                                        "جوده جيدة",
+                                        "جوده ممتازه"
+                                    ]}
+                                    size={20}
+                                />
+
+                                <View
+                                    style={{
+                                        marginVertical: 10
+                                    }}
+                                >
+                                    <TextInput
+                                        onChangeText={value => setRatingText(value)}
+                                        style={{
+                                            width: "100%",
+                                            color: "#000",
+                                            backgroundColor: "#FFF",
+                                            fontFamily: "Bold",
+                                            borderRadius: 20,
+                                            height: 80,
+                                            paddingHorizontal: 20
+                                        }}
+                                    />
+
+                                    <TouchableOpacity
+                                        onPress={() => _rateOrder(orderInfo.id)}
+                                        style={{
+                                            backgroundColor: "#41A2D8",
+                                            marginVertical: 10,
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            borderRadius: 20,
+                                            padding: 10
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                fontFamily: "Bold",
+                                                color: "#FFF"
+                                            }}
+                                        >
+                                            تقييم
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+
+                            :
+
+                            <View
+                                style={{
+                                    backgroundColor: "#FFF",
+                                    borderRadius: 10
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        fontFamily: "Bold",
+                                        textAlign: "center",
+                                        marginTop: 10
+                                    }}
+                                >
+                                    تم تقييم البائع
+                                </Text>
+
+                                <AirbnbRating
+                                    style={{
+                                        fontFamily: "Bold"
+                                    }}
+                                    defaultRating={parseInt(orderInfo.rating_val)}
+                                    isDisabled={true}
+                                    count={5}
+                                    reviews={[
+                                        "سيئ للغاية",
+                                        "على غير المستوي المرجو",
+                                        "متوسط الجوده",
+                                        "جوده جيدة",
+                                        "جوده ممتازة"
+                                    ]}
+                                    size={20}
+                                />
+
+                                <Text
+                                    style={{
+                                        fontFamily: "Bold",
+                                        textAlign: "center",
+                                        marginVertical: 5
+                                    }}
+                                >
+                                    {orderInfo.rating_text}
+                                </Text>
+                            </View>}
+                    </View>
+                    : null}
 
             </ScrollView>
 
@@ -746,7 +937,7 @@ export default function AuctionOfferInfo({ route, navigation }) {
 
                                 </TouchableOpacity>
                             </View>
-                            {profile.current_balance < orderItem.price ?
+                            {parseFloat(profile.current_balance) < orderInfo.amount ?
                                 <View style={{
                                     width: "100%",
                                     justifyContent: "center",
@@ -756,7 +947,7 @@ export default function AuctionOfferInfo({ route, navigation }) {
                                         <Text style={{
                                             fontFamily: "Regular"
                                         }}>
-                                            عميلنا العزيز , رصيدك الحالي لا يسمح بدفع المبلغ المطلوب , الراجاء الشحن و إعادة المحاولة
+                                            {orderInfo.amount}
                                         </Text>
 
                                     </View>
@@ -829,14 +1020,12 @@ export default function AuctionOfferInfo({ route, navigation }) {
                         </View>
                     </View>
                 </Modal>
-
-
                 <Modal
                     animationType="slide"
                     transparent={true}
                     visible={deliver_modal}
                     onRequestClose={() => {
-                        Alert.alert('Modal has been closed.');
+                        console.log('Modal has been closed.');
                         SetdeliverModal(!deliver_modal);
                     }}>
                     <View style={styles.centeredView}>
@@ -902,9 +1091,8 @@ export default function AuctionOfferInfo({ route, navigation }) {
                         </View>
                     </View>
                 </Modal>
-
             </View>
-
+            <Toast config={toastConfig} />
         </View>
     );
 }

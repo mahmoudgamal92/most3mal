@@ -10,17 +10,25 @@ import {
     ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LinearGradient } from 'expo-linear-gradient';
 
 import React, { useState, useRef, useEffect } from "react";
-import { MaterialIcons, AntDesign, SimpleLineIcons } from '@expo/vector-icons';
+import { MaterialIcons, AntDesign, SimpleLineIcons, FontAwesome } from '@expo/vector-icons';
 import Constants from "expo-constants";
 import api from "./../constants/constants";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function ChooseBank({ route, navigation }) {
     const [loading, setLoading] = useState(false);
     const [selected_id, setSelectedId] = useState("");
     const [data, setData] = useState([]);
     const { balance } = route.params;
+
+    useFocusEffect(
+        React.useCallback(() => {
+            _getUserBanks();
+        }, [])
+    );
 
 
     useEffect(() => {
@@ -33,7 +41,6 @@ export default function ChooseBank({ route, navigation }) {
                 style={{
                     justifyContent: "center",
                     alignItems: "center",
-                    marginTop: 100,
                     paddingHorizontal: 40
                 }}
             >
@@ -134,7 +141,6 @@ export default function ChooseBank({ route, navigation }) {
             })
                 .then(response => response.json())
                 .then(json => {
-                    //alert(JSON.stringify(json));
                     alert(
                         "تم تسجيل طلب سحب الرصيد , سيتم خصم الرصيد عند التحويل من الإدارة"
                     );
@@ -202,37 +208,57 @@ export default function ChooseBank({ route, navigation }) {
                 style={{ width: "100%", marginBottom: 100 }}
                 keyExtractor={(item, index) => item.id}
                 renderItem={({ item }) =>
-                    <TouchableOpacity
-                        onPress={() => setSelectedId(item.account_id)}
+
+                    <LinearGradient
+                        colors={['#34ACE0', '#83D0CB']}
                         style={[styles.itemContainer, {
-                            borderColor: selected_id == item.account_id ? "#34ace0" : "#DDDDDD",
+                            borderColor: selected_id == item.account_id ? "red" : "#DDDDDD"
                         }]}>
+                        <TouchableOpacity onPress={() => setSelectedId(item.account_id)}>
 
-                        <Image
-                            style={styles.itemImg}
-                            source={require('./../assets/bank.png')} />
+                            <ImageBackground source={require('./../assets/mask.png')} style={{
+                                flexDirection: "row",
 
-                        <View style={styles.itemInfo}>
-                            <View style={{ width: "100%" }}>
-                                <Text style={{ paddingVertical: 10, fontFamily: "Bold", fontSize: 16 }}>
-                                    {item.account_holder}
-                                </Text>
+                            }}>
+                                <Image source={require("./../assets/man.png")} style={{
+                                    width: 80,
+                                    height: 80
+                                }} />
 
-                                <Text style={{ fontFamily: "Regular", fontSize: 16, textAlign: "left" }}>
-                                    {item.account_number}
-                                </Text>
-                            </View>
 
-                            <AntDesign name="delete" size={24} color="black" />
-                        </View>
-                    </TouchableOpacity>
+                                <View style={styles.itemInfo}>
+                                    <View style={{ width: "100%" }}>
+                                        <Text style={{
+                                            paddingVertical: 10,
+                                            fontFamily: "Bold",
+                                            fontSize: 16,
+                                            color: "#FFF"
+                                        }}>
+                                            {item.account_holder}
+                                        </Text>
+
+                                        <Text style={{ fontFamily: "Regular", fontSize: 16, color: "#FFF", textAlign: "left" }}>
+                                            #{item.account_number}
+                                        </Text>
+                                        <Text style={{ fontFamily: "Regular", fontSize: 16, color: "#FFF", textAlign: "left" }}>
+                                            #{item.bank_swift}
+                                        </Text>
+                                    </View>
+
+                                    <AntDesign name="delete" size={24} color="#FFF" />
+                                </View>
+                            </ImageBackground>
+                        </TouchableOpacity>
+
+                    </LinearGradient>
+
                 }
             />
 
             {data.length !== 0 &&
                 <View style={{
                     position: "absolute",
-                    bottom: 40,
+                    bottom: 70,
                     paddingHorizontal: 20,
                     width: "100%",
                 }}>
@@ -267,14 +293,14 @@ const styles = StyleSheet.create({
 
     itemContainer: {
         borderRadius: 5,
-        backgroundColor: "#FFF",
         width: "95%",
         height: 120,
         padding: 10,
         marginVertical: 10,
         borderColor: "#DDDDDD",
         borderWidth: 1.5,
-        flexDirection: "row"
+        alignItems: "center",
+        justifyContent: "center"
     },
 
     itemImg: {

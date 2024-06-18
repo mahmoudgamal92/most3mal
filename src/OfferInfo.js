@@ -855,19 +855,6 @@ export default function OrderInfo({ route, navigation }) {
                   اترك تقييم للبائع , حتى تساعده على تحسين جوده منتجه و ايضا
                   مساعدة الأخرين على اتخاذ قرارات أفضل ..
                 </Text>
-
-
-                {/* {
-                  rating_val == 0 ?
-                    <Text style={{
-                      color: "#000",
-                      fontFamily: "Bolds"
-                    }}>
-                      بدون تقييم
-                    </Text>
-                    :
-                    null
-                } */}
                 <AirbnbRating
                   style={{
                     fontFamily: "Bold"
@@ -1062,7 +1049,7 @@ export default function OrderInfo({ route, navigation }) {
                   <AntDesign name="closecircleo" size={24} color="black" />
                 </TouchableOpacity>
               </View>
-              {parseInt(profile.current_balance) < parseInt(orderItem.price)
+              {parseInt(profile.current_balance) < parseInt(orderInfo.amount)
                 ? <View
                   style={{
                     width: "100%",

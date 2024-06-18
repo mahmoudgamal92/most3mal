@@ -113,13 +113,13 @@ export default function Adds({ route, navigation }) {
           if (json.success == true) {
             setData(json.data);
             setLoading(false);
-            //alert(JSON.stringify(json));
+            console.log(JSON.stringify(json));
           }
 
           else {
             setData([]);
             setLoading(false);
-            //alert(JSON.stringify(json));
+            console.log(JSON.stringify(json));
           }
         })
         .catch(error => console.error(error));
