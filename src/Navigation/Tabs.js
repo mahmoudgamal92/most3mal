@@ -12,14 +12,14 @@ import Favorite from "./../Favourite";
 import Conversations from "./../Conversations";
 import MyAdds from "./../MyAdds";
 import Auctions from "./../Auctions";
-
+import HomePage from "./../HomePage";
 
 export default TabNavigator = () => {
   const Tabs = createBottomTabNavigator();
   return (
     <Tabs.Navigator
       initialRouteName="TabsHome"
-      backBehavior="initialRoute"
+      backBehavior='hsitory'
       backgroundColor="#34ace0"
       screenOptions={{
         headerShown: false,
@@ -30,17 +30,23 @@ export default TabNavigator = () => {
       }}
     >
       <Tabs.Screen
-        name="TabsHome"
-        component={AppStack}
+        name="Auctions"
+        component={Auctions}
         options={{
           tabBarLabel: ({ color, size }) =>
-            <Text style={{ fontFamily: "Regular", color }}>الرئيسية</Text>,
+            <Text style={{ fontFamily: "Regular", color }}>المزادات </Text>,
           tabBarIcon: ({ color, size }) =>
-            <MaterialCommunityIcons
-              name="home-search-outline"
-              size={22}
-              color={color}
-            />
+            <Ionicons name="hand-right-outline" size={24} color={color} />
+        }}
+      />
+      <Tabs.Screen
+        name="Conversations"
+        component={Conversations}
+        options={{
+          tabBarLabel: ({ color, size }) =>
+            <Text style={{ fontFamily: "Regular", color }}>المحادثات</Text>,
+          tabBarIcon: ({ color, size }) =>
+            <Ionicons name="chatbubbles-outline" size={22} color={color} />
         }}
       />
 
@@ -52,17 +58,6 @@ export default TabNavigator = () => {
             <Text style={{ fontFamily: "Regular", color }}>المفضلة</Text>,
           tabBarIcon: ({ color, size }) =>
             <MaterialIcons name="favorite-outline" size={22} color={color} />
-        }}
-      />
-
-      <Tabs.Screen
-        name="Conversations"
-        component={Conversations}
-        options={{
-          tabBarLabel: ({ color, size }) =>
-            <Text style={{ fontFamily: "Regular", color }}>المحادثات</Text>,
-          tabBarIcon: ({ color, size }) =>
-            <Ionicons name="chatbubbles-outline" size={22} color={color} />
         }}
       />
 
@@ -80,15 +75,18 @@ export default TabNavigator = () => {
             />
         }}
       />
-
       <Tabs.Screen
-        name="Auctions"
-        component={Auctions}
+        name="TabsHome"
+        component={HomePage}
         options={{
           tabBarLabel: ({ color, size }) =>
-            <Text style={{ fontFamily: "Regular", color }}>المزادات </Text>,
+            <Text style={{ fontFamily: "Regular", color }}>الرئيسية</Text>,
           tabBarIcon: ({ color, size }) =>
-            <Ionicons name="hand-right-outline" size={24} color={color} />
+            <MaterialCommunityIcons
+              name="home-search-outline"
+              size={22}
+              color={color}
+            />
         }}
       />
     </Tabs.Navigator>

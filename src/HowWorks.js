@@ -15,6 +15,7 @@ import React, { useEffect, useState } from "react";
 import { MaterialIcons, SimpleLineIcons } from '@expo/vector-icons';
 import styles from "../constants/style";
 import api from "./../constants/constants";
+import DrawerScreenHeader from "./../components/DrawerScreenHeader";
 
 export default function PrivacyPolicy({ route, navigation }) {
     const [privacy, setPrivacy] = useState("");
@@ -23,7 +24,7 @@ export default function PrivacyPolicy({ route, navigation }) {
     }, []);
 
     const _retriveData = async () => {
-        fetch(api.custom_url + "settings/index.php?key=how_works_ar", {
+        fetch(api.custom_url + "settings/index.php?keys=how_works_ar", {
             method: "GET",
             headers: {
                 Accept: "*/*",
@@ -34,6 +35,8 @@ export default function PrivacyPolicy({ route, navigation }) {
         })
             .then(response => response.json())
             .then(json => {
+                // console.log("Respone=====>")
+                // console.log(json.data[0].val);
                 const regex = /<[^>]*>/mgi
                 setPrivacy(json.data[0].val.replace(regex, ""));
             }
@@ -48,50 +51,10 @@ export default function PrivacyPolicy({ route, navigation }) {
     return (
         <View style={styles.container}>
             <StatusBar barStyle="default" backgroundColor="#34ace0" />
-            <View
-                style={{
-                    width: "100%",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    height: 60,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: "#34ace0"
-                }}>
+
+            <DrawerScreenHeader screenTitle={" كيف يعمل التطبيق"} />
 
 
-
-                <View style={{
-                    flexDirection: "row",
-                    width: "100%",
-                    paddingHorizontal: 20
-
-                }}>
-
-                    <TouchableOpacity
-                        onPress={() => navigation.openDrawer()}
-
-                        style={{
-                            justifyContent: "center",
-                            alignItems: "flex-start"
-                        }}
-                    >
-                        <SimpleLineIcons name="menu" size={40} color="#FFF" />
-
-                    </TouchableOpacity>
-
-                    <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 20, marginLeft: 20 }}>
-                        كيف يعمل التطبيق
-                    </Text>
-                </View>
-
-                <TouchableOpacity
-                    onPress={() => navigation.goBack()}
-                    style={{ position: "absolute", right: 20 }}
-                >
-                    <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
-                </TouchableOpacity>
-            </View>
 
             <ScrollView
                 contentContainerStyle={{

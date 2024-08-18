@@ -1,0 +1,48 @@
+{
+    "_parts": [
+        [
+            "user_id",
+            "230"
+        ],
+        [
+            "ad_number",
+            64998
+        ],
+        [
+            "title",
+            "Futh kgg kdss"
+        ],
+        [
+            "details",
+            "Test Add to the list home and "
+        ],
+        [
+            "price",
+            4580
+        ],
+        [
+            "depart_id",
+            57
+        ],
+        [
+            "cat_id",
+            31
+        ],
+        [
+            "address",
+            "Test,Test"
+        ],
+        [
+            "coords",
+            "29.363280757411818,46.17392661049962"
+        ],
+        [
+            "images[]",
+            {
+                "uri": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540mahmoud2391997%252Fmost3mal/ImagePicker/fa0d9e83-c045-4e14-80d3-c64e2d187d15.jpeg",
+                "name": "fa0d9e83-c045-4e14-80d3-c64e2d187d15.jpeg",
+                "type": "image/jpeg"
+            }
+        ]
+    ]
+}

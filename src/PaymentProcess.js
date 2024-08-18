@@ -27,7 +27,7 @@ export default function PaymentProcess({ route, navigation }) {
                         <TouchableOpacity
                             onPress={() => navigation.goBack()}
                             style={{ justifyContent: "center" }}>
-                            <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" style={{
+                            <MaterialIcons name="arrow-forward-ios" size={30} color="#FFF" style={{
                                 marginHorizontal: 10
                             }} />
                         </TouchableOpacity>

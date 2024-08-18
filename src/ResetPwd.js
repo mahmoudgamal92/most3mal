@@ -19,6 +19,7 @@ import { MaterialIcons, Feather, SimpleLineIcons } from "@expo/vector-icons";
 import styles from "../constants/style";
 import api from "./../constants/constants";
 import Constants from "expo-constants";
+import DrawerScreenHeader from "./../components/DrawerScreenHeader";
 
 export default function ResetPwd({ route, navigation }) {
   const [password, setPassword] = useState("");
@@ -77,53 +78,8 @@ export default function ResetPwd({ route, navigation }) {
       behavior={Platform.OS === "ios" ? "padding" : null}
     >
       <StatusBar barStyle="default" backgroundColor="#34ace0" />
-      <View
-        style={{
-          width: "100%",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          height: 60,
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#34ace0"
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            width: "100%",
-            paddingHorizontal: 20
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => navigation.openDrawer()}
-            style={{
-              justifyContent: "center",
-              alignItems: "flex-start"
-            }}
-          >
-            <SimpleLineIcons name="menu" size={40} color="#FFF" />
-          </TouchableOpacity>
 
-          <Text
-            style={{
-              fontFamily: "Bold",
-              color: "#FFF",
-              fontSize: 20,
-              marginLeft: 20
-            }}
-          >
-            تغيير كلمة المرور
-          </Text>
-        </View>
-
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={{ position: "absolute", right: 20 }}
-        >
-          <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
-        </TouchableOpacity>
-      </View>
+      <DrawerScreenHeader screenTitle={"تغيير كلمة المرور"} />
 
       <ScrollView
         contentContainerStyle={{
@@ -150,7 +106,7 @@ export default function ResetPwd({ route, navigation }) {
         >
           <View style={styles.inputLabelContainer}>
             <Text
-              style={{ fontFamily: "Bold", textAlign: "left", fontSize: 15 }}
+              style={{ fontFamily: "Bold", textAlign: "right", fontSize: 15 }}
             >
               أدخل كلمة المرور الحالية
             </Text>
@@ -166,7 +122,7 @@ export default function ResetPwd({ route, navigation }) {
 
           <View style={styles.inputLabelContainer}>
             <Text
-              style={{ fontFamily: "Bold", textAlign: "left", fontSize: 15 }}
+              style={{ fontFamily: "Bold", textAlign: "right", fontSize: 15 }}
             >
               أدخل كلمة المرور الجديدة
             </Text>
@@ -182,7 +138,7 @@ export default function ResetPwd({ route, navigation }) {
 
           <View style={styles.inputLabelContainer}>
             <Text
-              style={{ fontFamily: "Bold", textAlign: "left", fontSize: 15 }}
+              style={{ fontFamily: "Bold", textAlign: "right", fontSize: 15 }}
             >
               أدخل تأكيد كلمة المرور
             </Text>

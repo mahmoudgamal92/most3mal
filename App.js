@@ -6,8 +6,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import AuthStack from "./src/Navigation/AuthStack";
 
 export default function App() {
-  I18nManager.forceRTL(true);
-  I18nManager.allowRTL(true);
+  I18nManager.allowRTL(false);
+  I18nManager.forceRTL(false);
   if (Text.defaultProps == null)
     Text.defaultProps = {};
   Text.defaultProps.allowFontScaling = false;

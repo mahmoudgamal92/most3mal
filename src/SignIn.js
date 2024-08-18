@@ -152,9 +152,13 @@ export default function SignIn({ route, navigation }) {
           <Text style={{ fontFamily: "Bold" }}>ليس لديك حساب ؟ سجل الأن</Text>
         </TouchableOpacity>
 
-        <Text style={{ fontFamily: "Regular", color: "grey" }}>
-          اصدار رقم : {Constants.version}
-        </Text>
+
+        <TouchableOpacity onPress={() => navigation.navigate('SignInSupport')}>
+          <Text style={{ fontFamily: "Regular", color: "grey" }}>
+            هل لديك مشاكل في تسجيل الدخول ؟
+          </Text>
+        </TouchableOpacity>
+
       </View>
       <Toast config={toastConfig} />
     </ScrollView>

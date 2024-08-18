@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import api from "./../constants/constants";
+import DrawerScreenHeader from "./../components/DrawerScreenHeader";
 import {
   FontAwesome,
   Feather,
@@ -14,8 +15,7 @@ import {
 import styles from "../constants/style";
 import { useFocusEffect } from "@react-navigation/native";
 
-export default function ProfilePage({ route }) {
-  const navigation = useNavigation();
+export default function ProfilePage({ navigation, route }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -48,6 +48,7 @@ export default function ProfilePage({ route }) {
         //alert(JSON.stringify(json))
         setLoading(false);
         setData(json.data[0]);
+        console.log(api.media_url + json.data[0].image)
       })
       .catch(error => {
         setLoading(false);
@@ -69,49 +70,8 @@ export default function ProfilePage({ route }) {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="default" backgroundColor="#34ace0" />
-      <View
-        style={{
-          width: "100%",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          height: 60,
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#34ace0"
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            width: "100%",
-            paddingHorizontal: 20,
-            alignItems: "center"
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => navigation.openDrawer()}
-            style={{
-              width: "20%",
-              justifyContent: "center",
-              alignItems: "flex-start"
-            }}
-          >
-            <SimpleLineIcons name="menu" size={40} color="#FFF" />
-          </TouchableOpacity>
 
-          <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 20 }}>
-            الملف الشخصي
-          </Text>
-        </View>
-
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={{ position: "absolute", right: 20 }}
-        >
-          <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
-        </TouchableOpacity>
-      </View>
-
+      <DrawerScreenHeader screenTitle={"الملف الشخصي"} />
       <View style={styles.loginBox}>
         <TouchableOpacity style={styles.profileImgContainer}>
           {data.image !== null
@@ -127,13 +87,14 @@ export default function ProfilePage({ route }) {
                 }}
                 source={{ uri: api.media_url + data.image }}
               />
+
             </View>
             : <Feather name="user" size={70} color="#FFF" />}
         </TouchableOpacity>
 
         <View
           style={{
-            flexDirection: "row",
+            flexDirection: "row-reverse",
             alignItems: "center",
             justifyContent: "flex-start",
             width: "100%",
@@ -141,7 +102,7 @@ export default function ProfilePage({ route }) {
             marginTop: 100
           }}
         >
-          <View style={{ marginRight: 30 }}>
+          <View style={{ marginHorizontal: 20 }}>
             <FontAwesome name="user-circle" size={40} color="grey" />
           </View>
 
@@ -149,7 +110,7 @@ export default function ProfilePage({ route }) {
             <Text
               style={{
                 fontFamily: "Regular",
-                textAlign: "left",
+                textAlign: "right",
                 fontSize: 12,
                 color: "grey"
               }}
@@ -158,7 +119,7 @@ export default function ProfilePage({ route }) {
             </Text>
 
             <Text
-              style={{ fontFamily: "Bold", textAlign: "left", fontSize: 20 }}
+              style={{ fontFamily: "Bold", textAlign: "right", fontSize: 20, paddingHorizontal: 20 }}
             >
               {data.name}
             </Text>
@@ -166,14 +127,14 @@ export default function ProfilePage({ route }) {
         </View>
         <View
           style={{
-            flexDirection: "row",
+            flexDirection: "row-reverse",
             alignItems: "center",
             justifyContent: "flex-start",
             width: "100%",
             marginVertical: 10
           }}
         >
-          <View style={{ marginRight: 20 }}>
+          <View style={{ marginHorizontal: 20 }}>
             <MaterialCommunityIcons
               name="email-outline"
               size={40}
@@ -185,7 +146,7 @@ export default function ProfilePage({ route }) {
             <Text
               style={{
                 fontFamily: "Regular",
-                textAlign: "left",
+                textAlign: "right",
                 fontSize: 12,
                 color: "grey"
               }}
@@ -194,7 +155,7 @@ export default function ProfilePage({ route }) {
             </Text>
 
             <Text
-              style={{ fontFamily: "Bold", textAlign: "left", fontSize: 18 }}
+              style={{ fontFamily: "Bold", textAlign: "right", fontSize: 18 }}
             >
               {data.email}
             </Text>
@@ -203,21 +164,22 @@ export default function ProfilePage({ route }) {
 
         <View
           style={{
-            flexDirection: "row",
+            flexDirection: "row-reverse",
             alignItems: "center",
             justifyContent: "flex-start",
             width: "100%",
             marginVertical: 10
           }}
         >
-          <View style={{ marginRight: 30 }}>
+          <View style={{ marginHorizontal: 20 }}>
             <Feather name="smartphone" size={40} color="grey" />
           </View>
+
           <View>
             <Text
               style={{
                 fontFamily: "Regular",
-                textAlign: "left",
+                textAlign: "right",
                 fontSize: 12,
                 color: "grey"
               }}
@@ -226,7 +188,7 @@ export default function ProfilePage({ route }) {
             </Text>
 
             <Text
-              style={{ fontFamily: "Bold", textAlign: "left", fontSize: 18 }}
+              style={{ fontFamily: "Bold", textAlign: "right", fontSize: 18 }}
             >
               {data.phone}
             </Text>
@@ -235,14 +197,14 @@ export default function ProfilePage({ route }) {
 
         <View
           style={{
-            flexDirection: "row",
+            flexDirection: "row-reverse",
             alignItems: "center",
             justifyContent: "flex-start",
             width: "100%",
             marginVertical: 10
           }}
         >
-          <View style={{ marginRight: 30 }}>
+          <View style={{ marginHorizontal: 20 }}>
             <AntDesign name="calendar" size={40} color="grey" />
           </View>
 
@@ -250,7 +212,7 @@ export default function ProfilePage({ route }) {
             <Text
               style={{
                 fontFamily: "Regular",
-                textAlign: "left",
+                textAlign: "right",
                 fontSize: 12,
                 color: "grey"
               }}
@@ -259,7 +221,7 @@ export default function ProfilePage({ route }) {
             </Text>
 
             <Text
-              style={{ fontFamily: "Bold", textAlign: "left", fontSize: 18 }}
+              style={{ fontFamily: "Bold", textAlign: "right", fontSize: 18 }}
             >
               {data.created_at}
             </Text>
@@ -270,7 +232,7 @@ export default function ProfilePage({ route }) {
       <View
         style={{
           width: "100%",
-          flexDirection: "row",
+          flexDirection: "row-reverse",
           justifyContent: "space-between",
           paddingHorizontal: 30,
           position: "absolute",

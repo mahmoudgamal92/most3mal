@@ -27,14 +27,15 @@ import moment from "moment";
 import api from "./../constants/constants";
 import Toast from "react-native-toast-message";
 import toastConfig from "./../constants/Toast";
+import DrawerScreenHeader from "./../components/DrawerScreenHeader";
 
 export default function MyOrders({ route, navigation }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [input_modal, setInputModal] = React.useState(false);
   const [buttonLoading, setButtonLoading] = React.useState(false);
-  const [current_item, setCurrentItem] = useState("0");
-  const [amount, setAmount] = useState("0");
+  const [current_item, setCurrentItem] = useState(0);
+  const [amount, setAmount] = useState(0);
 
   useEffect(() => {
     _retrieveData();
@@ -96,7 +97,7 @@ export default function MyOrders({ route, navigation }) {
   };
 
   const updateOrder = async () => {
-    if (amount !== "0" && current_item !== "0") {
+    if (amount !== 0 && current_item !== 0) {
       try {
         fetch(api.dynamic_url + "item_offers/" + current_item, {
           method: "PUT",
@@ -153,53 +154,8 @@ export default function MyOrders({ route, navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#34ace0" />
-      <View
-        style={{
-          width: "100%",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          height: 60,
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#34ace0"
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            width: "100%",
-            paddingHorizontal: 20
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => navigation.openDrawer()}
-            style={{
-              justifyContent: "center",
-              alignItems: "flex-start"
-            }}
-          >
-            <SimpleLineIcons name="menu" size={40} color="#FFF" />
-          </TouchableOpacity>
+      <DrawerScreenHeader screenTitle={"طلباتي"} />
 
-          <Text
-            style={{
-              fontFamily: "Bold",
-              color: "#FFF",
-              fontSize: 20,
-              marginLeft: 20
-            }}
-          >
-            طلباتي
-          </Text>
-        </View>
-
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={{ position: "absolute", right: 20 }}
-        >
-          <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
-        </TouchableOpacity>
-      </View>
       <View style={{ flex: 1, backgroundColor: "#FFF", paddingHorizontal: 20 }}>
         <FlatList
           data={data}
@@ -213,7 +169,7 @@ export default function MyOrders({ route, navigation }) {
                   offer_id: item.id
                 })}
               style={{
-                flexDirection: "row-reverse",
+                flexDirection: "row",
                 borderColor: "#DDDDDD",
                 borderWidth: 1,
                 borderRadius: 10,
@@ -226,10 +182,20 @@ export default function MyOrders({ route, navigation }) {
               <View
                 style={{
                   width: "30%",
+                  flexDirection: 'row',
                   alignItems: "center",
-                  justifyContent: "center"
+                  justifyContent: "space-around"
                 }}
               >
+                <TouchableOpacity
+                  onPress={() => {
+                    setCurrentItem(item.id);
+                    setInputModal(!input_modal);
+                  }}
+                >
+                  <AntDesign name="edit" size={30} color="black" />
+                </TouchableOpacity>
+
                 <TouchableOpacity
                   onPress={() => {
                     Alert.alert(
@@ -253,17 +219,19 @@ export default function MyOrders({ route, navigation }) {
                 style={{
                   width: "50%",
                   paddingHorizontal: 20,
-                  alignItems: "flex-start",
+                  alignItems: "flex-end",
                   justifyContent: "center"
                 }}
               >
-                <Text style={{ fontFamily: "Bold", fontSize: 15, color: "#34ace0" }}>
-                 {item.amount} ربال
+                <Text style={{ fontFamily: "Regular", fontSize: 12, color: "grey" }}>
+                  {item.ad.title}
                 </Text>
-
+                <Text style={{ fontFamily: "Bold", fontSize: 14, color: "#34ace0" }}>
+                  {item.amount} ربال
+                </Text>
                 <View
                   style={{
-                    flexDirection: "row",
+                    flexDirection: "row-reverse",
                     justifyContent: "space-around",
                     alignItems: "center",
                     marginTop: 10
@@ -286,8 +254,9 @@ export default function MyOrders({ route, navigation }) {
               <View style={{ width: "20%" }}>
                 <Image
                   source={{
-                    uri: api.media_url + item.ad.images,
+                    uri: api.media_url + item.ad.images.split(",")[0],
                   }}
+                  defaultSource={require('./../assets/picture.png')}
                   style={{
                     width: 70,
                     height: 70,
@@ -391,24 +360,24 @@ export default function MyOrders({ route, navigation }) {
                 >
                   {buttonLoading == false
                     ? <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center"
+                      }}
+                    >
+                      <Text
                         style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "center"
+                          color: "white",
+                          textAlign: "center",
+                          fontFamily: "Bold",
+                          marginHorizontal: 10
                         }}
                       >
-                        <Text
-                          style={{
-                            color: "white",
-                            textAlign: "center",
-                            fontFamily: "Bold",
-                            marginHorizontal: 10
-                          }}
-                        >
-                          تعديل
-                        </Text>
-                        <Ionicons name="send" size={24} color="#FFF" />
-                      </View>
+                        تعديل
+                      </Text>
+                      <Ionicons name="send" size={24} color="#FFF" />
+                    </View>
                     : <ActivityIndicator size="large" color={"#FFF"} />}
                 </TouchableOpacity>
               </View>

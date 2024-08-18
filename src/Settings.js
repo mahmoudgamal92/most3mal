@@ -4,7 +4,8 @@ import {
     View,
     TouchableOpacity,
     Image,
-    StyleSheet
+    StyleSheet,
+    Linking
 } from "react-native";
 import {
     SimpleLineIcons,
@@ -21,26 +22,42 @@ import {
 import styles from "../constants/style";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-export default function ProfilePage({ route, navigation }) {
+import DrawerScreenHeader from "./../components/DrawerScreenHeader";
+import api from "./../constants/constants";
+export default function Settings({ route, navigation }) {
+    const [values, setValues] = useState([]);
+    useEffect(() => {
+        _retriveData();
+    }, []);
+    const _retriveData = async () => {
+        fetch(api.custom_url + "settings/index.php?keys=facebook,instagram,youtube,snapchat", {
+            method: "GET",
+            headers: {
+                Accept: "*/*",
+                "Content-type": "multipart/form-data;",
+                "Accept-Encoding": "gzip, deflate, br",
+                Connection: "keep-alive",
+            },
+        })
+            .then(response => response.json())
+            .then(json => {
+                //console.log(json.data);
+                setValues(json.data);
 
-    // const [user_name, setUserName] = useState(null);
-    // const [user_type, setUserType] = useState(null);
-    // //   useEffect(() => {
-    // //     _retriveData();
-    // //   }, []);
-    // //   const _retriveData = async () => {
-    // //     try {
-    // //       const user_name = await AsyncStorage.getItem("user_name");
-    // //       const user_type = await AsyncStorage.getItem("user_type");
-    // //       if (user_name !== null && user_type !== null) {
-    // //         setUserName(user_name);
-    // //         setUserType(user_type);
-    // //       }
-    // //     }
-    // //     catch (error) {
-    // //     }
-    // //   };
+                //facebook.forEach(item => console.log(item.val));
+            }
+            )
+            .catch(error => {
+                console.error(error);
+            }
+            );
+    };
 
+
+    const getKeyVal = (param) => {
+        const item = values?.filter(item => item.ob_key === param) || [];
+        return item[0].val;
+    }
 
 
     // LogOut Function
@@ -71,50 +88,8 @@ export default function ProfilePage({ route, navigation }) {
 
     return (
         <View style={styles.container}>
-            <StatusBar  backgroundColor="#34ace0" translucent />
-            <View style={{
-                width: "100%",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                height: 60,
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "#34ace0"
-            }}>
-
-                <View style={{
-                    flexDirection: "row",
-                    width: "100%",
-                    paddingHorizontal: 20,
-                    alignItems: "center"
-
-                }}>
-
-                    <TouchableOpacity
-                        onPress={() => navigation.openDrawer()}
-
-                        style={{
-                            justifyContent: "center",
-                            alignItems: "flex-start"
-                        }}
-                    >
-                        <SimpleLineIcons name="menu" size={40} color="#FFF" />
-
-                    </TouchableOpacity>
-
-                    <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 16, marginLeft: 20 }}>
-                      الإعدادات  
-                    </Text>
-                </View>
-
-
-                <TouchableOpacity
-                    onPress={() => navigation.goBack()}
-                    style={{ position: "absolute", right: 20 }}
-                >
-                    <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
-                </TouchableOpacity>
-            </View>
+            <StatusBar backgroundColor="#34ace0" translucent />
+            <DrawerScreenHeader screenTitle={"الإعدادات"} />
             <View
                 style={{
                     width: "85%",
@@ -134,7 +109,7 @@ export default function ProfilePage({ route, navigation }) {
                 }}
             >
                 <TouchableOpacity
-                   //onPress={() => switchLang()}
+                    onPress={() => navigation.navigate('ResetPwd')}
                     style={{
                         width: "90%",
                         padding: 10,
@@ -142,7 +117,158 @@ export default function ProfilePage({ route, navigation }) {
                         justifyContent: "space-between"
                     }}
                 >
-                    <View style={{ flexDirection: "row-reverse" }}>
+                    <View>
+                        <MaterialIcons name="arrow-back-ios" size={24} color="black" />
+                    </View>
+
+                    <View style={{ flexDirection: "row" }}>
+                        <Text
+                            style={{
+                                fontFamily: "Bold",
+                                color: "#143656",
+                                marginHorizontal: 10
+                            }}>
+
+                            تغيير كلمه المرور
+                        </Text>
+
+                        <Entypo
+                            name="lock"
+                            size={24}
+                            color="#616161"
+                            style={{ marginLeft: 10 }}
+                        />
+                    </View>
+                </TouchableOpacity>
+
+
+
+
+
+
+
+
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('PrivacyPolicy')}
+                    style={{
+                        width: "90%",
+                        padding: 10,
+                        flexDirection: "row",
+                        justifyContent: "space-between"
+                    }}
+                >
+                    <View>
+                        <MaterialIcons name="arrow-back-ios" size={24} color="black" />
+                    </View>
+
+                    <View style={{ flexDirection: "row" }}>
+                        <Text
+                            style={{
+                                fontFamily: "Bold",
+                                color: "#143656",
+                                marginHorizontal: 10
+                            }}>
+
+                            سياسة الإستخدام و الخصوصية
+
+                        </Text>
+
+
+                        <MaterialIcons
+                            name="privacy-tip"
+                            size={24}
+                            color="#616161"
+                            style={{ marginLeft: 10 }}
+                        />
+
+
+                    </View>
+                </TouchableOpacity>
+
+
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('TermsAndConditions')}
+                    style={{
+                        width: "90%",
+                        padding: 10,
+                        flexDirection: "row",
+                        justifyContent: "space-between"
+                    }}
+                >
+                    <View>
+                        <MaterialIcons name="arrow-back-ios" size={24} color="black" />
+                    </View>
+
+                    <View style={{ flexDirection: "row" }}>
+                        <Text
+                            style={{
+                                fontFamily: "Bold",
+                                color: "#143656",
+                                marginHorizontal: 10
+                            }}>
+
+                            الشروط و الأحكام
+
+                        </Text>
+
+
+
+
+                        <FontAwesome5 name="clipboard-list" size={24}
+                            color="#616161"
+                            style={{ marginLeft: 10 }} />
+
+                    </View>
+                </TouchableOpacity>
+
+
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('HowWorks')}
+                    style={{
+                        width: "90%",
+                        padding: 10,
+                        flexDirection: "row",
+                        justifyContent: "space-between"
+                    }}
+                >
+                    <View>
+                        <MaterialIcons name="arrow-back-ios" size={24} color="black" />
+                    </View>
+
+                    <View style={{ flexDirection: "row" }}>
+                        <Text
+                            style={{
+                                fontFamily: "Bold",
+                                color: "#143656",
+                                marginHorizontal: 10
+                            }}>
+
+                            كيف يعمل التطبيق
+
+                        </Text>
+
+                        <AntDesign
+                            name="infocirlceo"
+                            size={24}
+                            color="#616161"
+                            style={{ marginLeft: 10 }}
+                        />
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    //onPress={() => switchLang()}
+                    style={{
+                        width: "90%",
+                        padding: 10,
+                        flexDirection: "row",
+                        justifyContent: "space-between"
+                    }}
+                >
+                    <View>
+                        <MaterialIcons name="arrow-back-ios" size={24} color="black" />
+                    </View>
+
+                    <View style={{ flexDirection: "row" }}>
                         <Text
                             style={{
                                 fontFamily: "Bold",
@@ -155,10 +281,6 @@ export default function ProfilePage({ route, navigation }) {
                         </Text>
                         <FontAwesome name="language" size={24} color="#616161" />
                     </View>
-
-                    <View>
-                        <MaterialIcons name="arrow-back-ios" size={24} color="black" />
-                    </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -170,7 +292,11 @@ export default function ProfilePage({ route, navigation }) {
                         justifyContent: "space-between"
                     }}
                 >
-                    <View style={{ flexDirection: "row-reverse" }}>
+                    <View>
+                        <MaterialIcons name="arrow-back-ios" size={24} color="black" />
+                    </View>
+
+                    <View style={{ flexDirection: "row" }}>
                         <Text
                             style={{
                                 fontFamily: "Bold",
@@ -183,13 +309,54 @@ export default function ProfilePage({ route, navigation }) {
                         <AntDesign name="closecircle" size={24} color="#616161" />
                     </View>
 
-                    <View>
-                        <MaterialIcons name="arrow-back-ios" size={24} color="black" />
-                    </View>
                 </TouchableOpacity>
             </View>
 
+            <View style={{ alignItems: "center", marginTop: 50, marginBottom: 20 }}>
+                <Text style={{ fontFamily: "Bold" }}>
+                    وسائل التواصل الاجتماعي
+                </Text>
 
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+
+                    <TouchableOpacity
+                        onPress={() => Linking.openURL(getKeyVal('facebook'))}
+                        style={{ margin: 10 }}>
+                        <Entypo name="facebook" size={35} color="grey" />
+
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={() => Linking.openURL(getKeyVal('facebook'))}
+                        style={{ margin: 10 }}>
+                        <FontAwesome5 name="twitter-square" size={35} color="grey" />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={() => Linking.openURL(getKeyVal('snapchat'))}
+                        style={{ margin: 10 }}>
+                        <FontAwesome name="snapchat-square" size={35} color="grey" />
+                    </TouchableOpacity>
+
+
+                    <TouchableOpacity
+                        onPress={() => Linking.openURL(getKeyVal('youtube'))}
+                        style={{ margin: 10 }}>
+                        <FontAwesome name="youtube-square" size={35} color="grey" />
+                    </TouchableOpacity>
+
+
+                    <TouchableOpacity
+                        onPress={() => Linking.openURL(getKeyVal('instagram'))}
+                        style={{ margin: 10 }}>
+                        <FontAwesome5 name="instagram-square" size={35} color="grey" />
+                    </TouchableOpacity>
+
+
+
+                </View>
+
+            </View>
 
             <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
                 <Text
@@ -200,7 +367,7 @@ export default function ProfilePage({ route, navigation }) {
                         marginHorizontal: 30,
                     }}
                 >
-                  مستعمل.كوم 2024
+                    مستعمل.كوم 2024
                 </Text>
             </View>
         </View>

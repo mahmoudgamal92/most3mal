@@ -173,33 +173,36 @@ export default function OrderInfo({ route, navigation }) {
       });
   };
 
-  const _openChat = async (user_id, user_name) => {
-    const user_token = await AsyncStorage.getItem("user_token");
-    setChatLoading(true);
-    let url = "https://mestamal.com/api/contact/" + user_id;
+  const _openChat = async (reciver_id, reciver_name) => {
+    const user_id = await AsyncStorage.getItem("user_id");
+    const user_name = await AsyncStorage.getItem("user_name");
+    let url = api.custom_url + "messaging/create.php";
+    let formData = new FormData();
+    formData.append("sender_id", user_id);
+    formData.append("sender_name", user_name);
+    formData.append("reciver_id", reciver_id);
+    formData.append("reciver_name", reciver_name);
+
     try {
       fetch(url, {
-        method: "GET",
+        method: "POST",
         headers: {
           Accept: "*/*",
           "Content-type": "multipart/form-data;",
           "cache-control": "no-cache",
           "Accept-Encoding": "gzip, deflate, br",
-          Connection: "keep-alive",
-          Authorization: "Bearer " + user_token
-        }
+          Connection: "keep-alive"
+        },
+        body: formData
       })
         .then(response => response.json())
         .then(json => {
-          if (json.status == true) {
-            setChatLoading(false);
+          if (json.success == true) {
             navigation.navigate("ChatScreen", {
-              chat_id: user_id,
-              user_name: user_name
+              chat_id: json.id
             });
           } else {
-            setChatLoading(false);
-            alert(json.msg);
+            console.log(JSON.stringify(json));
           }
         })
         .catch(error => console.error(error));
@@ -313,7 +316,7 @@ export default function OrderInfo({ route, navigation }) {
         <View
           style={{
             width: "100%",
-            flexDirection: "row",
+            flexDirection: "row-reverse",
             justifyContent: "flex-start",
             alignItems: "center"
           }}
@@ -350,7 +353,7 @@ export default function OrderInfo({ route, navigation }) {
       >
         <TouchableOpacity
           style={{
-            flexDirection: "row",
+            flexDirection: "row-reverse",
             backgroundColor: "#FFF",
             marginVertical: 15,
             marginHorizontal: 20,
@@ -370,7 +373,7 @@ export default function OrderInfo({ route, navigation }) {
           <View style={{ width: "70%", alignItems: "center" }}>
             <View
               style={{
-                flexDirection: "row",
+                flexDirection: "row-reverse",
                 alignItems: "center",
                 marginHorizontal: 22
               }}
@@ -396,7 +399,8 @@ export default function OrderInfo({ route, navigation }) {
                     color: "grey",
                     fontFamily: "Bold",
                     fontSize: 12,
-                    width: "90%"
+                    width: "90%",
+                    textAlign: 'right'
                   }}
                 >
                   البائع :
@@ -406,7 +410,7 @@ export default function OrderInfo({ route, navigation }) {
                     color: "black",
                     fontFamily: "Bold",
                     fontSize: 12,
-                    textAlign: "left",
+                    textAlign: 'right',
                     width: "90%"
                   }}
                 >
@@ -429,7 +433,7 @@ export default function OrderInfo({ route, navigation }) {
 
             <View
               style={{
-                flexDirection: "row",
+                flexDirection: "row-reverse",
                 alignItems: "center",
                 marginHorizontal: 22
               }}
@@ -455,7 +459,8 @@ export default function OrderInfo({ route, navigation }) {
                     color: "grey",
                     fontFamily: "Bold",
                     fontSize: 12,
-                    width: "90%"
+                    width: "90%",
+                    textAlign: 'right'
                   }}
                 >
                   العميل :
@@ -466,7 +471,7 @@ export default function OrderInfo({ route, navigation }) {
                     fontFamily: "Bold",
                     fontSize: 12,
                     width: "90%",
-                    textAlign: "left"
+                    textAlign: 'right'
                   }}
                 >
                   {orderClient.name}
@@ -600,7 +605,7 @@ export default function OrderInfo({ route, navigation }) {
               paddingHorizontal: 10
             }}
           >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flexDirection: "row-reverse", alignItems: "center", width: '100%' }}>
               <View style={{ width: 50, alignItems: "center" }}>
                 <MaterialIcons
                   name="confirmation-number"
@@ -614,7 +619,7 @@ export default function OrderInfo({ route, navigation }) {
               </Text>
             </View>
 
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flexDirection: "row-reverse", alignItems: "center", width: '100%' }}>
               <View style={{ width: 50, alignItems: "center" }}>
                 <FontAwesome5
                   name="money-check-alt"
@@ -635,7 +640,7 @@ export default function OrderInfo({ route, navigation }) {
               </Text>
             </View>
 
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flexDirection: "row-reverse", alignItems: "center", width: '100%' }}>
               <View style={{ width: 50, alignItems: "center" }}>
                 <AntDesign
                   name="calendar"
@@ -698,7 +703,7 @@ export default function OrderInfo({ route, navigation }) {
         <View
           style={{ width: "100%", paddingHorizontal: 20, marginVertical: 10 }}
         >
-          <Text style={{ fontFamily: "Bold", fontSize: 18 }}>
+          <Text style={{ fontFamily: "Bold", fontSize: 18, textAlign: 'right' }}>
             بيانات المنتج
           </Text>
         </View>

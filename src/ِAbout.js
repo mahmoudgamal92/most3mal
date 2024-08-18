@@ -29,39 +29,40 @@ export default function About({ route, navigation }) {
                 }}
             >
                 <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 20 }}>
-                   عن التطبيق 
+                    عن التطبيق
                 </Text>
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
-                    style={{ position: "absolute", right : 20 }}
+                    style={{ position: "absolute", right: 20 }}
                 >
-                    <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
+                    <MaterialIcons name="arrow-forward-ios" size={30} color="#FFF" />
                 </TouchableOpacity>
             </View>
 
             <ScrollView
-                contentContainerStyle={{ 
-                    marginTop:50,
+                contentContainerStyle={{
+                    marginTop: 50,
                     alignItems: "center",
-                    justifyContent:"center" }}
+                    justifyContent: "center"
+                }}
             >
                 <View style={{
-                        width: "90%",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        shadowColor: "#000",
-                        shadowOffset: {
-                          width: 0,
-                          height: 5
-                        },
-                        shadowOpacity: 0.34,
-                        shadowRadius: 6.27,
-                    
-                        elevation: 10
+                    width: "90%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    shadowColor: "#000",
+                    shadowOffset: {
+                        width: 0,
+                        height: 5
+                    },
+                    shadowOpacity: 0.34,
+                    shadowRadius: 6.27,
+
+                    elevation: 10
                 }}>
                     <View style={styles.inputLabelContainer}>
                         <Text style={{ fontFamily: "Bold", textAlign: "right", fontSize: 15 }}>
-                           أدخل بريدك الإلكتروني
+                            أدخل بريدك الإلكتروني
                         </Text>
                     </View>
 
@@ -72,7 +73,7 @@ export default function About({ route, navigation }) {
                     </View>
                     <View style={styles.inputLabelContainer}>
                         <Text style={{ fontFamily: "Bold", textAlign: "right", fontSize: 15 }}>
-                           موضوع التواصل
+                            موضوع التواصل
                         </Text>
                     </View>
 

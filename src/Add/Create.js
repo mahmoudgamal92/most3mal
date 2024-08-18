@@ -1,7 +1,5 @@
 import {
-  Animated,
   Image,
-  SafeAreaView,
   Text,
   View,
   StatusBar,
@@ -15,12 +13,13 @@ import React, { useState, useEffect, useRef } from "react";
 import * as ImagePicker from "expo-image-picker";
 import MapView, { Marker } from "react-native-maps";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
+import { MaterialIcons, FontAwesome, Feather } from "@expo/vector-icons";
 import styles from "./../../constants/style";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import toastConfig from "./../../constants/Toast";
 import { KeyboardAvoidingView } from "react-native";
 import api from "./../../constants/constants";
+import mime from 'mime';
 
 export default function Create({ route, navigation }) {
   const { depart_id, cat_id } = route.params;
@@ -48,7 +47,6 @@ export default function Create({ route, navigation }) {
     try {
       const location = await AsyncStorage.getItem("current_location");
       if (location !== null) {
-        // We have data!!
         setLatitude(JSON.parse(location).latitude);
         setLongitude(JSON.parse(location).longitude);
       }
@@ -73,105 +71,114 @@ export default function Create({ route, navigation }) {
       center: { latitude: latitude, longitude: longitude }
     });
   };
-
   const NewAdd = async () => {
-    const user_id = await AsyncStorage.getItem("user_id");
-    if (title.length < 10) {
-      alert("لايمكن إضافة إعلان أقل من 10 حروف");
-    } else if (description == "" || price == "") {
-      alert("لابد من إكمال البيانات كاملة");
-    } else {
+    try {
+      const user_id = await AsyncStorage.getItem("user_id");
+
+      if (!user_id) {
+        alert("User ID not found.");
+        return;
+      }
+
+      if (title.length < 10) {
+        alert("لايمكن إضافة إعلان أقل من 10 حروف");
+        return;
+      }
+
+      if (!description || !price) {
+        alert("لابد من إكمال البيانات كاملة");
+        return;
+      }
+
+      if (images.length == 0) {
+        alert("لابد من اختيار صوره للمنتج");
+        return;
+      }
+
       setLoading(true);
-      let formData = new FormData();
+      const formData = new FormData();
       formData.append("user_id", user_id);
-      formData.append("ad_number", parseInt(Math.random() * 100000));
+      formData.append("ad_number", Math.floor(Math.random() * 100000));
       formData.append("title", title);
       formData.append("details", description);
       formData.append("price", parseInt(price));
       formData.append("depart_id", parseInt(depart_id));
       formData.append("cat_id", parseInt(cat_id));
-      formData.append("address", state + "," + city);
+      formData.append("address", `${state},${city}`);
       formData.append("coords", coords);
 
-      images.map((item, index) => {
+      images.forEach((item, index) => {
         formData.append("images[]", {
           uri: item.uri,
           name: item.name,
-          type: item.type
+          type: item.type,
         });
       });
 
-      fetch(api.custom_url + "ads/create.php", {
+      //console.log(JSON.stringify(formData));
+      const response = await fetch(api.custom_url + "ads/create.php", {
         method: "POST",
-        body: formData
-      })
-        .then(response => response.json())
-        .then(json => {
-          if (json.success == true) {
-            Toast.show({
-              type: "successToast",
-              text1: "تم إنشاء الإعلان بنجاح",
-              bottomOffset: 80,
-              visibilityTime: 2000
-            });
-
-            setLoading(false);
-            setTimeout(() => {
-              navigation.pop(3);
-            }, 1000);
-          } else {
-            Toast.show({
-              type: "errorToast",
-              text1: "هناك مشكلة في إضافة الإعلان ",
-              bottomOffset: 80,
-              visibilityTime: 2000
-            });
-            setLoading(false);
-          }
-        })
-        .catch(error => {
-          setLoading(false);
-          console.error(error);
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      const json = await response.json();
+      if (json.success) {
+        Toast.show({
+          type: "successToast",
+          text1: "تم إنشاء الإعلان بنجاح",
+          bottomOffset: 80,
+          visibilityTime: 2000,
         });
+        setLoading(false);
+        setTimeout(() => {
+          navigation.pop(3);
+        }, 1000);
+      } else {
+        Toast.show({
+          type: "errorToast",
+          text1: "هناك مشكلة في إضافة الإعلان ",
+          bottomOffset: 80,
+          visibilityTime: 2000,
+        });
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Network request failed:", error);
+      alert("Network request failed. Please check your connection and try again.");
     }
   };
-
 
   const pickImage = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        //aspect: [4, 3],
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsMultipleSelection: true,
         quality: 1,
       });
 
-      // if (!result.canceled) {
-      //   setImage(result.assets[0].uri);
-      // }
-
       if (!result.canceled) {
-        let localUri = result.assets[0].uri;
-        let filename = localUri.split("/").pop();
-        let match = /\.(\w+)$/.exec(filename);
-        let img_type = match ? `image/${match[1]}` : `image`;
-        setImages([
-          ...images,
-          {
-            uri: localUri,
-            name: filename,
-            type: img_type
-          }
-        ]);
+
+        const newImages = result.assets.map(asset => ({
+          uri: asset.uri,
+          name: asset.uri.split('/').pop(),
+          type: mime.getType(asset.uri),
+        }));
+
+        setImages([...images, ...newImages]);
       }
-    } catch (E) {
-      console.log(E);
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  const _removeImg = async src => {
-    setImages(images.filter(item => item.uri !== src));
+
+  const _removeImg = (src) => {
+    setImages((prevImages) => prevImages.filter(item => item.uri !== src));
   };
+
 
 
   return (
@@ -199,7 +206,7 @@ export default function Create({ route, navigation }) {
           onPress={() => navigation.goBack()}
           style={{ position: "absolute", right: 20 }}
         >
-          <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
+          <MaterialIcons name="arrow-forward-ios" size={30} color="#FFF" />
         </TouchableOpacity>
       </View>
 
@@ -210,7 +217,7 @@ export default function Create({ route, navigation }) {
         <View style={[styles.loginBox, { marginTop: 10 }]}>
           <View style={styles.inputLabelContainer}>
             <Text
-              style={{ fontFamily: "Bold", textAlign: "left", fontSize: 15 }}
+              style={{ fontFamily: "Bold", textAlign: "right", fontSize: 15 }}
             >
               تحميل صورة الإعلان
             </Text>
@@ -221,10 +228,7 @@ export default function Create({ route, navigation }) {
             onPress={() => pickImage()}
             style={styles.imgUploadContainer}
           >
-            <Image
-              style={styles.imgUploadIcon}
-              source={require("./../../assets/camera.png")}
-            />
+            <Feather name="camera" size={60} color="#FFF" />
           </TouchableOpacity>
 
           <View
@@ -241,7 +245,7 @@ export default function Create({ route, navigation }) {
               return (
                 <View>
                   <TouchableOpacity
-                    onPress={() => _removeImg(item.src)}
+                    onPress={() => _removeImg(item.uri)}
                     style={{ marginBottom: -20, zIndex: 849849 }}
                   >
                     <Image
@@ -265,7 +269,7 @@ export default function Create({ route, navigation }) {
 
 
           <View style={styles.inputLabelContainer}>
-            <Text style={{ fontFamily: "Bold", fontSize: 15 }}>
+            <Text style={{ fontFamily: "Bold", fontSize: 15, textAlign: 'right' }}>
               عنوان الإعلان (أكثر من 10 حروف)
             </Text>
           </View>
@@ -280,7 +284,7 @@ export default function Create({ route, navigation }) {
 
           <View style={styles.inputLabelContainer}>
             <Text
-              style={{ fontFamily: "Bold", textAlign: "left", fontSize: 15 }}
+              style={{ fontFamily: "Bold", textAlign: "right", fontSize: 15 }}
             >
               وصف الإعلان
             </Text>
@@ -296,7 +300,7 @@ export default function Create({ route, navigation }) {
           </View>
 
           <View style={styles.inputLabelContainer}>
-            <Text style={{ fontFamily: "Bold", textAlign: "left" }}>
+            <Text style={{ fontFamily: "Bold", textAlign: "right" }}>
               سعر الإعلان (بالريال السعودي)
             </Text>
           </View>
@@ -312,7 +316,7 @@ export default function Create({ route, navigation }) {
           </View>
 
           <View style={styles.inputLabelContainer}>
-            <Text style={{ fontFamily: "Bold", textAlign: "left" }}>
+            <Text style={{ fontFamily: "Bold", textAlign: "right" }}>
               المدينة
             </Text>
           </View>
@@ -326,7 +330,7 @@ export default function Create({ route, navigation }) {
           </View>
 
           <View style={styles.inputLabelContainer}>
-            <Text style={{ fontFamily: "Bold", textAlign: "left" }}>الحي</Text>
+            <Text style={{ fontFamily: "Bold", textAlign: "right" }}>الحي</Text>
           </View>
 
           <View style={styles.inputContainer}>
@@ -341,14 +345,14 @@ export default function Create({ route, navigation }) {
             <Text
               style={{
                 fontFamily: "Bold",
-                textAlign: "left",
+                textAlign: "right",
                 marginVertical: 10
               }}
             >
               إختر الموقع الجغرافي
             </Text>
             <Text
-              style={{ fontFamily: "Regular", textAlign: "left", color: "red" }}
+              style={{ fontFamily: "Regular", textAlign: "right", color: "red" }}
             >
               لن يظهر إلا عند قبول العرض و تسليم المنتج*
             </Text>
@@ -372,7 +376,7 @@ export default function Create({ route, navigation }) {
                 flexDirection: "row-reverse",
                 alignItems: "center",
                 top: 10,
-                right: 10,
+                left: 10,
                 backgroundColor: "#34ACE0",
                 zIndex: 10000,
                 borderRadius: 10,

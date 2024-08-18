@@ -8,7 +8,7 @@ import {
 import React, { useState, useEffect } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
-import { FontAwesome5, Feather, Entypo, FontAwesome,MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome5, Feather, Entypo, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from "../constants/style";
 import Constants from "expo-constants";
@@ -51,7 +51,7 @@ export default function EditProfile({ route, navigation }) {
         }
 
         setLoading(true);
-            fetch(api.custom_url+"user/update.php", {
+        fetch(api.custom_url + "user/update.php", {
             method: "POST",
             headers: {
                 Accept: "*/*",
@@ -66,10 +66,10 @@ export default function EditProfile({ route, navigation }) {
                 //alert(JSON.stringify(responseJson));
 
                 if (responseJson.success == true) {
-                    alert(JSON.stringify(responseJson));
+                    // alert(JSON.stringify(responseJson));
                     setLoading(false);
                     alert("تم تعديل الحساب بنجاح");
-                   // navigation.goBack();
+                    // navigation.goBack();
                 } else {
                     alert("حدث خطأ ما");
                     setLoading(false);
@@ -132,7 +132,7 @@ export default function EditProfile({ route, navigation }) {
                     onPress={() => navigation.goBack()}
                     style={{ position: "absolute", right: 20 }}
                 >
-                    <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
+                    <MaterialIcons name="arrow-forward-ios" size={30} color="#FFF" />
                 </TouchableOpacity>
             </View>
 
@@ -169,7 +169,7 @@ export default function EditProfile({ route, navigation }) {
                     marginTop: 20,
                     width: "100%"
                 }}>
-                    <Text style={{ fontFamily: "Bold", fontSize: 12, color: "#000" }}>
+                    <Text style={{ fontFamily: "Bold", fontSize: 12, color: "#000", textAlign: 'right' }}>
                         أسم المستخدم
                     </Text>
                 </View>
@@ -192,7 +192,7 @@ export default function EditProfile({ route, navigation }) {
                     marginTop: 20,
                     width: "100%"
                 }}>
-                    <Text style={{ fontFamily: "Bold", fontSize: 12, color: "#000" }}>
+                    <Text style={{ fontFamily: "Bold", fontSize: 12, color: "#000", textAlign: 'right' }}>
                         رقم الجوال
                     </Text>
                 </View>
@@ -207,26 +207,13 @@ export default function EditProfile({ route, navigation }) {
                         placeholder="رقم الجوال" />
                 </View>
 
-
-                {/* 
-                <View style={styles.inputContainer}>
-                    <View style={{ width: "10%" }}>
-                        <FontAwesome name="whatsapp" size={24} color="grey" />
-                    </View>
-                    <TextInput style={styles.input}
-                        onChangeText={text => setWhatsapp(text)}
-                        defaultValue={item.whats_app}
-                        placeholder="رقم الواتساب"
-                    />
-                </View> */}
-
                 <View style={{
                     paddingHorizontal: 10,
                     marginTop: 20,
                     width: "100%"
                 }}>
-                    <Text style={{ fontFamily: "Bold", fontSize: 12, color: "#000" }}>
-                      البريد الالكتروني
+                    <Text style={{ fontFamily: "Bold", fontSize: 12, color: "#000", textAlign: 'right' }}>
+                        البريد الالكتروني
                     </Text>
                 </View>
 
@@ -243,7 +230,7 @@ export default function EditProfile({ route, navigation }) {
                 </View>
 
 
-    
+
                 <TouchableOpacity style={styles.primaryBtn}
                     onPress={() => registerUser()}>
                     {loading == true ?

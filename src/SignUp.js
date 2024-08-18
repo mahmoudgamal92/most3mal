@@ -45,7 +45,7 @@ export default function SignUp({ route, navigation }) {
     ) {
       Toast.show({
         type: "erorrToast",
-        text1: "الرجاء ملئ جميع الحقول",
+        text1: "الرجاء تعبئة جميع الحقول",
         bottomOffset: 80,
         visibilityTime: 2000
       });
@@ -82,7 +82,7 @@ export default function SignUp({ route, navigation }) {
             setLoading(false);
             saveCredintials(responseJson.data);
           }
-           else {
+          else {
             Toast.show({
               type: "erorrToast",
               text1: responseJson.message,
@@ -98,8 +98,8 @@ export default function SignUp({ route, navigation }) {
 
   const saveCredintials = (object) => {
     AsyncStorage.setItem("user_token", object.token);
-    AsyncStorage.setItem('user_id',object.id.toString());
-    AsyncStorage.setItem('user_name',object.name);
+    AsyncStorage.setItem('user_id', object.id.toString());
+    AsyncStorage.setItem('user_name', object.name);
     Toast.show({
       type: "successToast",
       text1: "تم إنشاء الحساب بنجاح",
@@ -218,14 +218,14 @@ export default function SignUp({ route, navigation }) {
 
         {loading == true
           ? <TouchableOpacity style={styles.primaryBtn}>
-              <ActivityIndicator size={40} color={"#FFF"} />
-            </TouchableOpacity>
+            <ActivityIndicator size={40} color={"#FFF"} />
+          </TouchableOpacity>
           : <TouchableOpacity
-              style={styles.primaryBtn}
-              onPress={() => registerUser()}
-            >
-              <Text style={styles.btnText}>إنشاء حساب</Text>
-            </TouchableOpacity>}
+            style={styles.primaryBtn}
+            onPress={() => registerUser()}
+          >
+            <Text style={styles.btnText}>إنشاء حساب</Text>
+          </TouchableOpacity>}
         <TouchableOpacity
           style={{ marginTop: 20 }}
           onPress={() => navigation.navigate("SignIn")}

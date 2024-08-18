@@ -53,12 +53,6 @@ const CustomDrawer = (props, { navigation }) => {
         alignItems: "center",
         justifyContent: "center",
       }}>
-        <TouchableOpacity
-          onPress={() => toggleDrawer()}
-          style={{ position: "absolute", top: 10, right: 10 }}>
-          <AntDesign name="closecircle" size={24} color="#FFF" />
-
-        </TouchableOpacity>
         <Image
           source={require("./assets/white_logo.png")}
           style={styles.sideMenuProfileIcon}

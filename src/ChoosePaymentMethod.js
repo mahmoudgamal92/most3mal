@@ -94,7 +94,7 @@ export default function ChoosePaymentMethod({ route, navigation }) {
 
                 <View style={{ width: "20%", justifyContent: "center", alignItems: "center" }}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
+                        <MaterialIcons name="arrow-forward-ios" size={30} color="#FFF" />
                     </TouchableOpacity>
                 </View>
 

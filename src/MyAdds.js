@@ -226,8 +226,9 @@ export default function MyAdds({ route, navigation }) {
                     >
                         <ImageBackground
                             imageStyle={styles.itemImg}
-                            source={{ uri: api.media_url + item.images.split(",")[0] }}>
-
+                            source={{ uri: api.media_url + item.images.split(",")[0] }}
+                            defaultSource={require('./../assets/picture.png')}
+                        >
                             <View style={styles.itemContent}>
                                 <TouchableOpacity
                                     onPress={() => {

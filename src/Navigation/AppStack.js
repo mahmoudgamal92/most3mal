@@ -1,5 +1,5 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import HomePage from "./../HomePage";
+import TabNavigator from "./Tabs";
 import ChatScreen from "./../ChatScreen";
 import OtpScreen from "./../OtpScreen";
 import Auctions from "./../Auctions";
@@ -24,6 +24,8 @@ import AuctionOfferInfo from "./../AuctionOfferInfo";
 import SearchResult from "./../SearchResult";
 import PrivacyPolicy from "./../PrivacyPolicy";
 import HowWorks from "./../HowWorks";
+import TermsAndConditions from "./../TermsAndConditions";
+
 import EditProfile from "./../EditProfile";
 import PaymentSuccess from "./../PaymentSuccess";
 import PaymentErorr from "./../PaymentErorr";
@@ -31,18 +33,21 @@ import EditAdd from "./../Add/Edit";
 
 import AddBank from "./../AddBank";
 import ChooseBank from "./../ChooseBank";
+import EditAuction from "./../EditAuction";
 
+import DrawerStack from './Drawer';
 export default AppStack = () => {
   const HomeStack = createStackNavigator();
 
   return (
     <HomeStack.Navigator
-      initialRouteName="HomePage"
+      initialRouteName="Tabs"
+      backBehavior='hsitory'
       screenOptions={{
         headerShown: false
       }}
     >
-      <HomeStack.Screen name="HomePage" component={HomePage} />
+      <HomeStack.Screen name="DrawerStack" component={DrawerStack} />
       <HomeStack.Screen name="ChatScreen" component={ChatScreen} />
       <HomeStack.Screen name="Adds" component={Adds} />
       <HomeStack.Screen name="Auctions" component={Auctions} />
@@ -62,6 +67,7 @@ export default AppStack = () => {
       <HomeStack.Screen name="MyWallet" component={MyWallet} />
       <HomeStack.Screen name="SearchResult" component={SearchResult} />
       <HomeStack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
+      <HomeStack.Screen name="TermsAndConditions" component={TermsAndConditions} />
       <HomeStack.Screen name="HowWorks" component={HowWorks} />
       <HomeStack.Screen name="MyAuctions" component={MyAuctions} />
       <HomeStack.Screen name="EditProfile" component={EditProfile} />
@@ -83,6 +89,8 @@ export default AppStack = () => {
 
       <HomeStack.Screen name="AddBank" component={AddBank} />
       <HomeStack.Screen name="ChooseBank" component={ChooseBank} />
+      <HomeStack.Screen name="EditAuction" component={EditAuction} />
+
     </HomeStack.Navigator>
   );
 };

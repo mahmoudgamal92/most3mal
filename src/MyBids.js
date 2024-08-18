@@ -25,6 +25,7 @@ import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from '@react-navigation/native';
 import api from "./../constants/constants";
+import DrawerScreenHeader from "./../components/DrawerScreenHeader";
 
 export default function MyOrders({ route, navigation }) {
     const [data, setData] = useState([]);
@@ -57,6 +58,7 @@ export default function MyOrders({ route, navigation }) {
                     //alert(JSON.stringify(json))
                     if (json.success == true) {
                         setData(json.data);
+                        console.log(json.data)
                     }
                     else {
                         setData([]);
@@ -155,48 +157,9 @@ export default function MyOrders({ route, navigation }) {
     return (
         <View style={styles.container}>
             <StatusBar backgroundColor="#34ace0" />
-            <View
-                style={{
-                    width: "100%",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    height: 60,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: "#34ace0"
-                }}
-            >
 
-                <View style={{
-                    flexDirection: "row",
-                    width: "100%",
-                    paddingHorizontal: 20
+            <DrawerScreenHeader screenTitle={"مزايداتي"} />
 
-                }}>
-
-                    <TouchableOpacity
-                        onPress={() => navigation.openDrawer()}
-
-                        style={{
-                            justifyContent: "center",
-                            alignItems: "flex-start"
-                        }}
-                    >
-                        <SimpleLineIcons name="menu" size={40} color="#FFF" />
-
-                    </TouchableOpacity>
-
-                    <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 20, marginLeft: 20 }}>
-                        مناقصاتي
-                    </Text>
-                </View>
-
-                <TouchableOpacity
-                    onPress={() => navigation.goBack()}
-                    style={{ position: "absolute", right: 20 }}>
-                    <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
-                </TouchableOpacity>
-            </View>
             <View style={{ flex: 1, backgroundColor: "#FFF", paddingHorizontal: 20 }}>
                 <FlatList
                     data={data}
@@ -210,7 +173,7 @@ export default function MyOrders({ route, navigation }) {
                                 "offer_id": item.id
                             })}
                             style={{
-                                flexDirection: "row-reverse",
+                                flexDirection: "row",
                                 borderColor: "#DDDDDD",
                                 borderWidth: 1,
                                 borderRadius: 10,
@@ -279,7 +242,8 @@ export default function MyOrders({ route, navigation }) {
 
                             <View style={{ width: "20%" }}>
                                 <Image
-                                    source={{ uri: api.media_url + item.auction.images }}
+                                    source={{ uri: api.media_url + item.auction?.images?.split(",")[0] }}
+                                    defaultSource={require('./../assets/picture.png')}
                                     style={{ width: 70, height: 70, resizeMode: "cover", borderRadius: 10 }} />
                             </View>
                         </TouchableOpacity>

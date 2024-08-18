@@ -5,12 +5,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
-  Alert
+  Alert,
+  ScrollView
 } from "react-native";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  MaterialIcons,
-  SimpleLineIcons,
   Entypo,
   AntDesign
 } from "@expo/vector-icons";
@@ -21,6 +20,9 @@ import { useFocusEffect } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import toastConfig from "./../constants/Toast";
 import api from "../constants/constants";
+
+import DrawerScreenHeader from "./../components/DrawerScreenHeader";
+
 export default function MyAuctions({ route, navigation }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -104,6 +106,70 @@ export default function MyAuctions({ route, navigation }) {
     }
   };
 
+
+
+  const updateStatus = async (id, status) => {
+
+    let url = api.dynamic_url + "auctions/" + id;
+    const body = JSON.stringify({
+      "status": status == "active" ? "inactive" : "active",
+    });
+    try {
+      fetch(url, {
+        method: "PUT",
+        headers: {
+          Accept: "*/*",
+          "Content-type": "multipart/form-data;",
+          "cache-control": "no-cache",
+          "Accept-Encoding": "gzip, deflate, br",
+          Connection: "keep-alive",
+        },
+        body: body
+      })
+        .then(response => response.json())
+        .then(json => {
+          alert("تم  تغيير حالة الاعلان بنجاح");
+          _retrieveData();
+        })
+        .catch(error => console.error(error));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const render_order = (val) => {
+    switch (val) {
+      case "active":
+        return {
+          color: "green",
+          text: "نـــشـط"
+        };
+
+      case "inactive":
+        return {
+          color: "red",
+          text: "غير نشط"
+        };
+
+
+      case "pending":
+        return {
+          color: "grey",
+          text: "قيد الانتظار"
+        };
+      case "done":
+        return {
+          color: "green",
+          text: "مكتمل"
+        };
+
+      default:
+        return {
+          color: "#119fbf",
+          text: "حالة غير معروفة"
+        };
+    }
+  };
   const handleEmptyProp = () => {
     return (
       <View
@@ -134,142 +200,129 @@ export default function MyAuctions({ route, navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#34ace0" />
-      <View
-        style={{
-          width: "100%",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          height: 60,
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#34ace0"
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            width: "100%",
-            paddingHorizontal: 20
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => navigation.openDrawer()}
-            style={{
-              justifyContent: "center",
-              alignItems: "flex-start"
-            }}
-          >
-            <SimpleLineIcons name="menu" size={40} color="#FFF" />
-          </TouchableOpacity>
+      <DrawerScreenHeader screenTitle={"مزاداتي"} />
+      <View style={{ flex: 1, paddingHorizontal: 20 }}>
+        <ScrollView>
 
-          <Text
-            style={{
-              fontFamily: "Bold",
-              color: "#FFF",
-              fontSize: 20,
-              marginLeft: 20
-            }}
-          >
-            مزاداتي
-          </Text>
-        </View>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={{ position: "absolute", right: 20 }}
-        >
-          <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
-        </TouchableOpacity>
-      </View>
-
-
-      <View style={{ flex: 1, backgroundColor: "#FFF", paddingHorizontal: 20 }}>
-        <FlatList
-          data={data}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={(item, index) => index.toString()}
-          ListEmptyComponent={handleEmptyProp()}
-          renderItem={({ item }) =>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("AuctionDetails", {
-                  item: item
-                })}
-              style={{
-                flexDirection: "row-reverse",
-                borderColor: "#DDDDDD",
-                borderWidth: 1,
-                borderRadius: 10,
-                padding: 10,
-                alignItems: "center",
-                justifyContent: "flex-end",
-                marginVertical: 5
-              }}
-            >
-              <View
+          <FlatList
+            data={data}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={(item, index) => index.toString()}
+            ListEmptyComponent={handleEmptyProp()}
+            renderItem={({ item }) =>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("AuctionDetails", {
+                    item: item
+                  })}
                 style={{
-                  width: "20%",
+                  flexDirection: "row",
+                  borderColor: "#DDDDDD",
+                  backgroundColor: '#FFF',
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  padding: 10,
                   alignItems: "center",
-                  justifyContent: "center"
+                  justifyContent: "flex-end",
+                  marginVertical: 5,
+                  height: 150
                 }}
               >
-                <TouchableOpacity
-                  onPress={() => {
-                    Alert.alert(
-                      "تأكيد الحذف!",
-                      "هل أنت متأكد من حذف هذاالإعلان",
-                      [
-                        {
-                          text: "Cancel",
-                          onPress: () => console.log("Cancel Pressed"),
-                          style: "cancel"
-                        },
-                        { text: "OK", onPress: () => deleteAdd(item.id) }
-                      ]
-                    );
+
+                <View style={{
+                  position: 'absolute',
+                  top: 0,
+                  backgroundColor: render_order(item.status).color,
+                  width: 80,
+                  height: 30,
+                  zIndex: 9999,
+                  alignItems: 'center'
+                }}>
+                  <Text style={{
+                    color: "#FFF",
+                    fontFamily: 'Regular'
+                  }}>
+                    {render_order(item.status).text}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    width: "30%",
+                    flexDirection: 'row',
+                    alignItems: "center",
+                    justifyContent: "center"
                   }}
                 >
-                  <AntDesign name="delete" size={30} color="red" />
-                </TouchableOpacity>
-              </View>
+                  <TouchableOpacity
+                    onPress={() => {
+                      Alert.alert(
+                        "تأكيد !",
+                        'هل أنت متأكد من تغيير حالة هذاالإعلان',
+                        [
+                          {
+                            text: "Cancel",
+                            onPress: () => console.log("Cancel Pressed"),
+                            style: "cancel"
+                          },
+                          { text: "OK", onPress: () => updateStatus(item.id, item.status) }
+                        ]
+                      );
+                    }}
+                  >
+                    {item.status == "active" ?
+                      <Entypo name="eye-with-line" size={30} color="red" />
+                      :
+                      <AntDesign name="eye" size={30} color="green" />
+                    }
+                  </TouchableOpacity>
 
-              <View
-                style={{
-                  width: "60%",
-                  marginHorizontal: 10,
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}
-              >
-                <Text style={{ fontFamily: "Bold", fontSize: 15 }}>
-                  {item.title}
-                </Text>
-                <Text
-                  style={{ fontFamily: "Bold", fontSize: 15, color: "grey" }}
-                >
-                  {item.details}
-                </Text>
+                  <TouchableOpacity onPress={() => navigation.navigate('EditAuction', {
+                    item: item
+                  })}>
+                    <AntDesign name="edit" size={30} color="grey" />
+                  </TouchableOpacity>
+                </View>
 
                 <View
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "space-around"
+                    width: "40%",
+                    marginHorizontal: 10,
+                    alignItems: "center",
+                    justifyContent: "center"
                   }}
-                />
-              </View>
+                >
+                  <Text style={{ fontFamily: "Bold", fontSize: 15, textAlign: 'right' }}>
+                    {item.title}
+                  </Text>
+                  <Text
+                    style={{ fontFamily: "Regular", fontSize: 12, color: "grey", textAlign: 'right' }}
+                  >
+                    {item.details}
+                  </Text>
 
-              <View style={{ width: "20%" }}>
-                <Image
-                  source={{ uri: api.media_url + item.images?.split(",")[0] }}
-                  style={{
-                    width: 70,
-                    height: 70,
-                    resizeMode: "cover",
-                    borderRadius: 10
-                  }}
-                />
-              </View>
-            </TouchableOpacity>}
-        />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-around"
+                    }}
+                  />
+                </View>
+
+                <View style={{ width: "30%" }}>
+                  <Image
+                    source={{ uri: api.media_url + item.images?.split(",")[0] }}
+                    style={{
+                      width: "100%",
+                      height: '100%',
+                      resizeMode: "cover",
+                    }}
+                  />
+                </View>
+              </TouchableOpacity>}
+          />
+
+        </ScrollView>
+
       </View>
 
       <TouchableOpacity

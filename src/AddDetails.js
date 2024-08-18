@@ -10,7 +10,8 @@ import {
   Modal,
   ImageBackground,
   FlatList,
-  Dimensions
+  Dimensions,
+  Alert
 } from "react-native";
 import {
   FontAwesome,
@@ -37,13 +38,12 @@ const AddDetail = ({ route, navigation }) => {
   const { item } = route.params;
   const [offers, setOffers] = useState([]);
   const [images, setImages] = useState([]);
+  const [isFavorited, setIsFavorited] = useState(false);
 
   const [buttonLoading, setButtonLoading] = useState(false);
   const [chatLoading, setChatLoading] = useState(false);
   const [input_modal, setInputModal] = useState(false);
   const [offers_modal, setOfferModal] = useState(false);
-  const item_status = item.status;
-  const [amount, setAmount] = useState("");
 
   useEffect(() => {
     _retriveData();
@@ -81,7 +81,29 @@ const AddDetail = ({ route, navigation }) => {
           color: "green",
           text: "تم توصيل الطلب "
         };
+      case "active":
+        return {
+          color: "#54B7D3",
+          text: "نـــشـط"
+        };
 
+      case "inactive":
+        return {
+          color: "red",
+          text: "غير نشط"
+        };
+
+
+      case "pending":
+        return {
+          color: "grey",
+          text: "قيد الانتظار"
+        };
+      case "done":
+        return {
+          color: "green",
+          text: "مكتمل"
+        };
       default:
         return {
           color: "#119fbf",
@@ -96,8 +118,8 @@ const AddDetail = ({ route, navigation }) => {
     const user_id = await AsyncStorage.getItem("user_id");
     const user_name = await AsyncStorage.getItem("user_name");
     setUserID(user_id);
+    getIsAddFavourite(user_id, item.id);
   };
-
 
 
   const toggleFavorite = async () => {
@@ -118,14 +140,37 @@ const AddDetail = ({ route, navigation }) => {
       })
         .then(response => response.json())
         .then(responseJson => {
-
           Toast.show({
             type: "successToast",
             text1: responseJson.message,
             bottomOffset: 160,
             visibilityTime: 10000
           });
+          setIsFavorited(!isFavorited);
         });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getIsAddFavourite = async (user_id, item_id) => {
+    setLoading(true);
+    let url = api.custom_url + "user/isFavourite.php?item_id=" + item_id + '&user_id=' + user_id;
+    try {
+      fetch(url, {
+        method: "GET"
+      })
+        .then(response => response.json())
+        .then(json => {
+
+          if (json.success == true) {
+            setIsFavorited(true);
+
+          } else {
+            setIsFavorited(false);
+          }
+        })
+        .catch(error => console.error(error));
     } catch (error) {
       console.log(error);
     }
@@ -199,6 +244,8 @@ const AddDetail = ({ route, navigation }) => {
       console.log(error);
     }
   };
+
+
   const _acceptOffer = async offer_id => {
     setOfferModal(false);
     let url = api.custom_url + "orders/ad/accept.php";
@@ -276,6 +323,45 @@ const AddDetail = ({ route, navigation }) => {
     }
   };
 
+
+
+
+
+  const updateStatus = async (id, status) => {
+
+    let url = api.dynamic_url + "ads/" + id;
+    const body = JSON.stringify({
+      "status": status == "active" ? "inactive" : "active",
+    });
+    try {
+      fetch(url, {
+        method: "PUT",
+        headers: {
+          Accept: "*/*",
+          "Content-type": "multipart/form-data;",
+          "cache-control": "no-cache",
+          "Accept-Encoding": "gzip, deflate, br",
+          Connection: "keep-alive",
+        },
+        body: body
+      })
+        .then(response => response.json())
+        .then(json => {
+          Toast.show({
+            type: "successToast",
+            text1: "تم  تغيير حالة الاعلان بنجاح",
+            bottomOffset: 160,
+            visibilityTime: 10000
+          });
+          navigation.goBack();
+        })
+        .catch(error => console.error(error));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
   const handleEmptyProp = () => {
     return (
       <View
@@ -320,7 +406,7 @@ const AddDetail = ({ route, navigation }) => {
       >
         <View style={{ width: "20%", alignItems: "flex-end" }}>
           <MaterialIcons
-            name="arrow-back-ios"
+            name="arrow-forward-ios"
             size={30}
             color="#FFF"
             onPress={() => navigation.goBack()}
@@ -531,11 +617,32 @@ const AddDetail = ({ route, navigation }) => {
               </View>}
           </View>
 
-          <View style={{ paddingHorizontal: 20 }}>
-            <Text style={{ fontFamily: "Bold", fontSize: 20, color: "#000" }}>
+
+          <View style={{ paddingHorizontal: 20, alignItems: 'flex-end' }}>
+            <Text style={{ fontFamily: "Bold", fontSize: 20, color: "grey", textAlign: 'right' }}>
               {item.title}
             </Text>
+          </View>
 
+
+          <View style={{ paddingHorizontal: 20, alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row-reverse' }}>
+            <Text style={{ fontFamily: "Bold", fontSize: 20, color: "#000" }}>
+              حاله الاعلان
+            </Text>
+            <Text style={{
+              fontFamily: "Regular",
+              color: '#FFF',
+              backgroundColor: render_order(item.status).color,
+              paddingHorizontal: 10,
+              paddingVertical: 2,
+              borderRadius: 5
+            }}>
+              {render_order(item.status).text}
+            </Text>
+          </View>
+
+
+          <View style={{ paddingHorizontal: 20, alignItems: 'flex-end' }}>
             <Text
               style={{ color: "grey", fontFamily: "Regular", marginTop: 20 }}
             >
@@ -543,7 +650,7 @@ const AddDetail = ({ route, navigation }) => {
             </Text>
           </View>
 
-          <View style={{ paddingHorizontal: 20, marginVertical: 30 }}>
+          <View style={{ paddingHorizontal: 20, marginVertical: 30, alignItems: 'flex-end' }}>
             <Text style={{ fontFamily: "Bold", fontSize: 20, color: "#000" }}>
               العنوان
             </Text>
@@ -555,24 +662,24 @@ const AddDetail = ({ route, navigation }) => {
                 marginVertical: 10
               }}
             >
-              <Entypo name="location-pin" size={24} color="grey" />
               <Text style={{ color: "grey", fontFamily: "Bold" }}>
                 {item.address}
               </Text>
+              <Entypo name="location-pin" size={24} color="grey" />
             </View>
           </View>
 
           {item.user !== undefined
             ? <View style={{ paddingHorizontal: 30, marginTop: 20 }}>
               <Text
-                style={{ fontFamily: "Bold", fontSize: 20, color: "#000" }}
+                style={{ fontFamily: "Bold", fontSize: 20, color: "#000", textAlign: 'right' }}
               >
                 بيانات المعلن :
               </Text>
 
               <View
                 style={{
-                  flexDirection: "row",
+                  flexDirection: "row-reverse",
                   alignItems: "center",
                   justifyContent: "space-between",
                   marginTop: 10
@@ -584,15 +691,6 @@ const AddDetail = ({ route, navigation }) => {
                     alignItems: "center"
                   }}
                 >
-                  <Image
-                    source={require("./../assets/profile.png")}
-                    style={{
-                      width: 50,
-                      height: 50,
-                      borderRadius: 50,
-                      marginHorizontal: 5
-                    }}
-                  />
 
                   <Text
                     style={{
@@ -603,18 +701,37 @@ const AddDetail = ({ route, navigation }) => {
                   >
                     {item.user != null ? item.user.name : "لاتوجد معلومات"}
                   </Text>
+
+                  <Image
+                    source={require("./../assets/profile.png")}
+                    style={{
+                      width: 50,
+                      height: 50,
+                      borderRadius: 50,
+                      marginHorizontal: 5
+                    }}
+                  />
                 </View>
 
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  {/* <AntDesign name="star" size={20} color="#F7D000" />
                   <AntDesign name="star" size={20} color="#F7D000" />
                   <AntDesign name="star" size={20} color="#F7D000" />
                   <AntDesign name="star" size={20} color="#F7D000" />
-                  <AntDesign name="star" size={20} color="#F7D000" />
-                  <AntDesign name="star" size={20} color="#F7D000" />
+                  <AntDesign name="star" size={20} color="#F7D000" /> */}
+                  <Text style={{
+                    fontFamily: 'Regular',
+                    fontSize: 12,
+                    color: 'grey',
+                    textAlign: 'right'
+                  }}>
+                    لا يتوفر تقييم للمعلن
+                  </Text>
                 </View>
               </View>
             </View>
             : null}
+
         </ScrollView>
         {item.user_id == user_id
           ? <View
@@ -657,7 +774,22 @@ const AddDetail = ({ route, navigation }) => {
 
             <View style={{ width: "40%" }}>
               <TouchableOpacity
-                //onPress={() => deleteAdd(item.id)}
+                onPress={() => {
+                  Alert.alert('تأكيد !',
+                    'هل أنت متأكد من تغيير حالة هذاالإعلان',
+                    [
+                      {
+                        text: 'Cancel',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel',
+                      },
+                      {
+                        text: 'OK',
+                        onPress: () => updateStatus(item.id, item.status)
+                      },
+                    ]);
+
+                }}
                 style={{
                   width: "100%",
                   flexDirection: "row",
@@ -700,10 +832,10 @@ const AddDetail = ({ route, navigation }) => {
                   borderRadius: 10
                 }}
               >
-                <MaterialIcons
-                  name="favorite-border"
+                <AntDesign
+                  name={isFavorited ? "heart" : "hearto"}
                   size={24}
-                  color="#FFF"
+                  color={isFavorited ? "red" : "#FFF"}
                 />
               </TouchableOpacity>
             </View>

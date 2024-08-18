@@ -1,10 +1,7 @@
 import {
-  Animated,
   Image,
-  SafeAreaView,
   Text,
   View,
-  StyleSheet,
   StatusBar,
   TouchableOpacity,
   ActivityIndicator,
@@ -17,19 +14,20 @@ import React, { useState, useRef, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  FontAwesome5,
-  Feather,
   MaterialIcons,
-  FontAwesome
+  FontAwesome,
+  Feather
 } from "@expo/vector-icons";
 import styles from "../constants/style";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import toastConfig from "./../constants/Toast";
 import api from "./../constants/constants";
+import mime from 'mime';
+
 import moment from "moment";
 import MapView, { Marker } from "react-native-maps";
 
-export default function AddAuction({ route, navigation }) {
+export default function CreateAuction({ route, navigation }) {
   const [images, setImages] = useState([]);
   const [imageURI, setImageURI] = useState(null);
   const [title, setTitle] = useState("");
@@ -64,28 +62,29 @@ export default function AddAuction({ route, navigation }) {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        //aspect: [3, 3],
-        quality: 1
+        allowsMultipleSelection: true,
+        quality: 1,
       });
+
       if (!result.canceled) {
-        let localUri = result.assets[0].uri;
-        let filename = localUri.split("/").pop();
-        let match = /\.(\w+)$/.exec(filename);
-        let img_type = match ? `image/${match[1]}` : `image`;
-        setImages([
-          ...images,
-          {
-            uri: localUri,
-            name: filename,
-            type: img_type
-          }
-        ]);
+        const newImages = result.assets.map(asset => ({
+          uri: asset.uri,
+          name: asset.uri.split('/').pop(),
+          type: mime.getType(asset.uri),
+        }));
+
+        setImages([...images, ...newImages]);
       }
-    } catch (E) {
-      console.log(E);
+    } catch (error) {
+      console.log(error);
     }
   };
+
+  const _removeImg = (src) => {
+    setImages((prevImages) => prevImages.filter(item => item.uri !== src));
+  };
+
+
 
   const goToMyLocation = async () => {
     mapRef.current.animateCamera({
@@ -93,20 +92,25 @@ export default function AddAuction({ route, navigation }) {
     });
   };
 
-  const AddAuction = async () => {
+  const _insertAuction = async () => {
+    if (images.length == 0) {
+      alert("لابد من اختيار صوره للمنتج");
+      return;
+    }
     const user_id = await AsyncStorage.getItem("user_id");
     setLoading(true);
-    let formData = new FormData();
+
+    const formData = new FormData();
     formData.append("auction_number", parseInt(Math.random() * 1000000));
     formData.append("title", title);
     formData.append("user_id", user_id);
     formData.append("details", description);
-    formData.append("address", state + "," + city);
+    formData.append("address", `${state}, ${city}`);
     formData.append("start_date", moment().format());
     formData.append("end_date", moment().add(7, "days").format());
     formData.append("duration", 7);
 
-    images.map((item, index) => {
+    images.forEach(item => {
       formData.append("images[]", {
         uri: item.uri,
         name: item.name,
@@ -114,43 +118,48 @@ export default function AddAuction({ route, navigation }) {
       });
     });
 
-    fetch(api.custom_url + "auctions/create.php", {
-      method: "POST",
-      headers: {
-        Accept: "*/*",
-        "Content-type": "multipart/form-data;",
-        "Accept-Encoding": "gzip, deflate, br",
-        Connection: "keep-alive"
-      },
-      body: formData
-    })
-      .then(response => response.json())
-      .then(json => {
-        setLoading(false);
-        if (json.success == true) {
-
-          Toast.show({
-            type: "successToast",
-            text1: "تم إضافة المزاد بنجاح ",
-            bottomOffset: 80,
-            visibilityTime: 2000
-          });
-          navigation.goBack();
-          console.log(json);
-        } else {
-
-          Toast.show({
-            type: "erorrToast",
-            text1: "هناك خطأ في البيانات المدخلة",
-            bottomOffset: 80,
-            visibilityTime: 2000
-          });
-        }
-      })
-      .catch(error => {
-        setLoading(false);
-        console.error(error);
+    try {
+      const response = await fetch("https://mestamal.com/dashboard/api_mobile/custom/auctions/create.php", {
+        method: "POST",
+        headers: {
+          Accept: "*/*",
+          "Content-Type": "multipart/form-data",
+          "Accept-Encoding": "gzip, deflate, br",
+          Connection: "keep-alive"
+        },
+        body: formData
       });
+
+      const json = await response.json();
+      setLoading(false);
+
+      if (json.success) {
+        Toast.show({
+          type: "successToast",
+          text1: "تم إضافة المزاد بنجاح",
+          bottomOffset: 80,
+          visibilityTime: 2000
+        });
+        navigation.goBack();
+        console.log(json);
+      } else {
+        Toast.show({
+          type: "erorrToast",
+          text1: "هناك خطأ في البيانات المدخلة",
+          bottomOffset: 80,
+          visibilityTime: 2000
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Error inserting auction: ", error);
+      Toast.show({
+        type: "erorrToast",
+        text1: "حدث خطأ أثناء إضافة المزاد",
+        bottomOffset: 80,
+        visibilityTime: 2000
+      });
+    }
   };
 
   return (
@@ -177,9 +186,9 @@ export default function AddAuction({ route, navigation }) {
 
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            style={{ position: "absolute", right: 20 }}
+            style={{ position: "absolute", left: 20 }}
           >
-            <Feather name="arrow-left" size={24} color="#FFF" />
+            <MaterialIcons name="arrow-back-ios" size={24} color="#FFF" />
           </TouchableOpacity>
         </View>
 
@@ -189,7 +198,7 @@ export default function AddAuction({ route, navigation }) {
         >
           <View style={styles.loginBox}>
             <View style={styles.inputLabelContainer}>
-              <Text style={{ fontFamily: "Bold", fontSize: 15 }}>
+              <Text style={{ fontFamily: "Bold", fontSize: 15, textAlign: 'right' }}>
                 تحميل صورة المنتج
               </Text>
             </View>
@@ -198,10 +207,8 @@ export default function AddAuction({ route, navigation }) {
               onPress={() => pickImage()}
               style={styles.imgUploadContainer}
             >
-              <Image
-                style={styles.imgUploadIcon}
-                source={require("./../assets/camera.png")}
-              />
+              <Feather name="camera" size={60} color="#FFF" />
+
             </TouchableOpacity>
 
             <View
@@ -218,7 +225,7 @@ export default function AddAuction({ route, navigation }) {
                 return (
                   <View>
                     <TouchableOpacity
-                      onPress={() => _removeImg(item.src)}
+                      onPress={() => _removeImg(item.uri)}
                       style={{ marginBottom: -20, zIndex: 849849 }}
                     >
                       <Image
@@ -241,7 +248,7 @@ export default function AddAuction({ route, navigation }) {
             </View>
 
             <View style={styles.inputLabelContainer}>
-              <Text style={{ fontFamily: "Bold", fontSize: 15 }}>
+              <Text style={{ fontFamily: "Bold", fontSize: 15, textAlign: 'right' }}>
                 عنوان المنتج
               </Text>
             </View>
@@ -255,7 +262,7 @@ export default function AddAuction({ route, navigation }) {
             </View>
 
             <View style={styles.inputLabelContainer}>
-              <Text style={{ fontFamily: "Bold", fontSize: 15 }}>
+              <Text style={{ fontFamily: "Bold", fontSize: 15, textAlign: 'right' }}>
                 وصف المنتج
               </Text>
             </View>
@@ -275,7 +282,7 @@ export default function AddAuction({ route, navigation }) {
 
 
             <View style={styles.inputLabelContainer}>
-              <Text style={{ fontFamily: "Bold", textAlign: "left" }}>
+              <Text style={{ fontFamily: "Bold", textAlign: 'right' }}>
                 المدينة
               </Text>
             </View>
@@ -289,7 +296,7 @@ export default function AddAuction({ route, navigation }) {
             </View>
 
             <View style={styles.inputLabelContainer}>
-              <Text style={{ fontFamily: "Bold", textAlign: "left" }}>الحي</Text>
+              <Text style={{ fontFamily: "Bold", textAlign: 'right' }}>الحي</Text>
             </View>
 
             <View style={styles.inputContainer}>
@@ -302,7 +309,7 @@ export default function AddAuction({ route, navigation }) {
 
 
             <View style={styles.inputLabelContainer}>
-              <Text style={{ fontFamily: "Bold", marginVertical: 10 }}>
+              <Text style={{ fontFamily: "Bold", marginVertical: 10, textAlign: 'right' }}>
                 أختر عنوان الإعلان
               </Text>
             </View>
@@ -325,7 +332,7 @@ export default function AddAuction({ route, navigation }) {
                   flexDirection: "row-reverse",
                   alignItems: "center",
                   top: 10,
-                  right: 10,
+                  left: 10,
                   backgroundColor: "#34ACE0",
                   zIndex: 10000,
                   borderRadius: 10,
@@ -338,7 +345,8 @@ export default function AddAuction({ route, navigation }) {
                   style={{
                     fontFamily: "Regular",
                     marginVertical: 10,
-                    color: "#FFF"
+                    color: "#FFF",
+                    textAlign: 'right'
                   }}
                 >
                   الموقع الحالي
@@ -380,7 +388,7 @@ export default function AddAuction({ route, navigation }) {
               style={[styles.primaryBtn, {
                 marginBottom: 60
               }]}
-              onPress={() => AddAuction()}
+              onPress={() => _insertAuction()}
             >
               {loading == true
                 ? <ActivityIndicator size={40} color="#FFF" />

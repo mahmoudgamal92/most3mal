@@ -10,6 +10,7 @@ import React, { useEffect, useState } from "react";
 import { MaterialIcons, SimpleLineIcons } from '@expo/vector-icons';
 import styles from "../constants/style";
 import api from "./../constants/constants";
+import DrawerScreenHeader from "./../components/DrawerScreenHeader";
 
 export default function PrivacyPolicy({ route, navigation }) {
     const [privacy, setPrivacy] = useState("");
@@ -18,7 +19,7 @@ export default function PrivacyPolicy({ route, navigation }) {
     }, []);
 
     const _retriveData = async () => {
-        fetch(api.custom_url + "settings/index.php?key=privacy_ar", {
+        fetch(api.custom_url + "settings/index.php?keys=privacy_ar", {
             method: "GET",
             headers: {
                 Accept: "*/*",
@@ -44,50 +45,8 @@ export default function PrivacyPolicy({ route, navigation }) {
     return (
         <View style={styles.container}>
             <StatusBar barStyle="default" backgroundColor="#34ace0" />
-            <View
-                style={{
-                    width: "100%",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    height: 60,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: "#34ace0"
-                }}>
 
-                <View style={{
-                    flexDirection: "row",
-                    width: "100%",
-                    paddingHorizontal: 20,
-                    alignItems: "center"
-
-                }}>
-
-                    <TouchableOpacity
-                        onPress={() => navigation.openDrawer()}
-
-                        style={{
-                            justifyContent: "center",
-                            alignItems: "flex-start"
-                        }}
-                    >
-                        <SimpleLineIcons name="menu" size={40} color="#FFF" />
-
-                    </TouchableOpacity>
-
-                    <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 16, marginLeft: 20 }}>
-                        الشروط و الأحكام
-                    </Text>
-                </View>
-
-
-                <TouchableOpacity
-                    onPress={() => navigation.goBack()}
-                    style={{ position: "absolute", right: 20 }}
-                >
-                    <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
-                </TouchableOpacity>
-            </View>
+            <DrawerScreenHeader screenTitle={"سياسة الإستخدام و الخصوصية"} />
 
             <ScrollView
                 contentContainerStyle={{

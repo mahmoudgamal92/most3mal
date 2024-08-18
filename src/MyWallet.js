@@ -16,6 +16,7 @@ import {
   FontAwesome
 } from "@expo/vector-icons";
 import api from "./../constants/constants";
+import DrawerScreenHeader from "./../components/DrawerScreenHeader";
 
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
@@ -161,50 +162,10 @@ export default function MyWallet({ route, navigation }) {
           backgroundColor: "#34ace0"
         }}
       >
-        <View
-          style={{
-            flexDirection: "row-reverse",
-            width: "100%",
-            alignItems: "center",
-            justifyContent: "space-between"
-          }}
-        >
-          <View
-            style={{
-              width: "20%",
-              justifyContent: "center",
-              alignItems: "center"
-            }}
-          >
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
-            </TouchableOpacity>
-          </View>
 
-          <View style={{ width: "60%", alignItems: "center" }}>
-            <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 30 }}>
-              محفظتي
-            </Text>
-          </View>
 
-          <View
-            style={{
-              width: "20%",
-              justifyContent: "center",
-              alignItems: "center"
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => navigation.openDrawer()}
-              style={{
-                justifyContent: "center",
-                alignItems: "flex-start"
-              }}
-            >
-              <SimpleLineIcons name="menu" size={40} color="#FFF" />
-            </TouchableOpacity>
-          </View>
-        </View>
+        <DrawerScreenHeader screenTitle={"محفظتي"} />
+
 
         <View
           style={{ marginVertical: 40, width: "100%", paddingHorizontal: 60 }}
@@ -306,7 +267,7 @@ export default function MyWallet({ route, navigation }) {
           renderItem={({ item }) =>
             <TouchableOpacity
               style={{
-                flexDirection: "row",
+                flexDirection: "row-reverse",
                 borderColor: "#DDDDDD",
                 backgroundColor: "#FFF",
                 borderWidth: 1,
@@ -366,7 +327,7 @@ export default function MyWallet({ route, navigation }) {
 
                 <View
                   style={{
-                    flexDirection: "row",
+                    flexDirection: "row-reverse",
                     justifyContent: "space-around",
                     alignItems: "center",
                     marginTop: 10

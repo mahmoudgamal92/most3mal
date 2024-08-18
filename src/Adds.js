@@ -27,6 +27,7 @@ export default function Adds({ route, navigation }) {
   const [loading, setLoading] = useState(false);
   // function to create a state object
 
+  const scrollViewRef = useRef(null);
 
   useEffect(() => {
     _retrieveCats();
@@ -51,11 +52,18 @@ export default function Adds({ route, navigation }) {
           }
         }
         setCats(arr);
+        setLoading(false);
+
+        if (scrollViewRef.current) {
+          scrollViewRef.current.scrollToEnd({ animated: true });
+        }
       })
+
       .catch(error => {
         setLoading(false);
         console.error(error);
       });
+
   };
 
   const _retrieveData = async () => {
@@ -182,19 +190,19 @@ export default function Adds({ route, navigation }) {
               navigation.goBack();
             }}
           >
-            <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
+            <MaterialIcons name="arrow-forward-ios" size={30} color="#FFF" />
           </TouchableOpacity>
         </View>
       </View>
 
       <View style={{ marginTop: 10, marginBottom: 20, paddingHorizontal: 10 }}>
+
         <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
+          ref={scrollViewRef}
+          horizontal
+          inverted
           keyExtractor={(item, index) => item.cat_id}
-          style={{
-            marginTop: 10
-          }}
+          contentContainerStyle={{ flexDirection: 'row-reverse' }}
         >
           <TouchableOpacity
             onPress={() => changeCat(0)}
@@ -228,7 +236,6 @@ export default function Adds({ route, navigation }) {
               color="#143656"
             />
           </TouchableOpacity>
-
           {cats.map((item, index) => {
             return (
               <TouchableOpacity
@@ -266,6 +273,7 @@ export default function Adds({ route, navigation }) {
               </TouchableOpacity>
             );
           })}
+
         </ScrollView>
       </View>
       <FlatList
@@ -289,7 +297,7 @@ export default function Adds({ route, navigation }) {
             >
               <ImageBackground
                 imageStyle={styles.itemImg}
-                source={{ uri: api.media_url + item.images.split(",")[0] }}
+                source={{ uri: api.media_url + item?.images?.split(",")[0] }}
               >
                 <View style={styles.itemContent} />
               </ImageBackground>
@@ -338,7 +346,7 @@ export default function Adds({ route, navigation }) {
             </TouchableOpacity>
             : null}
       />
-    </View>
+    </View >
   );
 }
 const styles = StyleSheet.create({

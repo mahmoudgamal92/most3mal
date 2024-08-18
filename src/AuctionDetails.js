@@ -28,7 +28,6 @@ import Constants from "expo-constants";
 import { useFocusEffect } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import toastConfig from "./../constants/Toast";
-
 import api from "../constants/constants";
 
 export default function AuctionDetails({ route, navigation }) {
@@ -335,7 +334,11 @@ export default function AuctionDetails({ route, navigation }) {
     if (days + hours + minutes + seconds <= 0) {
       return (
         <View>
-          <Text>Expired</Text>
+          <Text style={{
+            color: 'red'
+          }}>
+            Expired
+          </Text>
         </View>
       );
     } else {
@@ -449,7 +452,7 @@ export default function AuctionDetails({ route, navigation }) {
       >
         <View style={{ width: "20%", alignItems: "flex-end" }}>
           <MaterialIcons
-            name="arrow-back-ios"
+            name="arrow-forward-ios"
             size={30}
             color="#FFF"
             onPress={() => navigation.goBack()}
@@ -534,7 +537,7 @@ export default function AuctionDetails({ route, navigation }) {
       >
         <View
           style={{
-            flexDirection: "row",
+            flexDirection: "row-reverse",
             justifyContent: "space-between",
             paddingHorizontal: 20,
             marginVertical: 20,
@@ -601,7 +604,7 @@ export default function AuctionDetails({ route, navigation }) {
           style={{ width: "100%" }}
         >
           <View style={{ paddingHorizontal: 20 }}>
-            <Text style={{ fontFamily: "Bold", fontSize: 20, color: "#000" }}>
+            <Text style={{ fontFamily: "Bold", fontSize: 20, color: "#000", textAlign: 'right' }}>
               {item.title}
             </Text>
           </View>
@@ -611,7 +614,8 @@ export default function AuctionDetails({ route, navigation }) {
                 color: "grey",
                 fontFamily: "Regular",
                 paddingHorizontal: 20,
-                marginTop: 20
+                marginTop: 20,
+                textAlign: 'right'
               }}
             >
               {item.details}
@@ -623,7 +627,8 @@ export default function AuctionDetails({ route, navigation }) {
                 fontFamily: "Bold",
                 color: "grey",
                 fontSize: 16,
-                marginBottom: 10
+                marginBottom: 10,
+                textAlign: 'right'
               }}
             >
               معلومات الناشر
@@ -631,7 +636,7 @@ export default function AuctionDetails({ route, navigation }) {
 
             <View
               style={{
-                flexDirection: "row",
+                flexDirection: "row-reverse",
                 alignItems: "flex-start"
               }}
             >
@@ -644,24 +649,31 @@ export default function AuctionDetails({ route, navigation }) {
 
               <View style={{ alignItems: "flex-start" }}>
                 <Text
-                  style={{ color: "grey", fontFamily: "Bold", fontSize: 18 }}
+                  style={{ color: "grey", fontFamily: "Bold", fontSize: 18, textAlign: 'right' }}
                 >
                   {item.user.name}
                 </Text>
 
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  {/* <AntDesign name="star" size={20} color="#F7D000" />
                   <AntDesign name="star" size={20} color="#F7D000" />
                   <AntDesign name="star" size={20} color="#F7D000" />
                   <AntDesign name="star" size={20} color="#F7D000" />
-                  <AntDesign name="star" size={20} color="#F7D000" />
-                  <AntDesign name="star" size={20} color="#F7D000" />
+                  <AntDesign name="star" size={20} color="#F7D000" /> */}
+                  <Text style={{
+                    fontFamily: 'Regular',
+                    fontSize: 12,
+                    color: 'grey'
+                  }}>
+                    لا يتوفر تقييم للمعلن
+                  </Text>
                 </View>
               </View>
             </View>
           </View>
 
           <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
-            <Text style={{ fontFamily: "Bold", color: "grey", fontSize: 16 }}>
+            <Text style={{ fontFamily: "Bold", color: "grey", fontSize: 16, textAlign: 'right' }}>
               العروض
             </Text>
           </View>
@@ -703,7 +715,6 @@ export default function AuctionDetails({ route, navigation }) {
                     },
                     shadowOpacity: 0.32,
                     shadowRadius: 5.46,
-
                     elevation: 9
                   }}
                 >
@@ -929,7 +940,9 @@ export default function AuctionDetails({ route, navigation }) {
 
               <View style={{ width: "80%" }}>
                 <TouchableOpacity
-                  onPress={() => setReportModal(!input_modal)}
+                  onPress={() => {
+                    navigation.navigate("Contact");
+                  }}
                   style={{
                     width: "100%",
                     height: 60,
@@ -978,7 +991,9 @@ export default function AuctionDetails({ route, navigation }) {
 
               <View style={{ width: "60%" }}>
                 <TouchableOpacity
-                  onPress={() => setReportModal(!input_modal)}
+                  onPress={() => {
+                    navigation.navigate("Contact");
+                  }}
                   style={{
                     width: "100%",
                     height: 60,

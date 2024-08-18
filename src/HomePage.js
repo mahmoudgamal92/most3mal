@@ -112,7 +112,7 @@ export default function HomePage({ route, navigation }) {
         <View
           style={{
             width: "100%",
-            flexDirection: "row-reverse",
+            flexDirection: "row",
             justifyContent: "space-between"
           }}
         >
@@ -120,7 +120,7 @@ export default function HomePage({ route, navigation }) {
             style={{
               width: "20%",
               justifyContent: "center",
-              alignItems: "flex-end"
+              alignItems: "flex-start"
             }}
           >
 
@@ -144,7 +144,7 @@ export default function HomePage({ route, navigation }) {
             style={{
               width: "20%",
               justifyContent: "center",
-              alignItems: "flex-start"
+              alignItems: "flex-end"
             }}
           >
             <SimpleLineIcons name="menu" size={40} color="#FFF" />
@@ -241,7 +241,7 @@ export default function HomePage({ route, navigation }) {
         >
           <View
             style={{
-              flexDirection: "row",
+              flexDirection: "row-reverse",
               justifyContent: "space-between",
               paddingHorizontal: 20,
               marginTop: 10,

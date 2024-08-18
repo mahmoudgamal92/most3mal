@@ -1,30 +1,30 @@
 import { Text, View } from "react-native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import { NavigationContainer } from '@react-navigation/native';
 import {
   Ionicons,
   MaterialIcons,
   Entypo,
   AntDesign,
-  Feather
+  Feather,
+  MaterialCommunityIcons
 } from "@expo/vector-icons";
 import CustomDrawer from "./../../CustomDrawer";
 import ProfilePage from "./../ProfilePage";
 import Contact from "./../Contact";
-import ResetPwd from "./../ResetPwd";
 import MyWallet from "./../MyWallet";
 import MyAuctions from "./../MyAuctions";
 import MyOrders from "./../MyOrders";
 import Settings from "./../Settings";
-import PrivacyPolicy from "./../PrivacyPolicy";
-import HowWorks from "./../HowWorks";
-import Tabs from "./Tabs";
+import PersonalAdds from "./../PersonalAdds";
+import AppStack from "./AppStack";
+import TabNavigator from "./Tabs";
 
 export default DrawerStack = () => {
   const Drawer = createDrawerNavigator();
-
   return (
     <Drawer.Navigator
-      initialRouteName="Home"
+      backBehavior="order"
       screenOptions={{
         drawerItemStyle: {
           borderRadius: 0,
@@ -38,22 +38,22 @@ export default DrawerStack = () => {
     >
       <Drawer.Screen
         name="Home"
-        component={Tabs}
+        component={TabNavigator}
         options={{
           title: () =>
             <View
               style={{
-                flexDirection: "row",
+                flexDirection: "row-reverse",
                 alignItems: "center",
                 justifyContent: "space-between"
               }}
             >
-              <View style={{ flexDirection: "row" }}>
+              <View style={{ flexDirection: "row-reverse" }}>
                 <AntDesign
                   name="home"
                   size={24}
                   color="black"
-                  style={{ marginRight: 10 }}
+                  style={{ marginLeft: 10 }}
                 />
                 <Text style={{ color: "#000", fontFamily: "Bold" }}>
                   الرئيسية
@@ -74,17 +74,17 @@ export default DrawerStack = () => {
           title: () =>
             <View
               style={{
-                flexDirection: "row",
+                flexDirection: "row-reverse",
                 alignItems: "center",
                 justifyContent: "space-between"
               }}
             >
-              <View style={{ flexDirection: "row" }}>
+              <View style={{ flexDirection: "row-reverse" }}>
                 <Feather
                   name="user"
                   size={24}
                   color="black"
-                  style={{ marginRight: 10 }}
+                  style={{ marginLeft: 10 }}
                 />
                 <Text style={{ color: "#000", fontFamily: "Bold" }}>
                   الملف الشخصي
@@ -105,17 +105,17 @@ export default DrawerStack = () => {
           title: () =>
             <View
               style={{
-                flexDirection: "row",
+                flexDirection: "row-reverse",
                 alignItems: "center",
                 justifyContent: "space-between"
               }}
             >
-              <View style={{ flexDirection: "row" }}>
+              <View style={{ flexDirection: "row-reverse" }}>
                 <Entypo
                   name="wallet"
                   size={24}
                   color="black"
-                  style={{ marginRight: 10 }}
+                  style={{ marginLeft: 10 }}
                 />
                 <Text style={{ color: "#000", fontFamily: "Bold" }}>
                   محفظتي
@@ -129,6 +129,65 @@ export default DrawerStack = () => {
         }}
       />
 
+
+      <Drawer.Screen
+        name="PersonalAdds"
+        component={PersonalAdds}
+        options={{
+          title: () =>
+            <View
+              style={{
+                flexDirection: "row-reverse",
+                alignItems: "center",
+                justifyContent: "space-between"
+              }}
+            >
+              <View style={{ flexDirection: "row-reverse" }}>
+
+                <MaterialCommunityIcons
+                  name="file-document-multiple-outline"
+                  size={24}
+                  color="black" style={{ marginLeft: 10 }}
+                />
+
+                <Text style={{ color: "#000", fontFamily: "Bold" }}>
+                  اعلاناتي
+                </Text>
+              </View>
+
+              <View>
+                <MaterialIcons name="arrow-back-ios" size={24} color="black" />
+              </View>
+            </View>
+        }}
+      />
+      <Drawer.Screen
+        name="MyAuctions"
+        component={MyAuctions}
+        options={{
+          title: () =>
+            <View
+              style={{
+                flexDirection: "row-reverse",
+                alignItems: "center",
+                justifyContent: "space-between"
+              }}
+            >
+              <View style={{ flexDirection: "row-reverse" }}>
+                <Ionicons name="hand-right-outline" size={24} color="black"
+                  style={{ marginLeft: 10 }} />
+
+                <Text style={{ color: "#000", fontFamily: "Bold" }}>
+                  مزاداتي
+                </Text>
+              </View>
+
+              <View>
+                <MaterialIcons name="arrow-back-ios" size={24} color="black" />
+              </View>
+            </View>
+        }}
+      />
       <Drawer.Screen
         name="MyOrders"
         component={MyOrders}
@@ -136,17 +195,17 @@ export default DrawerStack = () => {
           title: () =>
             <View
               style={{
-                flexDirection: "row",
+                flexDirection: "row-reverse",
                 alignItems: "center",
                 justifyContent: "space-between"
               }}
             >
-              <View style={{ flexDirection: "row" }}>
+              <View style={{ flexDirection: "row-reverse" }}>
                 <AntDesign
                   name="infocirlceo"
                   size={24}
                   color="black"
-                  style={{ marginRight: 10 }}
+                  style={{ marginLeft: 10 }}
                 />
                 <Text style={{ color: "#000", fontFamily: "Bold" }}>
                   طلباتي
@@ -160,36 +219,7 @@ export default DrawerStack = () => {
         }}
       />
 
-      <Drawer.Screen
-        name="MyAuctions"
-        component={MyAuctions}
-        options={{
-          title: () =>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between"
-              }}
-            >
-              <View style={{ flexDirection: "row" }}>
-                <Ionicons
-                  name="pricetags"
-                  size={24}
-                  color="black"
-                  style={{ marginRight: 10 }}
-                />
-                <Text style={{ color: "#000", fontFamily: "Bold" }}>
-                  مزاداتي
-                </Text>
-              </View>
 
-              <View>
-                <MaterialIcons name="arrow-back-ios" size={24} color="black" />
-              </View>
-            </View>
-        }}
-      />
 
       <Drawer.Screen
         name="Contact"
@@ -198,17 +228,17 @@ export default DrawerStack = () => {
           title: () =>
             <View
               style={{
-                flexDirection: "row",
+                flexDirection: "row-reverse",
                 alignItems: "center",
                 justifyContent: "space-between"
               }}
             >
-              <View style={{ flexDirection: "row" }}>
+              <View style={{ flexDirection: "row-reverse" }}>
                 <Ionicons
                   name="call"
                   size={24}
                   color="black"
-                  style={{ marginRight: 10 }}
+                  style={{ marginLeft: 10 }}
                 />
                 <Text style={{ color: "#000", fontFamily: "Bold" }}>
                   تواصل معنا
@@ -222,98 +252,6 @@ export default DrawerStack = () => {
         }}
       />
 
-      <Drawer.Screen
-        name="ResetPwd"
-        component={ResetPwd}
-        options={{
-          title: () =>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between"
-              }}
-            >
-              <View style={{ flexDirection: "row" }}>
-                <Entypo
-                  name="lock"
-                  size={24}
-                  color="black"
-                  style={{ marginRight: 10 }}
-                />
-                <Text style={{ color: "#000", fontFamily: "Bold" }}>
-                  تغيير كلمة المرور
-                </Text>
-              </View>
-
-              <View>
-                <MaterialIcons name="arrow-back-ios" size={24} color="black" />
-              </View>
-            </View>
-        }}
-      />
-
-      <Drawer.Screen
-        name="HowWorks"
-        component={HowWorks}
-        options={{
-          title: () =>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between"
-              }}
-            >
-              <View style={{ flexDirection: "row" }}>
-                <AntDesign
-                  name="infocirlceo"
-                  size={24}
-                  color="black"
-                  style={{ marginRight: 10 }}
-                />
-                <Text style={{ color: "#000", fontFamily: "Bold" }}>
-                  كيف يعمل التطبيق
-                </Text>
-              </View>
-
-              <View>
-                <MaterialIcons name="arrow-back-ios" size={24} color="black" />
-              </View>
-            </View>
-        }}
-      />
-
-      <Drawer.Screen
-        name="PrivacyPolicy"
-        component={PrivacyPolicy}
-        options={{
-          title: () =>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between"
-              }}
-            >
-              <View style={{ flexDirection: "row" }}>
-                <MaterialIcons
-                  name="privacy-tip"
-                  size={24}
-                  color="black"
-                  style={{ marginRight: 10 }}
-                />
-                <Text style={{ color: "#000", fontFamily: "Bold" }}>
-                  الشروط و الأحكام
-                </Text>
-              </View>
-
-              <View>
-                <MaterialIcons name="arrow-back-ios" size={24} color="black" />
-              </View>
-            </View>
-        }}
-      />
 
       <Drawer.Screen
         name="Settings"
@@ -322,18 +260,20 @@ export default DrawerStack = () => {
           title: () =>
             <View
               style={{
-                flexDirection: "row",
+                flexDirection: "row-reverse",
                 alignItems: "center",
                 justifyContent: "space-between"
               }}
             >
-              <View style={{ flexDirection: "row" }}>
-                <AntDesign
-                  name="infocirlceo"
+              <View style={{ flexDirection: "row-reverse" }}>
+
+                <Feather
+                  name="settings"
                   size={24}
                   color="black"
-                  style={{ marginRight: 10 }}
+                  style={{ marginLeft: 10 }}
                 />
+
                 <Text style={{ color: "#000", fontFamily: "Bold" }}>
                   الإعدادات
                 </Text>
@@ -346,4 +286,5 @@ export default DrawerStack = () => {
         }}
       />
     </Drawer.Navigator>
-  )};
+  )
+};

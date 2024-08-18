@@ -21,7 +21,7 @@ import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import toastConfig from "./../../constants/Toast";
 import { KeyboardAvoidingView } from "react-native";
 
-export default function UpdateAdd({ route , navigation }) {
+export default function UpdateAdd({ route, navigation }) {
     const [image, setImage] = useState(null);
     const [imageURI, setImageURI] = useState(null);
     const [title, setTitle] = useState("");
@@ -40,7 +40,7 @@ export default function UpdateAdd({ route , navigation }) {
     }, []);
 
 
-     const _retrieveData = async () => {
+    const _retrieveData = async () => {
         try {
             const location = await AsyncStorage.getItem('current_location');
             if (location !== null) {
@@ -58,10 +58,10 @@ export default function UpdateAdd({ route , navigation }) {
     function toEnglishNumber(strNum) {
         const arabicNumbers = "٠١٢٣٤٥٦٧٨٩".split("");
         const englishNumbers = "0123456789".split("");
-        strNum = strNum.replace(/[٠١٢٣٤٥٦٧٨٩]/g, (x) => englishNumbers[arabicNumbers.indexOf(x)]);   
+        strNum = strNum.replace(/[٠١٢٣٤٥٦٧٨٩]/g, (x) => englishNumbers[arabicNumbers.indexOf(x)]);
         strNum = strNum.replace(/[^\d]/g, "");
         return strNum;
-      }
+    }
 
 
     const goToMyLocation = async () => {
@@ -70,51 +70,49 @@ export default function UpdateAdd({ route , navigation }) {
 
 
     const NewAdd = async () => {
-        if(title.length < 10)
-        {
-          alert("لايمكن إضافة إعلان أقل من 10 حروف");
+        if (title.length < 10) {
+            alert("لايمكن إضافة إعلان أقل من 10 حروف");
         }
-        else if(description == "" || price == "")
-        {
+        else if (description == "" || price == "") {
             alert("لابد من إكمال البيانات كاملة");
         }
-        else{
-        const user_token = await AsyncStorage.getItem("user_token");
-        setLoading(true);
-        let formData = new FormData();
-        formData.append("title", title);
-        formData.append("details", description);
-        formData.append("price", price);
-        formData.append("Category", "");
-        formData.append("subcat", 4);
-        formData.append("address", address);
-        formData.append("country_id", 2);
-        formData.append("city_id", 1);
-        formData.append("images[]", image);
-        fetch("https://mestamal.com/api/ad/create", {
-            method: "POST",
-            headers: {
-                Authorization: "Bearer " + user_token
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(json => {
-            if (json.status == true) {
-                alert("تم اضافة الإعلان بنجاح")
-                navigation.pop(3);
-            }
-            else {
-                alert("هناك خطأ في إضافة الإعلان")
-            }
+        else {
+            const user_token = await AsyncStorage.getItem("user_token");
+            setLoading(true);
+            let formData = new FormData();
+            formData.append("title", title);
+            formData.append("details", description);
+            formData.append("price", price);
+            formData.append("Category", "");
+            formData.append("subcat", 4);
+            formData.append("address", address);
+            formData.append("country_id", 2);
+            formData.append("city_id", 1);
+            formData.append("images[]", image);
+            fetch("https://mestamal.com/api/ad/create", {
+                method: "POST",
+                headers: {
+                    Authorization: "Bearer " + user_token
+                },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(json => {
+                    if (json.status == true) {
+                        alert("تم اضافة الإعلان بنجاح")
+                        navigation.pop(3);
+                    }
+                    else {
+                        alert("هناك خطأ في إضافة الإعلان")
+                    }
+                }
+                )
+                .catch(error => {
+                    setLoading(false);
+                    console.error(error);
+                }
+                );
         }
-        )
-        .catch(error => {
-            setLoading(false);
-            console.error(error);
-        }
-        );
-}
     }
 
 
@@ -148,8 +146,8 @@ export default function UpdateAdd({ route , navigation }) {
 
     return (
         <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}>
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.container}>
             <StatusBar backgroundColor="#34ace0" />
             <View
                 style={{
@@ -161,7 +159,7 @@ export default function UpdateAdd({ route , navigation }) {
                     justifyContent: "center",
                     backgroundColor: "#34ace0"
                 }}
-             >
+            >
 
 
                 <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 20 }}>
@@ -172,9 +170,9 @@ export default function UpdateAdd({ route , navigation }) {
 
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
-                    style={{ position: "absolute", right : 20 }}
+                    style={{ position: "absolute", right: 20 }}
                 >
-                    <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
+                    <MaterialIcons name="arrow-forward-ios" size={30} color="#FFF" />
                 </TouchableOpacity>
 
             </View>
@@ -214,9 +212,9 @@ export default function UpdateAdd({ route , navigation }) {
                     }
 
                     <View style={styles.inputLabelContainer}>
-                    <Text style={{ fontFamily: "Bold", fontSize: 15 }}>
-                          عنوان الإعلان (أكثر من 10 حروف)  
-                    </Text>
+                        <Text style={{ fontFamily: "Bold", fontSize: 15 }}>
+                            عنوان الإعلان (أكثر من 10 حروف)
+                        </Text>
                     </View>
 
                     <View style={styles.inputContainer}>

@@ -17,6 +17,7 @@ import { FontAwesome5, MaterialIcons, FontAwesome, MaterialCommunityIcons, Simpl
 import styles from "../constants/style";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "./../constants/constants";
+import DrawerScreenHeader from "./../components/DrawerScreenHeader";
 
 export default function Contact({ route, navigation }) {
 
@@ -77,47 +78,9 @@ export default function Contact({ route, navigation }) {
     return (
         <View style={styles.container}>
             <StatusBar barStyle="default" backgroundColor="#34ace0" />
-            <View
-                style={{
-                    width: "100%",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    height: 60,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: "#34ace0"
-                }}
-            >
-                <TouchableOpacity
-                    onPress={() => navigation.goBack()}
-                    style={{ position: "absolute", right: 20 }}
-                >
-                    <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
-                </TouchableOpacity>
-                <View style={{
-                    flexDirection: "row",
-                    width: "100%",
-                    paddingHorizontal: 20
 
-                }}>
+            <DrawerScreenHeader screenTitle={"تواصل معنا"} />
 
-                    <TouchableOpacity
-                        onPress={() => navigation.openDrawer()}
-
-                        style={{
-                            justifyContent: "center",
-                            alignItems: "flex-start"
-                        }}
-                    >
-                        <SimpleLineIcons name="menu" size={40} color="#FFF" />
-
-                    </TouchableOpacity>
-
-                    <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 20, marginLeft: 20 }}>
-                        تواصل معنا
-                    </Text>
-                </View>
-            </View>
 
             <ScrollView
                 contentContainerStyle={{
@@ -141,7 +104,7 @@ export default function Contact({ route, navigation }) {
                     elevation: 10
                 }}>
                     <View style={styles.inputLabelContainer}>
-                        <Text style={{ fontFamily: "Bold", textAlign: "left", fontSize: 15 }}>
+                        <Text style={{ fontFamily: "Bold", textAlign: "right", fontSize: 15 }}>
                             أدخل بريدك الإلكتروني
                         </Text>
                     </View>
@@ -155,7 +118,7 @@ export default function Contact({ route, navigation }) {
 
 
                     <View style={styles.inputLabelContainer}>
-                        <Text style={{ fontFamily: "Bold", textAlign: "left", fontSize: 15 }}>
+                        <Text style={{ fontFamily: "Bold", textAlign: "right", fontSize: 15 }}>
                             موضوع التواصل
                         </Text>
                     </View>

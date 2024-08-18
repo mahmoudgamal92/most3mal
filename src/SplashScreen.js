@@ -19,13 +19,13 @@ export default function Splash({ route, navigation }) {
     if (token !== null) {
       setTimeout(() => {
         navigation.replace('DrawerStack');
-      }, 100);
+      }, 2000);
 
     }
     else {
       setTimeout(() => {
         navigation.replace('SignIn');
-      }, 100);
+      }, 1000);
     }
   }
 

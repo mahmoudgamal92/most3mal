@@ -89,8 +89,8 @@ export default function SearchResult({ route, navigation }) {
                         onPress={() => {
                             navigation.goBack();
                         }}
-                        style={{ position: "absolute", right : 20, }}>
-                    <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
+                        style={{ position: "absolute", right: 20, }}>
+                        <MaterialIcons name="arrow-forward-ios" size={30} color="#FFF" />
                     </TouchableOpacity>
                 </View>
 

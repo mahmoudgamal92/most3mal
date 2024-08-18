@@ -24,7 +24,7 @@ import api from "./../../constants/constants";
 
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import toastConfig from "./../../constants/Toast";
-import {NativeBaseProvider,Radio} from "native-base";
+import { NativeBaseProvider, Radio } from "native-base";
 import { KeyboardAvoidingView } from "react-native";
 
 export default function Create({ navigation, route }) {
@@ -165,7 +165,7 @@ export default function Create({ navigation, route }) {
     }
   };
 
- 
+
   const pickImage = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -224,7 +224,7 @@ export default function Create({ navigation, route }) {
             onPress={() => navigation.goBack()}
             style={{ position: "absolute", right: 20 }}
           >
-            <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
+            <MaterialIcons name="arrow-forward-ios" size={30} color="#FFF" />
           </TouchableOpacity>
         </View>
 
@@ -239,52 +239,52 @@ export default function Create({ navigation, route }) {
               </Text>
             </View>
 
-          
-            <TouchableOpacity
-            onPress={() => pickImage()}
-            style={styles.imgUploadContainer}
-          >
-            <Image
-              style={styles.imgUploadIcon}
-              source={require("./../../assets/camera.png")}
-            />
-          </TouchableOpacity>
 
-          <View
-            style={{
-              width: "100%",
-              marginBottom: 10,
-              flexDirection: "row-reverse",
-              flexWrap: "wrap",
-              alignItems:"center",
-              justifyContent:"center"
-            }}
-          >
-            {images.map((item, index) => {
-              return (
-                <View>
-                  <TouchableOpacity
-                    onPress={() => _removeImg(item.src)}
-                    style={{ marginBottom: -20, zIndex: 849849 }}
-                  >
+            <TouchableOpacity
+              onPress={() => pickImage()}
+              style={styles.imgUploadContainer}
+            >
+              <Image
+                style={styles.imgUploadIcon}
+                source={require("./../../assets/camera.png")}
+              />
+            </TouchableOpacity>
+
+            <View
+              style={{
+                width: "100%",
+                marginBottom: 10,
+                flexDirection: "row-reverse",
+                flexWrap: "wrap",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              {images.map((item, index) => {
+                return (
+                  <View>
+                    <TouchableOpacity
+                      onPress={() => _removeImg(item.src)}
+                      style={{ marginBottom: -20, zIndex: 849849 }}
+                    >
+                      <Image
+                        source={require("./../../assets/cross.png")}
+                        style={{ width: 30, height: 30 }}
+                      />
+                    </TouchableOpacity>
                     <Image
-                      source={require("./../../assets/cross.png")}
-                      style={{ width: 30, height: 30 }}
+                      source={{ uri: item.uri }}
+                      style={{
+                        width: 100,
+                        height: 100,
+                        borderRadius: 10,
+                        marginHorizontal: 5
+                      }}
                     />
-                  </TouchableOpacity>
-                  <Image
-                    source={{ uri: item.uri }}
-                    style={{
-                      width: 100,
-                      height: 100,
-                      borderRadius: 10,
-                      marginHorizontal: 5
-                    }}
-                  />
-                </View>
-              );
-            })}
-          </View>
+                  </View>
+                );
+              })}
+            </View>
 
             <View style={styles.inputLabelContainer}>
               <Text style={{ fontFamily: "Bold", fontSize: 15 }}>

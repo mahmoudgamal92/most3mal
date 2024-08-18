@@ -34,6 +34,7 @@ export default function AuctionOfferInfo({ route, navigation }) {
     const [long, setLong] = useState(46.6753);
     const [rating_text, setRatingText] = useState("");
     const [rating_val, setRatingValue] = useState(0);
+    const [chat_loading, setChatLoading] = useState(false);
 
     useEffect(() => {
         _retrieveData();
@@ -54,6 +55,48 @@ export default function AuctionOfferInfo({ route, navigation }) {
         });
         Linking.openURL(url);
     };
+
+    const _openChat = async (reciver_id, reciver_name) => {
+        const user_id = await AsyncStorage.getItem("user_id");
+        const user_name = await AsyncStorage.getItem("user_name");
+        let url = api.custom_url + "messaging/create.php";
+        let formData = new FormData();
+        formData.append("sender_id", user_id);
+        formData.append("sender_name", user_name);
+        formData.append("reciver_id", reciver_id);
+        formData.append("reciver_name", reciver_name);
+
+        try {
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    Accept: "*/*",
+                    "Content-type": "multipart/form-data;",
+                    "cache-control": "no-cache",
+                    "Accept-Encoding": "gzip, deflate, br",
+                    Connection: "keep-alive"
+                },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(json => {
+                    if (json.success == true) {
+                        navigation.navigate("ChatScreen", {
+                            chat_id: json.id
+                        });
+                    } else {
+                        console.log(JSON.stringify(json));
+                    }
+                })
+                .catch(error => console.error(error));
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+
+
+
 
     const _navigateChat = async () => {
         const user_id = await AsyncStorage.getItem("user_id");
@@ -289,7 +332,7 @@ export default function AuctionOfferInfo({ route, navigation }) {
                 <View
                     style={{
                         width: "100%",
-                        flexDirection: "row",
+                        flexDirection: "row-reverse",
                         justifyContent: "flex-start",
                         alignItems: "center",
                     }}
@@ -320,7 +363,7 @@ export default function AuctionOfferInfo({ route, navigation }) {
 
                 <TouchableOpacity
                     style={{
-                        flexDirection: "row",
+                        flexDirection: "row-reverse",
                         backgroundColor: "#FFF",
                         marginVertical: 15,
                         marginHorizontal: 20,
@@ -338,7 +381,7 @@ export default function AuctionOfferInfo({ route, navigation }) {
                     }}
                 >
                     <View style={{ width: "70%", alignItems: "center" }}>
-                        <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 22, }}>
+                        <View style={{ flexDirection: "row-reverse", alignItems: "center", marginHorizontal: 22, }}>
 
                             <View style={{ width: "20%" }}>
                                 <View style={{
@@ -359,7 +402,7 @@ export default function AuctionOfferInfo({ route, navigation }) {
                                     البائع :
                                 </Text>
                                 <Text
-                                    style={{ color: "black", fontFamily: "Bold", fontSize: 12, textAlign: "left", width: "90%" }}
+                                    style={{ color: "black", fontFamily: "Bold", fontSize: 12, textAlign: "right", width: "90%" }}
                                 >
                                     {itemSeller.name}
                                 </Text>
@@ -371,7 +414,7 @@ export default function AuctionOfferInfo({ route, navigation }) {
                             <View
                                 style={{
                                     height: 30,
-                                    borderLeftWidth: 1,
+                                    borderRightWidth: 1,
                                     borderColor: "grey",
                                     marginHorizontal: 22,
                                     borderStyle: "dashed"
@@ -381,7 +424,7 @@ export default function AuctionOfferInfo({ route, navigation }) {
 
                         <View
                             style={{
-                                flexDirection: "row",
+                                flexDirection: "row-reverse",
                                 alignItems: "center",
                                 marginHorizontal: 22
                             }}
@@ -408,7 +451,7 @@ export default function AuctionOfferInfo({ route, navigation }) {
                                     العميل :
                                 </Text>
                                 <Text
-                                    style={{ color: "black", fontFamily: "Bold", fontSize: 12, width: "90%", textAlign: "left" }}
+                                    style={{ color: "black", fontFamily: "Bold", fontSize: 12, width: "90%", textAlign: "right" }}
                                 >
                                     {orderClient.name}
                                 </Text>
@@ -545,12 +588,12 @@ export default function AuctionOfferInfo({ route, navigation }) {
 
                     <View style={{
                         width: "100%",
-                        alignItems: "flex-start",
+                        alignItems: "flex-end",
                         justifyContent: "center",
                         paddingHorizontal: 10
                     }}>
 
-                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <View style={{ flexDirection: "row-reverse", alignItems: "center" }}>
                             <View style={{ width: 50, alignItems: "center" }}>
                                 <MaterialIcons name="confirmation-number" size={24} color="grey"
                                     style={{ marginHorizontal: 5 }} />
@@ -563,7 +606,7 @@ export default function AuctionOfferInfo({ route, navigation }) {
 
 
 
-                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <View style={{ flexDirection: "row-reverse", alignItems: "center" }}>
                             <View style={{ width: 50, alignItems: "center" }}>
                                 <FontAwesome5 name="money-check-alt" size={24} color="grey"
                                     style={{ marginHorizontal: 5 }} />
@@ -574,7 +617,7 @@ export default function AuctionOfferInfo({ route, navigation }) {
                             </Text>
                         </View>
 
-                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <View style={{ flexDirection: "row-reverse", alignItems: "center" }}>
                             <View style={{ width: 50, alignItems: "center" }}>
 
                                 <AntDesign name="calendar" size={24} color="grey"
@@ -659,19 +702,19 @@ export default function AuctionOfferInfo({ route, navigation }) {
                             elevation: 6,
                         }}>
 
+                        <View style={{ width: "75%", paddingHorizontal: 10 }}>
+                            <Text style={{ fontFamily: "Bold", fontSize: 12, textAlign: "right" }}>
+                                {orderItem.title}
+                            </Text>
+                        </View>
+
+
                         <View style={{ width: "25%" }}>
                             <Image
                                 source={{
                                     uri: api.media_url + orderItem.images
                                 }}
                                 style={{ width: 80, height: 80, borderRadius: 10 }} />
-                        </View>
-
-
-                        <View style={{ width: "60%", paddingHorizontal: 10 }}>
-                            <Text style={{ fontFamily: "Bold", fontSize: 12, textAlign: "left" }}>
-                                {orderItem.title}
-                            </Text>
                         </View>
 
                     </TouchableOpacity>

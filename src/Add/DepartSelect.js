@@ -72,7 +72,7 @@ export default function CatSelect({ route, navigation }) {
                     onPress={() => navigation.goBack()}
                     style={{ position: "absolute", right: 20 }}
                 >
-                    <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
+                    <MaterialIcons name="arrow-forward-ios" size={30} color="#FFF" />
                 </TouchableOpacity>
 
             </View>
@@ -98,7 +98,7 @@ export default function CatSelect({ route, navigation }) {
                                 }}
                                 style={{
                                     height: 60,
-                                    flexDirection: "row-reverse",
+                                    flexDirection: "row",
                                     borderColor: current_item == item.id ? "#34ace0" : "#CCC",
                                     borderWidth: current_item == item.id ? 2 : 1,
                                     borderRadius: 10,

@@ -221,7 +221,7 @@ export default function ChatScreen({ navigation, route }) {
             onPress={() => navigation.goBack()}
             style={{ position: "absolute", right: 20 }}
           >
-            <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
+            <MaterialIcons name="arrow-forward-ios" size={30} color="#FFF" />
           </TouchableOpacity>
         </View>
 
@@ -502,6 +502,8 @@ export default function ChatScreen({ navigation, route }) {
               <TextInput
                 onChangeText={message => setMessage(message)}
                 placeholder="أكتب رسالتك"
+                value={message}
+
                 style={{
                   borderRadius: 10,
                   borderWidth: 1,

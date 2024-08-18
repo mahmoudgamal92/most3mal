@@ -51,8 +51,8 @@ export default function Create({ route, navigation }) {
       setTitle(item.title);
       setDescription(item.details);
       setPrice(item.price);
-      setState("iuiyr");
-      setCity("uiui");
+      setState("test");
+      setCity("test");
       setCoords("479575.75957,895.580");
       const location = await AsyncStorage.getItem("current_location");
       if (location !== null) {
@@ -97,6 +97,13 @@ export default function Create({ route, navigation }) {
       formData.append("price", price);
       formData.append("address", state + "," + city);
       formData.append("coords", coords);
+      images.map((item, index) => {
+        formData.append("images[]", {
+          uri: item.uri,
+          name: item.name,
+          type: item.type
+        });
+      });
       fetch(api.custom_url + "ads/update.php", {
         method: "POST",
         body: formData
@@ -135,7 +142,7 @@ export default function Create({ route, navigation }) {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [3, 3],
+        //aspect: [3, 3],
         quality: 1
       });
       if (!result.canceled) {
@@ -157,8 +164,8 @@ export default function Create({ route, navigation }) {
     }
   };
 
-  const _removeImg = async src => {
-    setImages(images.filter(item => item.uri !== src));
+  const _removeImg = (uri) => {
+    setImages(images.filter(item => item.uri !== uri));
   };
 
   return (
@@ -186,7 +193,7 @@ export default function Create({ route, navigation }) {
           onPress={() => navigation.goBack()}
           style={{ position: "absolute", right: 20 }}
         >
-          <MaterialIcons name="arrow-back-ios" size={30} color="#FFF" />
+          <MaterialIcons name="arrow-forward-ios" size={30} color="#FFF" />
         </TouchableOpacity>
       </View>
 
@@ -201,7 +208,8 @@ export default function Create({ route, navigation }) {
           }}>
             <Text style={{
               fontFamily: "Bold",
-              marginVertical: 20
+              marginVertical: 20,
+              textAlign: 'right'
             }}>
               الصور الحالية للمنتج
             </Text>
@@ -230,10 +238,7 @@ export default function Create({ route, navigation }) {
             onPress={() => pickImage()}
             style={styles.imgUploadContainer}
           >
-            <Image
-              style={styles.imgUploadIcon}
-              source={require("./../../assets/camera.png")}
-            />
+            <Feather name="camera" size={60} color="#FFF" />
           </TouchableOpacity>
 
           <View
@@ -250,7 +255,7 @@ export default function Create({ route, navigation }) {
               return (
                 <View>
                   <TouchableOpacity
-                    onPress={() => _removeImg(item.src)}
+                    onPress={() => _removeImg(item.uri)}
                     style={{ marginBottom: -20, zIndex: 849849 }}
                   >
                     <Image
@@ -273,7 +278,11 @@ export default function Create({ route, navigation }) {
           </View>
 
           <View style={styles.inputLabelContainer}>
-            <Text style={{ fontFamily: "Bold", fontSize: 15 }}>
+            <Text style={{
+              fontFamily: "Bold",
+              fontSize: 15,
+              textAlign: 'right'
+            }}>
               عنوان الإعلان (أكثر من 10 حروف)
             </Text>
           </View>
@@ -289,7 +298,11 @@ export default function Create({ route, navigation }) {
 
           <View style={styles.inputLabelContainer}>
             <Text
-              style={{ fontFamily: "Bold", textAlign: "left", fontSize: 15 }}
+              style={{
+                fontFamily: "Bold",
+                textAlign: 'right',
+                fontSize: 15
+              }}
             >
               وصف الإعلان
             </Text>
@@ -306,7 +319,10 @@ export default function Create({ route, navigation }) {
           </View>
 
           <View style={styles.inputLabelContainer}>
-            <Text style={{ fontFamily: "Bold", textAlign: "left" }}>
+            <Text style={{
+              fontFamily: "Bold",
+              textAlign: 'right'
+            }}>
               سعر الإعلان (بالريال السعودي)
             </Text>
           </View>
@@ -321,7 +337,10 @@ export default function Create({ route, navigation }) {
           </View>
 
           <View style={styles.inputLabelContainer}>
-            <Text style={{ fontFamily: "Bold", textAlign: "left" }}>
+            <Text style={{
+              fontFamily: "Bold",
+              textAlign: 'right'
+            }}>
               المدينة
             </Text>
           </View>
@@ -336,7 +355,10 @@ export default function Create({ route, navigation }) {
           </View>
 
           <View style={styles.inputLabelContainer}>
-            <Text style={{ fontFamily: "Bold", textAlign: "left" }}>
+            <Text style={{
+              fontFamily: "Bold",
+              textAlign: 'right'
+            }}>
               الحي
             </Text>
           </View>
@@ -354,7 +376,7 @@ export default function Create({ route, navigation }) {
             <Text
               style={{
                 fontFamily: "Bold",
-                textAlign: "left",
+                textAlign: "right",
                 marginVertical: 10
               }}
             >
@@ -436,7 +458,9 @@ export default function Create({ route, navigation }) {
             </View>
           </View>
 
-          <TouchableOpacity style={styles.primaryBtn} onPress={() => NewAdd()}>
+          <TouchableOpacity style={[styles.primaryBtn, {
+            marginBottom: 60
+          }]} onPress={() => NewAdd()}>
             {loading == true
               ? <ActivityIndicator size={40} color="#FFF" />
               : <Text style={styles.btnText}>تعديل الإعلان </Text>}

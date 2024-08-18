@@ -1,88 +1,28 @@
+import React, { useState, useRef, useEffect } from "react";
 import {
   Image,
   Text,
   View,
   StyleSheet,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  useWindowDimensions
 } from "react-native";
-import React, { useState, useRef, useEffect } from "react";
 import moment from "moment";
 import { Entypo, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
-import { useFocusEffect } from "@react-navigation/native";
-import api from "./../constants/constants";
+import { TabView, SceneMap } from 'react-native-tab-view';
 
-export default function HomePage({ route, navigation }) {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  useFocusEffect(
-    React.useCallback(() => {
-      _retrieveData();
-    }, [])
-  );
+import { Auctions, Bids, EmptyComponent } from './Components';
 
-  useEffect(() => {
-    _retrieveData();
-  }, []);
-  const _retrieveData = async () => {
-    setLoading(true);
-    let url = api.custom_url + "auctions/list.php";
-    try {
-      fetch(url, {
-        method: "GET",
-        headers: {
-          Accept: "*/*",
-          "Content-type": "multipart/form-data;",
-          "cache-control": "no-cache",
-          "Accept-Encoding": "gzip, deflate, br",
-          Connection: "keep-alive"
-        }
-      })
-        .then(response => response.json())
-        .then(json => {
-          console.log(JSON.stringify(json));
-          setData(json.data);
-          setLoading(false);
-        })
-        .catch(error => console.error(error));
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
-  const handleEmptyProp = () => {
-    return (
-      <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: 160
-        }}
-      >
-        <Image
-          source={require("./../assets/broken-heart.png")}
-          style={{ width: 200, height: 200 }}
-        />
-        <Text
-          style={{
-            fontFamily: "Regular",
-            color: "#c9c9c9",
-            fontSize: 18,
-            marginTop: 10
-          }}
-        >
-          لا توجد لديك أي مزادات نشطة
-        </Text>
-      </View>
-    );
-  };
+export default function AuctionsScreen({ route, navigation }) {
+  const [selectedIndex, setSelectedIndex] = useState('auctions');
 
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#34ace0" />
-
       <View
         style={{
           width: "100%",
@@ -99,81 +39,83 @@ export default function HomePage({ route, navigation }) {
         </Text>
       </View>
 
-      <View style={{ flex: 1, paddingHorizontal: 20 }}>
-        <FlatList
-          data={data}
-          ListEmptyComponent={handleEmptyProp()}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) =>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("AuctionDetails", {
-                  item: item
-                })}
-              style={{
-                flexDirection: "row-reverse",
-                borderColor: "#DDDDDD",
-                borderWidth: 1,
-                borderRadius: 10,
-                padding: 10,
-                alignItems: "center",
-                backgroundColor: "#FFF",
-                justifyContent: "flex-end",
-                marginVertical: 5
-              }}
-            >
-              <View>
-                <Text
-                  style={{
-                    fontFamily: "Bold",
-                    color: "#2196f3",
-                    fontSize: 15,
-                    marginHorizontal: 10,
-                    textAlign: "left"
-                  }}
-                >
-                  {item.auction_number}#
-                </Text>
-                <Text
-                  style={{
-                    fontFamily: "Bold",
-                    fontSize: 15,
-                    marginHorizontal: 10
-                  }}
-                >
-                  {item.title}
-                </Text>
+      <View style={{ flex: 1, paddingHorizontal: 10 }}>
+        <View style={{
+          flexDirection: 'row-reverse',
+          marginBottom: 10,
+          backgroundColor: '#FFF'
+        }}>
+          <TouchableOpacity
+            onPress={() => setSelectedIndex('auctions')}
+            style={{
+              width: '50%',
+              borderBottomWidth: selectedIndex == 'auctions' ? 2 : 0,
+              borderBottomColor: "#34ace0",
+            }}>
 
-                <View
-                  style={{
-                    marginHorizontal: 10,
-                    flexDirection: "row"
-                  }}
-                >
-                  <AntDesign name="calendar" size={24} color="grey" />
-                  <Text style={{ fontFamily: "Regular", color: "grey" }}>
-                    {moment(item.end_date).format("MMM Do YY")} تاريخ الانتهاء :
-                  </Text>
-                </View>
-              </View>
+            <View style={{
+              flexDirection: 'row-reverse',
+              alignItems: 'center',
+              width: '100%'
+            }}>
 
-              <View style={{}}>
-                <Image
-                  source={{
-                    uri:
-                      api.media_url + item.images?.split(",")[0]
-                  }}
-                  style={{
-                    width: 100,
-                    height: 100,
-                    resizeMode: "cover",
-                    borderRadius: 10
-                  }}
-                />
-              </View>
-            </TouchableOpacity>}
-        />
+              <Image source={require('./../assets/auction.png')} style={{
+                width: 30,
+                height: 30,
+                marginHorizontal: 10
+              }} />
+              <Text style={{
+                textAlign: 'center',
+                fontSize: 15,
+                paddingVertical: 10,
+                fontFamily: 'Bold',
+                color: "grey"
+              }}>
+                المزادات
+              </Text>
+            </View>
+
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => setSelectedIndex('bids')}
+            style={{
+              width: '50%',
+              borderBottomWidth: selectedIndex == 'bids' ? 2 : 0,
+              borderBottomColor: "#34ace0"
+            }}>
+            <View style={{
+              flexDirection: 'row-reverse',
+              alignItems: 'center',
+              width: '100%'
+            }}>
+
+              <Image source={require('./../assets/bid.png')} style={{
+                width: 30,
+                height: 30,
+                marginHorizontal: 10
+              }} />
+              <Text style={{
+                textAlign: 'center',
+                fontSize: 15,
+                paddingVertical: 10,
+                fontFamily: 'Bold',
+                color: "grey"
+
+              }}>
+                مزايداتي الخاصه
+              </Text>
+
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View style={{
+          paddingHorizontal: 10
+        }}>
+          {selectedIndex == 'auctions' ? <Auctions /> : <Bids />}
+
+        </View>
+
       </View>
 
       <TouchableOpacity

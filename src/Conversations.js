@@ -54,7 +54,7 @@ export default function Conversations({ route, navigation }) {
     }
   };
 
-  
+
   const handleEmptyProp = () => {
     return (
       <View
@@ -76,7 +76,7 @@ export default function Conversations({ route, navigation }) {
             marginTop: 10
           }}
         >
-         لاتوجد لديك أي محادثات حاليا
+          لاتوجد لديك أي محادثات حاليا
         </Text>
       </View>
     );
@@ -123,7 +123,7 @@ export default function Conversations({ route, navigation }) {
                 chat_id: item.conv_num
               })}
             style={{
-              flexDirection: "row",
+              flexDirection: "row-reverse",
               alignItems: "center",
               justifyContent: "space-around",
               marginBottom: 10,
@@ -144,12 +144,12 @@ export default function Conversations({ route, navigation }) {
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
-                  height:70,
-                  width:70,
+                  height: 70,
+                  width: 70,
                 }}
               >
                 <Image source={require("./../assets/profile.png")}
-                  style={{ width: 70, height: 70,marginHorizontal: 5}}/>
+                  style={{ width: 70, height: 70, marginHorizontal: 5 }} />
               </View>
             </View>
 
@@ -158,7 +158,7 @@ export default function Conversations({ route, navigation }) {
                 flex: 1,
                 justifyContent: "center",
                 width: "55%",
-                flexDirection: "row",
+                flexDirection: "row-reverse",
                 justifyContent: "space-between"
               }}
             >
@@ -166,7 +166,7 @@ export default function Conversations({ route, navigation }) {
                 style={{
                   fontFamily: "Bold",
                   fontSize: 18,
-                  textAlign: "left"
+                  textAlign: "right", paddingHorizontal: 10
                 }}
               >
                 {user_id == item.sender_id.toString()
@@ -175,19 +175,19 @@ export default function Conversations({ route, navigation }) {
               </Text>
               {parseInt(item.unseen_msg) > 0
                 ? <Text
-                    style={{
-                      fontFamily: "Bold",
-                      fontSize: 18,
-                      textAlign: "center",
-                      backgroundColor: "red",
-                      borderRadius: 15,
-                      width: 30,
-                      height: 30,
-                      color: "#FFF"
-                    }}
-                  >
-                    {item.unseen_msg}
-                  </Text>
+                  style={{
+                    fontFamily: "Bold",
+                    fontSize: 18,
+                    textAlign: "center",
+                    backgroundColor: "red",
+                    borderRadius: 15,
+                    width: 30,
+                    height: 30,
+                    color: "#FFF"
+                  }}
+                >
+                  {item.unseen_msg}
+                </Text>
                 : null}
             </View>
 
