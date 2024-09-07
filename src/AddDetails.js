@@ -452,6 +452,7 @@ const AddDetail = ({ route, navigation }) => {
               return (
                 <ImageBackground
                   source={{ uri: api.media_url + item }}
+                  resizeMode="stretch"
                   style={{
                     width: windowWidth,
                     height: 280,
@@ -487,6 +488,7 @@ const AddDetail = ({ route, navigation }) => {
           </ScrollView>
           :
           <ImageBackground
+            resizeMode="stretch"
             source={{ uri: api.media_url + item.images.split(",")[0] }}
             style={{ width: "100%", height: 280 }}
           />

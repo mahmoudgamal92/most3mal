@@ -31,6 +31,7 @@ import MapView, { Marker } from "react-native-maps";
 
 export default function EditAuction({ route, navigation }) {
     const { item } = route.params;
+    console.log(item);
     const [images, setImages] = useState([]);
     const [imageURI, setImageURI] = useState(null);
     const [title, setTitle] = useState(item.title);
@@ -191,40 +192,39 @@ export default function EditAuction({ route, navigation }) {
                 >
                     <View style={styles.loginBox}>
 
-                        {images.lenght > 0 &&
-                            <View style={{
-                                width: "100%",
-                                paddingHorizontal: 10
+                        <View style={{
+                            width: "100%",
+                            paddingHorizontal: 10
+                        }}>
+                            <Text style={{
+                                fontFamily: "Bold",
+                                marginVertical: 20,
+                                textAlign: 'right'
                             }}>
-                                <Text style={{
-                                    fontFamily: "Bold",
-                                    marginVertical: 20,
-                                    textAlign: 'right'
-                                }}>
-                                    الصور الحالية للمنتج
-                                </Text>
-                                <ScrollView
-                                    style={{
-                                        flexDirection: 'row-reverse'
-                                    }}
-                                    horizontal
-                                >
-                                    {item?.images?.split(",").map((item, index) => {
-                                        return (
-                                            <Image
-                                                source={{ uri: api.media_url + item }}
-                                                style={{
-                                                    width: 100,
-                                                    height: 100,
-                                                    borderRadius: 10,
-                                                    marginHorizontal: 5
-                                                }}
-                                            />
-                                        );
-                                    })}
-                                </ScrollView>
-                            </View>
-                        }
+                                الصور الحالية للمنتج
+                            </Text>
+                            <ScrollView
+                                style={{
+                                    flexDirection: 'row-reverse'
+                                }}
+                                horizontal
+                            >
+                                {item.images?.split(",").map((item, index) => {
+                                    return (
+                                        <Image
+                                            source={{ uri: api.media_url + item }}
+                                            style={{
+                                                width: 100,
+                                                height: 100,
+                                                borderRadius: 10,
+                                                marginHorizontal: 5
+                                            }}
+                                        />
+                                    );
+                                })}
+                            </ScrollView>
+                        </View>
+
 
 
 
@@ -428,7 +428,7 @@ export default function EditAuction({ route, navigation }) {
                         >
                             {loading == true
                                 ? <ActivityIndicator size={40} color="#FFF" />
-                                : <Text style={styles.btnText}>إنشاء المزاد</Text>}
+                                : <Text style={styles.btnText}>تعديل المزاد</Text>}
                         </TouchableOpacity>
                     </View>
                 </ScrollView>

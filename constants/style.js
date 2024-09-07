@@ -26,8 +26,6 @@ const styles = StyleSheet.create({
     elevation: 10
   },
 
-
-
   inputLabelContainer: {
     width: "100%",
     paddingHorizontal: 20,
@@ -37,7 +35,7 @@ const styles = StyleSheet.create({
 
   inputContainer: {
     paddingHorizontal: 10,
-    flexDirection: "row",
+    flexDirection: "row-reverse",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 5,

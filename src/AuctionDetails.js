@@ -720,14 +720,14 @@ export default function AuctionDetails({ route, navigation }) {
                 >
                   <View
                     style={{
-                      flexDirection: "row",
+                      flexDirection: "row-reverse",
                       justifyContent: "space-between",
                       width: "100%"
                     }}
                   >
                     <View
                       style={{
-                        flexDirection: "row",
+                        flexDirection: "row-reverse",
                         alignItems: "center"
                       }}
                     >

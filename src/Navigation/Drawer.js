@@ -24,7 +24,7 @@ export default DrawerStack = () => {
   const Drawer = createDrawerNavigator();
   return (
     <Drawer.Navigator
-      backBehavior="order"
+      backBehavior="history"
       screenOptions={{
         drawerItemStyle: {
           borderRadius: 0,

@@ -23,16 +23,16 @@ export default function PaymentProcess({ route, navigation }) {
                     paddingHorizontal: 10,
                 }}>
 
-                    <View style={{ width: "10%", justifyContent: "center" }}>
-                        <TouchableOpacity
-                            onPress={() => navigation.goBack()}
-                            style={{ justifyContent: "center" }}>
-                            <MaterialIcons name="arrow-forward-ios" size={30} color="#FFF" style={{
-                                marginHorizontal: 10
-                            }} />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ alignItems: "center", width: "90%" }}>
+
+                    <View style={{ alignItems: "center", width: "100%", justifyContent: 'center' }}>
+
+                        <View style={{ position: 'absolute', justifyContent: "center", right: 10 }}>
+                            <TouchableOpacity
+                                onPress={() => navigation.goBack()}>
+                                <MaterialIcons name="arrow-forward-ios" size={30} color="#FFF" />
+                            </TouchableOpacity>
+                        </View>
+
                         <Text
                             style={{
                                 textAlign: "right",

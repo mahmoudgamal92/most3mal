@@ -71,6 +71,7 @@ export default function AddAuction({ route, navigation }) {
             <View style={styles.container}>
                 <StatusBar barStyle="default" />
                 <ScrollView
+                    showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
                         alignItems: 'center'
                     }}

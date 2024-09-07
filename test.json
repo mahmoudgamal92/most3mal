@@ -1,48 +1,62 @@
-{
-    "_parts": [
-        [
-            "user_id",
-            "230"
-        ],
-        [
-            "ad_number",
-            64998
-        ],
-        [
-            "title",
-            "Futh kgg kdss"
-        ],
-        [
-            "details",
-            "Test Add to the list home and "
-        ],
-        [
-            "price",
-            4580
-        ],
-        [
-            "depart_id",
-            57
-        ],
-        [
-            "cat_id",
-            31
-        ],
-        [
-            "address",
-            "Test,Test"
-        ],
-        [
-            "coords",
-            "29.363280757411818,46.17392661049962"
-        ],
-        [
-            "images[]",
-            {
-                "uri": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540mahmoud2391997%252Fmost3mal/ImagePicker/fa0d9e83-c045-4e14-80d3-c64e2d187d15.jpeg",
-                "name": "fa0d9e83-c045-4e14-80d3-c64e2d187d15.jpeg",
-                "type": "image/jpeg"
-            }
-        ]
-    ]
-}
+[
+    {
+        "amount": "500.00",
+        "auction": {
+            "address": "جدة, مكة",
+            "auction_number": "901735",
+            "city_id": "0",
+            "created_at": "2024-08-23 10:43:56",
+            "details": "وصف المزاد",
+            "duration": "7",
+            "end_date": "2024-08-30 19:43:53",
+            "id": "137",
+            "images": "aae933b9-48ff-4cb8-a653-2a4f36dd8b01.jpeg",
+            "main_image": null,
+            "start_date": "2024-08-23 19:43:53",
+            "state_id": "0",
+            "status": "active",
+            "time": "0",
+            "title": "مزاد تجريبي سيارة للبيع بالرياض ",
+            "updated_at": "2024-08-23 10:43:56",
+            "user_id": "230"
+        },
+        "auction_id": "137",
+        "created_at": "2024-08-23 10:56:55",
+        "id": "88",
+        "rating_text": "Test",
+        "rating_val": "5",
+        "status": "delivered",
+        "updated_at": null,
+        "user_id": "234"
+    },
+    {
+        "amount": "454.00",
+        "auction": {
+            "address": "Test, Test",
+            "auction_number": "779656",
+            "city_id": "0",
+            "created_at": "2024-08-23 11:34:49",
+            "details": "Test description",
+            "duration": "7",
+            "end_date": "2024-08-30 20:34:04",
+            "id": "139",
+            "images": "A378BF89-0970-4F4F-9358-08CEF08D21F8.jpg",
+            "main_image": null,
+            "start_date": "2024-08-23 20:34:04",
+            "state_id": "0",
+            "status": "active",
+            "time": "0",
+            "title": "Test auctoiioio",
+            "updated_at": "2024-08-23 11:34:49",
+            "user_id": "230"
+        },
+        "auction_id": "139",
+        "created_at": "2024-08-23 11:35:08",
+        "id": "89",
+        "rating_text": "",
+        "rating_val": "",
+        "status": "waiting",
+        "updated_at": null,
+        "user_id": "234"
+    }
+]

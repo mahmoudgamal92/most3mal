@@ -55,7 +55,7 @@ export const Auctions = ({ }) => {
     return (
         <FlatList
             data={data}
-            ListEmptyComponent={<EmptyComponent message='No Auctions Avalible' />}
+            ListEmptyComponent={<EmptyComponent message='لم تقم بإضافة أي مزادات حتي الأن' />}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) =>

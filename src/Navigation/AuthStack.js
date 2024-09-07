@@ -8,7 +8,7 @@ import OtpScreen from "./../OtpScreen";
 import ForgotPwd from "./../ForgotPwd";
 import SignInSupport from "./../SignInSupport";
 import NewPwd from "./../NewPwd";
-
+import OnBoardingScreen from "./../OnBoardingScreen";
 
 export default AuthenticationStack = () => {
   const AuthStack = createStackNavigator();
@@ -22,6 +22,7 @@ export default AuthenticationStack = () => {
       <AuthStack.Screen name="DrawerStack" component={AppStack} />
       <AuthStack.Screen name="Splash" component={Splash} />
       <AuthStack.Screen name="SignIn" component={SignIn} />
+      <AuthStack.Screen name="OnBoardingScreen" component={OnBoardingScreen} />
       <AuthStack.Screen name="SignUp" component={SignUp} />
       <AuthStack.Screen name="ForgotPwd" component={ForgotPwd} />
       <AuthStack.Screen name="NewPwd" component={NewPwd} />

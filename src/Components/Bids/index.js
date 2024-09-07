@@ -50,7 +50,7 @@ export const Bids = () => {
             })
                 .then(response => response.json())
                 .then(json => {
-                    //alert(JSON.stringify(json))
+                    console.log(JSON.stringify(json));
                     if (json.success == true) {
                         setData(json.data);
                         console.log(json.data)
@@ -118,12 +118,53 @@ export const Bids = () => {
             console.log(error);
         }
     };
+
+
+    const render_order = (val) => {
+        switch (val) {
+            case "active":
+                return {
+                    color: "green",
+                    text: "نـــشـط"
+                };
+
+            case "inactive":
+                return {
+                    color: "red",
+                    text: "غير نشط"
+                };
+
+
+            case "pending":
+                return {
+                    color: "grey",
+                    text: "قيد الانتظار"
+                };
+            case "done":
+                return {
+                    color: "green",
+                    text: "مكتمل"
+                };
+
+            case "waiting":
+                return {
+                    color: "green",
+                    text: "بالانتظار"
+                };
+
+            default:
+                return {
+                    color: "#119fbf",
+                    text: "حالة غير معروفة"
+                };
+        }
+    };
     return (
         <View>
             <FlatList
                 data={data}
                 showsVerticalScrollIndicator={false}
-                ListEmptyComponent={<EmptyComponent message='No Auctions Avalible' />}
+                ListEmptyComponent={<EmptyComponent message='لم تقم بإضافة أي مزادات حتي الأن' />}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
                     <TouchableOpacity
@@ -142,36 +183,59 @@ export const Bids = () => {
                             marginVertical: 5
                         }}>
 
-                        <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    Alert.alert('تأكيد الحذف!', 'هل أنت متأكد من حذف هذاالإعلان', [
-
-                                        {
-                                            text: 'Cancel',
-                                            onPress: () => console.log('Cancel Pressed'),
-                                            style: 'cancel',
-                                        },
-                                        { text: 'OK', onPress: () => deleteOrder(item.id) },
-                                    ]);
-
-                                }}
-                            >
-                                <AntDesign name="delete" size={30} color="red" />
-                            </TouchableOpacity>
+                        <View style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            backgroundColor: render_order(item.status).color,
+                            width: 80,
+                            height: 30,
+                            zIndex: 9999,
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}>
+                            <Text style={{
+                                color: "#FFF",
+                                fontFamily: 'Regular',
+                                fontSize: 11
+                            }}>
+                                {render_order(item.status).text}
+                            </Text>
                         </View>
 
-                        <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    setInputModal(true);
-                                    setCurrentItem(item.id);
-                                }
-                                }
-                            >
-                                <AntDesign name="edit" size={30} color="#000" />
-                            </TouchableOpacity>
-                        </View>
+                        {item.status == 'waiting' ?
+                            <>
+                                <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            Alert.alert('تأكيد الحذف!', 'هل أنت متأكد من حذف هذاالإعلان', [
+
+                                                {
+                                                    text: 'Cancel',
+                                                    onPress: () => console.log('Cancel Pressed'),
+                                                    style: 'cancel',
+                                                },
+                                                { text: 'OK', onPress: () => deleteOrder(item.id) },
+                                            ]);
+
+                                        }}
+                                    >
+                                        <AntDesign name="delete" size={30} color="red" />
+                                    </TouchableOpacity>
+                                </View>
+
+                                <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            setInputModal(true);
+                                            setCurrentItem(item.id);
+                                        }
+                                        }
+                                    >
+                                        <AntDesign name="edit" size={30} color="#000" />
+                                    </TouchableOpacity>
+                                </View>
+                            </> : null}
 
                         <View style={{
                             width: "50%",

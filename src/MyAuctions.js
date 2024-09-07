@@ -64,49 +64,6 @@ export default function MyAuctions({ route, navigation }) {
     }
   };
 
-  const deleteAdd = async ad_id => {
-    try {
-      const user_token = await AsyncStorage.getItem("user_token");
-      if (user_token !== null) {
-        fetch(api.dynamic_url + "auctions/" + ad_id, {
-          method: "POST",
-          headers: {
-            Accept: "*/*",
-            "Content-type": "multipart/form-data;",
-            "Accept-Encoding": "gzip, deflate, br",
-            Connection: "keep-alive",
-            Authorization: "Bearer " + user_token
-          }
-        })
-          .then(response => response.json())
-          .then(responseJson => {
-            if (responseJson.status == true) {
-              Toast.show({
-                type: "successToast",
-                text1: "تم حذف الإعلان بنجاح",
-                topOffset: 120,
-                visibilityTime: 2000
-              });
-
-              _retrieveData();
-            } else {
-              Toast.show({
-                type: "erorrToast",
-                text1: "خط أثناء حذف الإعلان",
-                bottomOffset: 80,
-                visibilityTime: 2000
-              });
-            }
-          });
-      } else {
-        alert("هناك مشكلة الحذف");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-
 
   const updateStatus = async (id, status) => {
 
@@ -170,6 +127,7 @@ export default function MyAuctions({ route, navigation }) {
         };
     }
   };
+
   const handleEmptyProp = () => {
     return (
       <View
@@ -202,127 +160,123 @@ export default function MyAuctions({ route, navigation }) {
       <StatusBar backgroundColor="#34ace0" />
       <DrawerScreenHeader screenTitle={"مزاداتي"} />
       <View style={{ flex: 1, paddingHorizontal: 20 }}>
-        <ScrollView>
 
-          <FlatList
-            data={data}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={(item, index) => index.toString()}
-            ListEmptyComponent={handleEmptyProp()}
-            renderItem={({ item }) =>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("AuctionDetails", {
-                    item: item
-                  })}
+        <FlatList
+          data={data}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item, index) => index.toString()}
+          ListEmptyComponent={handleEmptyProp()}
+          renderItem={({ item }) =>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("AuctionDetails", {
+                  item: item
+                })}
+              style={{
+                flexDirection: "row",
+                borderColor: "#DDDDDD",
+                backgroundColor: '#FFF',
+                borderWidth: 1,
+                borderRadius: 10,
+                padding: 10,
+                alignItems: "center",
+                justifyContent: "flex-end",
+                marginVertical: 5,
+                height: 150
+              }}
+            >
+
+              <View style={{
+                position: 'absolute',
+                top: 0,
+                backgroundColor: render_order(item.status).color,
+                width: 80,
+                height: 30,
+                zIndex: 9999,
+                alignItems: 'center'
+              }}>
+                <Text style={{
+                  color: "#FFF",
+                  fontFamily: 'Regular'
+                }}>
+                  {render_order(item.status).text}
+                </Text>
+              </View>
+              <View
                 style={{
-                  flexDirection: "row",
-                  borderColor: "#DDDDDD",
-                  backgroundColor: '#FFF',
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  padding: 10,
+                  width: "30%",
+                  flexDirection: 'row',
                   alignItems: "center",
-                  justifyContent: "flex-end",
-                  marginVertical: 5,
-                  height: 150
+                  justifyContent: "center"
                 }}
               >
-
-                <View style={{
-                  position: 'absolute',
-                  top: 0,
-                  backgroundColor: render_order(item.status).color,
-                  width: 80,
-                  height: 30,
-                  zIndex: 9999,
-                  alignItems: 'center'
-                }}>
-                  <Text style={{
-                    color: "#FFF",
-                    fontFamily: 'Regular'
-                  }}>
-                    {render_order(item.status).text}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    width: "30%",
-                    flexDirection: 'row',
-                    alignItems: "center",
-                    justifyContent: "center"
+                <TouchableOpacity
+                  onPress={() => {
+                    Alert.alert(
+                      "تأكيد !",
+                      'هل أنت متأكد من تغيير حالة هذاالإعلان',
+                      [
+                        {
+                          text: "Cancel",
+                          onPress: () => console.log("Cancel Pressed"),
+                          style: "cancel"
+                        },
+                        { text: "OK", onPress: () => updateStatus(item.id, item.status) }
+                      ]
+                    );
                   }}
                 >
-                  <TouchableOpacity
-                    onPress={() => {
-                      Alert.alert(
-                        "تأكيد !",
-                        'هل أنت متأكد من تغيير حالة هذاالإعلان',
-                        [
-                          {
-                            text: "Cancel",
-                            onPress: () => console.log("Cancel Pressed"),
-                            style: "cancel"
-                          },
-                          { text: "OK", onPress: () => updateStatus(item.id, item.status) }
-                        ]
-                      );
-                    }}
-                  >
-                    {item.status == "active" ?
-                      <Entypo name="eye-with-line" size={30} color="red" />
-                      :
-                      <AntDesign name="eye" size={30} color="green" />
-                    }
-                  </TouchableOpacity>
+                  {item.status == "active" ?
+                    <Entypo name="eye-with-line" size={30} color="red" />
+                    :
+                    <AntDesign name="eye" size={30} color="green" />
+                  }
+                </TouchableOpacity>
 
-                  <TouchableOpacity onPress={() => navigation.navigate('EditAuction', {
-                    item: item
-                  })}>
-                    <AntDesign name="edit" size={30} color="grey" />
-                  </TouchableOpacity>
-                </View>
+                <TouchableOpacity onPress={() => navigation.navigate('EditAuction', {
+                  item: item
+                })}>
+                  <AntDesign name="edit" size={30} color="grey" />
+                </TouchableOpacity>
+              </View>
+
+              <View
+                style={{
+                  width: "40%",
+                  marginHorizontal: 10,
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <Text style={{ fontFamily: "Bold", fontSize: 15, textAlign: 'right' }}>
+                  {item.title}
+                </Text>
+                <Text
+                  style={{ fontFamily: "Regular", fontSize: 12, color: "grey", textAlign: 'right' }}
+                >
+                  {item.details}
+                </Text>
 
                 <View
                   style={{
-                    width: "40%",
-                    marginHorizontal: 10,
-                    alignItems: "center",
-                    justifyContent: "center"
+                    flexDirection: "row",
+                    justifyContent: "space-around"
                   }}
-                >
-                  <Text style={{ fontFamily: "Bold", fontSize: 15, textAlign: 'right' }}>
-                    {item.title}
-                  </Text>
-                  <Text
-                    style={{ fontFamily: "Regular", fontSize: 12, color: "grey", textAlign: 'right' }}
-                  >
-                    {item.details}
-                  </Text>
+                />
+              </View>
 
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-around"
-                    }}
-                  />
-                </View>
-
-                <View style={{ width: "30%" }}>
-                  <Image
-                    source={{ uri: api.media_url + item.images?.split(",")[0] }}
-                    style={{
-                      width: "100%",
-                      height: '100%',
-                      resizeMode: "cover",
-                    }}
-                  />
-                </View>
-              </TouchableOpacity>}
-          />
-
-        </ScrollView>
-
+              <View style={{ width: "30%" }}>
+                <Image
+                  source={{ uri: api.media_url + item.images?.split(",")[0] }}
+                  style={{
+                    width: "100%",
+                    height: '100%',
+                    resizeMode: "cover",
+                  }}
+                />
+              </View>
+            </TouchableOpacity>}
+        />
       </View>
 
       <TouchableOpacity

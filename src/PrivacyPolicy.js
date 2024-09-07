@@ -45,8 +45,28 @@ export default function PrivacyPolicy({ route, navigation }) {
     return (
         <View style={styles.container}>
             <StatusBar barStyle="default" backgroundColor="#34ace0" />
+            <View
+                style={{
+                    width: "100%",
+                    height: 60,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: "#34ace0",
+                }}
+            >
 
-            <DrawerScreenHeader screenTitle={"سياسة الإستخدام و الخصوصية"} />
+
+                <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 20 }}>
+                    سياسة الخصوصية
+                </Text>
+
+                <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    style={{ position: "absolute", right: 20 }}
+                >
+                    <MaterialIcons name="arrow-forward-ios" size={30} color="#FFF" />
+                </TouchableOpacity>
+            </View>
 
             <ScrollView
                 contentContainerStyle={{

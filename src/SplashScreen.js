@@ -24,7 +24,7 @@ export default function Splash({ route, navigation }) {
     }
     else {
       setTimeout(() => {
-        navigation.replace('SignIn');
+        navigation.replace('OnBoardingScreen');
       }, 1000);
     }
   }
@@ -44,7 +44,7 @@ export default function Splash({ route, navigation }) {
       <View style={{ marginTop: 100 }}>
         <ActivityIndicator size={50} color="#FFF" />
         <Text style={{ fontFamily: "Bold", color: "#FFF", marginVertical: 20 }}>
-          v 1.0.1
+          24 - 8 - 2024
         </Text>
       </View>
     </View>

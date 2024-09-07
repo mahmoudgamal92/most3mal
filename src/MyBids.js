@@ -45,6 +45,40 @@ export default function MyOrders({ route, navigation }) {
         }, [])
     );
 
+    const render_order = (val) => {
+        switch (val) {
+            case "active":
+                return {
+                    color: "green",
+                    text: "نـــشـط"
+                };
+
+            case "inactive":
+                return {
+                    color: "red",
+                    text: "غير نشط"
+                };
+
+
+            case "pending":
+                return {
+                    color: "grey",
+                    text: "قيد الانتظار"
+                };
+            case "done":
+                return {
+                    color: "green",
+                    text: "مكتمل"
+                };
+
+            default:
+                return {
+                    color: "#119fbf",
+                    text: "حالة غير معروفة"
+                };
+        }
+    };
+
     const _retrieveData = async () => {
         const user_id = await AsyncStorage.getItem("user_id");
         setLoading(true);

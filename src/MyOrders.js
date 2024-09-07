@@ -47,6 +47,47 @@ export default function MyOrders({ route, navigation }) {
     }, [])
   );
 
+
+
+  const render_order = (val) => {
+    switch (val) {
+      case "active":
+        return {
+          color: "green",
+          text: "نـــشـط"
+        };
+
+      case "inactive":
+        return {
+          color: "red",
+          text: "غير نشط"
+        };
+      case "delivered":
+        return {
+          color: "green",
+          text: "تم الاستلام"
+        };
+
+      case "pending":
+        return {
+          color: "grey",
+          text: "قيد الانتظار"
+        };
+      case "done":
+        return {
+          color: "green",
+          text: "مكتمل"
+        };
+
+      default:
+        return {
+          color: "#119fbf",
+          text: "حالة غير معروفة"
+        };
+    }
+  };
+
+
   const _retrieveData = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
     setLoading(true);
@@ -179,42 +220,65 @@ export default function MyOrders({ route, navigation }) {
                 marginVertical: 5
               }}
             >
-              <View
-                style={{
-                  width: "30%",
-                  flexDirection: 'row',
-                  alignItems: "center",
-                  justifyContent: "space-around"
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() => {
-                    setCurrentItem(item.id);
-                    setInputModal(!input_modal);
-                  }}
-                >
-                  <AntDesign name="edit" size={30} color="black" />
-                </TouchableOpacity>
 
-                <TouchableOpacity
-                  onPress={() => {
-                    Alert.alert(
-                      "تأكيد الحذف!",
-                      "هل أنت متأكد من حذف هذاالإعلان",
-                      [
-                        {
-                          text: "Cancel",
-                          onPress: () => console.log("Cancel Pressed"),
-                          style: "cancel"
-                        },
-                        { text: "OK", onPress: () => deleteOrder(item.id) }
-                      ]
-                    );
-                  }}
-                >
-                  <AntDesign name="delete" size={30} color="red" />
-                </TouchableOpacity>
+              <View style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                backgroundColor: render_order(item.status).color,
+                width: 80,
+                height: 30,
+                zIndex: 9999,
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <Text style={{
+                  color: "#FFF",
+                  fontFamily: 'Regular',
+                  fontSize: 11
+                }}>
+                  {render_order(item.status).text}
+                </Text>
               </View>
+              {item.status == 'pending' ?
+                <View
+                  style={{
+                    width: "30%",
+                    flexDirection: 'row',
+                    alignItems: "center",
+                    justifyContent: "space-around"
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setCurrentItem(item.id);
+                      setInputModal(!input_modal);
+                    }}
+                  >
+                    <AntDesign name="edit" size={30} color="black" />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => {
+                      Alert.alert(
+                        "تأكيد الحذف!",
+                        "هل أنت متأكد من حذف هذاالإعلان",
+                        [
+                          {
+                            text: "Cancel",
+                            onPress: () => console.log("Cancel Pressed"),
+                            style: "cancel"
+                          },
+                          { text: "OK", onPress: () => deleteOrder(item.id) }
+                        ]
+                      );
+                    }}
+                  >
+                    <AntDesign name="delete" size={30} color="red" />
+                  </TouchableOpacity>
+                </View>
+                :
+                null
+              }
               <View
                 style={{
                   width: "50%",

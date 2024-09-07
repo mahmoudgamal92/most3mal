@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         borderColor: "#DDDDDD",
         borderWidth: 1.5,
-        flexDirection: "row"
+        flexDirection: "row-reverse"
     },
 
     itemImg: {
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     },
 
     itemInfo: {
-        flexDirection: "row",
+        flexDirection: "row-reverse",
         width: "70%",
         alignItems: "center",
         justifyContent: "space-between",
