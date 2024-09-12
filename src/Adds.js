@@ -18,16 +18,14 @@ import moment from "moment";
 import api from "./../constants/constants";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function Adds({ route, navigation }) {
   const { depart_id, depart_name } = route.params;
   const [data, setData] = useState([]);
   const [cats, setCats] = useState([]);
   const [current_cat, setCurrentCat] = useState(null);
   const [loading, setLoading] = useState(false);
-  // function to create a state object
-
-  const scrollViewRef = useRef(null);
+  const scrollViewRef = useRef();
+  const [ref, setRef] = useState(null);
 
   useEffect(() => {
     _retrieveCats();
@@ -51,6 +49,17 @@ export default function Adds({ route, navigation }) {
             arr.push(json.records[i]);
           }
         }
+        const all = {
+          "icon": null,
+          "id": 0,
+          "image": "",
+          "name_ar": "الكل",
+          "name_en": "All",
+          "status": "active",
+          "type": null,
+          "updated_at": ""
+        }
+        arr.unshift(all);
         setCats(arr);
         setLoading(false);
 
@@ -195,87 +204,53 @@ export default function Adds({ route, navigation }) {
         </View>
       </View>
 
-      <View style={{ marginTop: 10, marginBottom: 20, paddingHorizontal: 10 }}>
-
-        <ScrollView
-          ref={scrollViewRef}
+      <View style={{ width: "100%" }}>
+        <FlatList
+          ref={ref => {
+            setRef(ref);
+          }}
           horizontal
           inverted
-          keyExtractor={(item, index) => item.cat_id}
-          contentContainerStyle={{ flexDirection: 'row-reverse' }}
-        >
-          <TouchableOpacity
-            onPress={() => changeCat(0)}
-            style={{
-              flexDirection: "row-reverse",
-              backgroundColor: current_cat == 0 ? "#0393ce" : "#FFF",
-              paddingHorizontal: 10,
-              paddingVertical: 5,
-              borderWidth: 1,
-              borderColor: "#0393ce",
-              marginHorizontal: 5,
-              borderRadius: 30,
-              justifyContent: "center",
-              alignItems: "center"
-            }}
-          >
-            <Text
+          showsHorizontalScrollIndicator={false}
+          data={cats}
+          style={[styles.categoryContainer, styles.categoryShadow]}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) =>
+            <TouchableOpacity
+              key={item.id} // Add unique key here
+              onPress={() => changeCat(item.id)}
               style={{
-                fontFamily: "Bold",
-                color: current_cat == 0 ? "#FFF" : "#143656",
-                margin: 5,
-                fontFamily: "Bold"
+                flexDirection: "row-reverse",
+                backgroundColor: current_cat == item.id ? "#0393ce" : "#FFF",
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                borderWidth: 1,
+                borderColor: "#0393ce",
+                marginHorizontal: 5,
+                borderRadius: 30,
+                justifyContent: "center",
+                alignItems: "center"
               }}
             >
-              الكل
-            </Text>
-
-            <MaterialCommunityIcons
-              name="check-decagram"
-              size={24}
-              color="#143656"
-            />
-          </TouchableOpacity>
-          {cats.map((item, index) => {
-            return (
-              <TouchableOpacity
-                onPress={() => changeCat(item.id)}
+              <Text
                 style={{
-                  flexDirection: "row-reverse",
-                  backgroundColor: current_cat == item.id ? "#0393ce" : "#FFF",
-                  paddingHorizontal: 10,
-                  paddingVertical: 5,
-                  borderWidth: 1,
-                  borderColor: "#0393ce",
-                  marginHorizontal: 5,
-                  borderRadius: 30,
-                  justifyContent: "center",
-                  alignItems: "center"
+                  fontFamily: "Bold",
+                  color: current_cat == item.id ? "#FFF" : "#143656",
+                  margin: 5
                 }}
               >
-                <Text
-                  style={{
-                    fontFamily: "Bold",
-                    color: current_cat == item.id ? "#FFF" : "#143656",
-                    margin: 5,
-                    fontFamily: "Bold",
+                {item.name_ar}
+              </Text>
 
-                  }}
-                >
-                  {item.name_ar}
-                </Text>
-
-                <MaterialCommunityIcons
-                  name="check-decagram"
-                  size={24}
-                  color="#143656"
-                />
-              </TouchableOpacity>
-            );
-          })}
-
-        </ScrollView>
+              <MaterialCommunityIcons
+                name="check-decagram"
+                size={24}
+                color="#143656"
+              />
+            </TouchableOpacity>
+          } />
       </View>
+
       <FlatList
         contentContainerStyle={{
           paddingHorizontal: 10,
@@ -307,7 +282,7 @@ export default function Adds({ route, navigation }) {
                   style={{
                     fontFamily: "Bold",
                     color: "#000",
-                    textAlign: "left",
+                    textAlign: "right",
                     fontSize: 12
                   }}
                 >
@@ -363,6 +338,9 @@ const styles = StyleSheet.create({
   cats: {
     flexDirection: "row",
     marginVertical: 20
+  },
+  categoryContainer: {
+    marginVertical: 15
   },
   cat: {
     justifyContent: "center",

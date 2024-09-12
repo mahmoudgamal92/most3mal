@@ -51,9 +51,9 @@ export default function Create({ route, navigation }) {
       setTitle(item.title);
       setDescription(item.details);
       setPrice(item.price);
-      setState("test");
-      setCity("test");
-      setCoords("479575.75957,895.580");
+      setState(item.address.split(",")[0].toString());
+      setCity(item.address.split(",")[1].toString());
+      setCoords(item.coords);
       const location = await AsyncStorage.getItem("current_location");
       if (location !== null) {
         // We have data!!
@@ -407,7 +407,7 @@ export default function Create({ route, navigation }) {
                 flexDirection: "row-reverse",
                 alignItems: "center",
                 top: 10,
-                right: 10,
+                left: 10,
                 backgroundColor: "#34ACE0",
                 zIndex: 10000,
                 borderRadius: 10,

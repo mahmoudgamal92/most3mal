@@ -23,9 +23,19 @@ export default function Splash({ route, navigation }) {
 
     }
     else {
-      setTimeout(() => {
-        navigation.replace('OnBoardingScreen');
-      }, 1000);
+      const alredyLaunched = await AsyncStorage.getItem('alredyLaunched');
+      if (alredyLaunched) {
+        setTimeout(() => {
+          navigation.replace('SignIn');
+        }, 2000);
+
+      }
+      else {
+        setTimeout(() => {
+          navigation.replace('OnBoardingScreen');
+        }, 1000);
+      }
+
     }
   }
 
@@ -44,7 +54,7 @@ export default function Splash({ route, navigation }) {
       <View style={{ marginTop: 100 }}>
         <ActivityIndicator size={50} color="#FFF" />
         <Text style={{ fontFamily: "Bold", color: "#FFF", marginVertical: 20 }}>
-          24 - 8 - 2024
+          12 - 09 - 2024
         </Text>
       </View>
     </View>

@@ -88,6 +88,7 @@ export default function NewPwd({ route, navigation }) {
             behavior={Platform.OS === "ios" ? "padding" : null}>
 
             <ScrollView
+                showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
                     marginTop: 50,
                     alignItems: "center",
@@ -122,7 +123,7 @@ export default function NewPwd({ route, navigation }) {
 
                     <View style={styles.inputLabelContainer}>
                         <Text
-                            style={{ fontFamily: "Bold", textAlign: "left", fontSize: 15 }}
+                            style={{ fontFamily: "Bold", textAlign: "right", fontSize: 15 }}
                         >
                             أدخل كلمة المرور الجديدة
                         </Text>
@@ -138,7 +139,7 @@ export default function NewPwd({ route, navigation }) {
 
                     <View style={styles.inputLabelContainer}>
                         <Text
-                            style={{ fontFamily: "Bold", textAlign: "left", fontSize: 15 }}
+                            style={{ fontFamily: "Bold", textAlign: "right", fontSize: 15 }}
                         >
                             أدخل تأكيد كلمة المرور
                         </Text>
@@ -153,7 +154,7 @@ export default function NewPwd({ route, navigation }) {
                     </View>
 
                     <TouchableOpacity
-                        style={styles.primaryBtn}
+                        style={[styles.primaryBtn, { marginBottom: 100 }]}
                         onPress={() => ResetPwd()}
                     >
                         {loading == true

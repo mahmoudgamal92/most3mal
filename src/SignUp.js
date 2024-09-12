@@ -190,7 +190,7 @@ export default function SignUp({ route, navigation }) {
         <View
           style={{
             width: "100%",
-            flexDirection: "row",
+            flexDirection: "row-reverse",
             paddingHorizontal: 10,
             paddingVertical: 10,
             justifyContent: "flex-start",

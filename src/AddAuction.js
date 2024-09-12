@@ -57,29 +57,32 @@ export default function CreateAuction({ route, navigation }) {
       // Error retrieving data
     }
   };
-
   const pickImage = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsMultipleSelection: true,
-        quality: 1,
+        allowsEditing: true,
+        //aspect: [3, 3],
+        quality: 1
       });
-
       if (!result.canceled) {
-        const newImages = result.assets.map(asset => ({
-          uri: asset.uri,
-          name: asset.uri.split('/').pop(),
-          type: mime.getType(asset.uri),
-        }));
-
-        setImages([...images, ...newImages]);
+        let localUri = result.assets[0].uri;
+        let filename = localUri.split("/").pop();
+        let match = /\.(\w+)$/.exec(filename);
+        let img_type = match ? `image/${match[1]}` : `image`;
+        setImages([
+          ...images,
+          {
+            uri: localUri,
+            name: filename,
+            type: img_type
+          }
+        ]);
       }
-    } catch (error) {
-      console.log(error);
+    } catch (E) {
+      console.log(E);
     }
   };
-
   const _removeImg = (src) => {
     setImages((prevImages) => prevImages.filter(item => item.uri !== src));
   };

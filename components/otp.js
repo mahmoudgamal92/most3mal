@@ -4,7 +4,7 @@ import { View, TextInput, StyleSheet } from 'react-native';
 const OtpInput = ({ length = 4, onComplete }) => {
   const [otp, setOtp] = useState(Array(length).fill(''));
   const inputRefs = useRef([]);
-  
+
   const handleInputChange = (text, index) => {
     const newOtp = [...otp];
     newOtp[index] = text;
@@ -40,7 +40,7 @@ const OtpInput = ({ length = 4, onComplete }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row-reverse',
+    flexDirection: 'row',
     justifyContent: 'space-between',
   },
   input: {
@@ -50,11 +50,11 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: "#DDDDDD",
     borderRadius: 8,
-    alignItems:"center",
-    justifyContent:"center",
-    textAlign:"center",
-    fontFamily:"Bold",
-    fontSize:20
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
+    fontFamily: "Bold",
+    fontSize: 20
   },
 });
 

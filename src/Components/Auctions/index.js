@@ -6,7 +6,7 @@ import {
     StyleSheet,
     TouchableOpacity,
     FlatList,
-    useWindowDimensions
+    ActivityIndicator,
 } from "react-native";
 import moment from "moment";
 import { AntDesign } from "@expo/vector-icons";
@@ -28,7 +28,7 @@ export const Auctions = ({ }) => {
         setLoading(true);
         let url = api.custom_url + "auctions/list.php";
         try {
-            fetch(url, {
+            const response = await fetch(url, {
                 method: "GET",
                 headers: {
                     Accept: "*/*",
@@ -37,26 +37,29 @@ export const Auctions = ({ }) => {
                     "Accept-Encoding": "gzip, deflate, br",
                     Connection: "keep-alive"
                 }
-            })
-                .then(response => response.json())
-                .then(json => {
-                    console.log(JSON.stringify(json));
-                    setData(json.data);
-                    setLoading(false);
-                })
-                .catch(error => console.error(error));
+            });
+            const json = await response.json();
+            console.log(JSON.stringify(json));
+            setData(json.data);
         } catch (error) {
-            console.log(error);
+            console.error(error);
+        } finally {
+            setLoading(false);
         }
     };
 
-
+    if (loading) {
+        return <ActivityIndicator size="large" color="#0000ff" />;
+    }
 
     return (
         <FlatList
             data={data}
             ListEmptyComponent={<EmptyComponent message='لم تقم بإضافة أي مزادات حتي الأن' />}
             showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+                paddingBottom: 120
+            }}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) =>
                 <TouchableOpacity
@@ -76,13 +79,13 @@ export const Auctions = ({ }) => {
                         marginVertical: 5
                     }}
                 >
-                    <View>
+                    <View style={{ flex: 1 }}>
                         <Text
                             style={{
-                                fontFamily: "Bold",
+                                fontFamily: "Regular",
                                 color: "#2196f3",
-                                fontSize: 15,
-                                marginHorizontal: 10,
+                                fontSize: 12,
+                                paddingHorizontal: 10,
                                 textAlign: "right"
                             }}
                         >
@@ -92,8 +95,9 @@ export const Auctions = ({ }) => {
                             style={{
                                 fontFamily: "Bold",
                                 fontSize: 15,
-                                marginHorizontal: 10,
-                                textAlign: "right"
+                                textAlign: "right",
+                                paddingHorizontal: 10,
+                                flexWrap: 'wrap'  // Allow text to wrap
                             }}
                         >
                             {item.title}
@@ -115,8 +119,7 @@ export const Auctions = ({ }) => {
                     <View style={{}}>
                         <Image
                             source={{
-                                uri:
-                                    api.media_url + item.images?.split(",")[0]
+                                uri: api.media_url + item.images?.split(",")[0]
                             }}
                             style={{
                                 width: 100,

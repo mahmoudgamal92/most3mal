@@ -169,7 +169,7 @@ export default function Settings({ route, navigation }) {
                                 marginHorizontal: 10
                             }}>
 
-                            سياسة الإستخدام و الخصوصية
+                            سياسة الخصوصية
 
                         </Text>
 

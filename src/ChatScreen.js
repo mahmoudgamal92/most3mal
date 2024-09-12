@@ -293,7 +293,9 @@ export default function ChatScreen({ navigation, route }) {
                       null
                     }
                   </View>
-                  : <View style={styles.rightMessageContainer}>
+                  :
+
+                  <View style={styles.rightMessageContainer}>
                     <View>
                       {item.attatchments == null || item.attatchments == "" || item.attatchments == "null"
                         ? null
@@ -303,14 +305,11 @@ export default function ChatScreen({ navigation, route }) {
                             setImage(item.attatchments);
                             setImgModal(true);
                           }}>
-                          <Text>
-                            {item.attatchments}
-                          </Text>
                           <Image
                             source={{ uri: item.attatchments }}
                             style={{
-                              width: 100,
-                              height: 100,
+                              width: 120,
+                              height: 120,
                               borderRadius: 10,
                               margin: 5
                             }}

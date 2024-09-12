@@ -27,12 +27,12 @@ import moment from "moment";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import toastConfig from "./../constants/Toast";
+import { useFocusEffect } from '@react-navigation/native';
+
 const AddDetail = ({ route, navigation }) => {
 
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
-
-
   const [isLoading, setLoading] = React.useState(false);
   const [user_id, setUserID] = useState(null);
   const { item } = route.params;
@@ -44,11 +44,31 @@ const AddDetail = ({ route, navigation }) => {
   const [chatLoading, setChatLoading] = useState(false);
   const [input_modal, setInputModal] = useState(false);
   const [offers_modal, setOfferModal] = useState(false);
+  const [item_status, setStatus] = useState(item.status);
+  useFocusEffect(
+    React.useCallback(() => {
+      const controller = new AbortController();
+      const signal = controller.signal;
 
-  useEffect(() => {
-    _retriveData();
-    getadOffers();
-  }, []);
+      const fetchData = async () => {
+        try {
+          await _retriveData(signal);
+          await getadOffers(signal);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      fetchData();
+
+      return () => controller.abort(); // Cleanup on unmount
+    }, [item.id]) // Reloads only when the item.id changes
+  );
+
+  // useEffect(() => {
+  //   _retriveData();
+  //   getadOffers();
+  // }, []);
 
   const render_order = val => {
     switch (val) {
@@ -79,11 +99,11 @@ const AddDetail = ({ route, navigation }) => {
       case "delivered":
         return {
           color: "green",
-          text: "تم توصيل الطلب "
+          text: "تم إستلام الطلب "
         };
       case "active":
         return {
-          color: "#54B7D3",
+          color: "green",
           text: "نـــشـط"
         };
 
@@ -324,9 +344,6 @@ const AddDetail = ({ route, navigation }) => {
   };
 
 
-
-
-
   const updateStatus = async (id, status) => {
 
     let url = api.dynamic_url + "ads/" + id;
@@ -353,7 +370,8 @@ const AddDetail = ({ route, navigation }) => {
             bottomOffset: 160,
             visibilityTime: 10000
           });
-          navigation.goBack();
+          const new_status = JSON.parse(body);
+          setStatus(new_status.status);
         })
         .catch(error => console.error(error));
     } catch (error) {
@@ -621,25 +639,25 @@ const AddDetail = ({ route, navigation }) => {
 
 
           <View style={{ paddingHorizontal: 20, alignItems: 'flex-end' }}>
-            <Text style={{ fontFamily: "Bold", fontSize: 20, color: "grey", textAlign: 'right' }}>
+            <Text style={{ fontFamily: "Bold", fontSize: 20, color: "#F75B00", textAlign: 'right', marginVertical: 20 }}>
               {item.title}
             </Text>
           </View>
 
 
           <View style={{ paddingHorizontal: 20, alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row-reverse' }}>
-            <Text style={{ fontFamily: "Bold", fontSize: 20, color: "#000" }}>
-              حاله الاعلان
+            <Text style={{ fontFamily: "Bold", fontSize: 20, color: "#41A2D8" }}>
+              وصف الإعلان
             </Text>
             <Text style={{
               fontFamily: "Regular",
               color: '#FFF',
-              backgroundColor: render_order(item.status).color,
+              backgroundColor: render_order(item_status).color,
               paddingHorizontal: 10,
               paddingVertical: 2,
               borderRadius: 5
             }}>
-              {render_order(item.status).text}
+              {render_order(item_status).text}
             </Text>
           </View>
 
@@ -653,7 +671,7 @@ const AddDetail = ({ route, navigation }) => {
           </View>
 
           <View style={{ paddingHorizontal: 20, marginVertical: 30, alignItems: 'flex-end' }}>
-            <Text style={{ fontFamily: "Bold", fontSize: 20, color: "#000" }}>
+            <Text style={{ fontFamily: "Bold", fontSize: 20, color: "#41A2D8" }}>
               العنوان
             </Text>
 
@@ -775,41 +793,80 @@ const AddDetail = ({ route, navigation }) => {
             </View>
 
             <View style={{ width: "40%" }}>
-              <TouchableOpacity
-                onPress={() => {
-                  Alert.alert('تأكيد !',
-                    'هل أنت متأكد من تغيير حالة هذاالإعلان',
-                    [
-                      {
-                        text: 'Cancel',
-                        onPress: () => console.log('Cancel Pressed'),
-                        style: 'cancel',
-                      },
-                      {
-                        text: 'OK',
-                        onPress: () => updateStatus(item.id, item.status)
-                      },
-                    ]);
+              {item_status == 'active' ?
 
-                }}
-                style={{
-                  width: "100%",
-                  flexDirection: "row",
-                  height: 40,
-                  backgroundColor: "red",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  borderRadius: 10,
-                  paddingHorizontal: 10
-                }}
-              >
-                <Text
-                  style={{ color: "#FFF", fontFamily: "Bold", fontSize: 15 }}
+                <TouchableOpacity
+                  onPress={() => {
+                    Alert.alert('تأكيد !',
+                      'هل أنت متأكد من تغيير حالة هذا الإعلان',
+                      [
+                        {
+                          text: 'Cancel',
+                          onPress: () => console.log('Cancel Pressed'),
+                          style: 'cancel',
+                        },
+                        {
+                          text: 'OK',
+                          onPress: () => updateStatus(item.id, item_status)
+                        },
+                      ]);
+
+                  }}
+                  style={{
+                    width: "100%",
+                    flexDirection: "row",
+                    height: 40,
+                    backgroundColor: "red",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    borderRadius: 10,
+                    paddingHorizontal: 10
+                  }}
                 >
-                  تعطيل المنتج
-                </Text>
-                <Entypo name="eye-with-line" size={24} color="#FFF" />
-              </TouchableOpacity>
+                  <Text
+                    style={{ color: "#FFF", fontFamily: "Bold", fontSize: 15 }}
+                  >
+                    تعطيل المنتج
+                  </Text>
+                  <Entypo name="eye-with-line" size={24} color="#FFF" />
+                </TouchableOpacity>
+                :
+                <TouchableOpacity
+                  onPress={() => {
+                    Alert.alert('تأكيد !',
+                      'هل أنت متأكد من تغيير حالة هذا الإعلان',
+                      [
+                        {
+                          text: 'Cancel',
+                          onPress: () => console.log('Cancel Pressed'),
+                          style: 'cancel',
+                        },
+                        {
+                          text: 'OK',
+                          onPress: () => updateStatus(item.id, item.status)
+                        },
+                      ]);
+
+                  }}
+                  style={{
+                    width: "100%",
+                    flexDirection: "row",
+                    height: 40,
+                    backgroundColor: "green",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    borderRadius: 10,
+                    paddingHorizontal: 10
+                  }}
+                >
+                  <Text
+                    style={{ color: "#FFF", fontFamily: "Bold", fontSize: 15 }}
+                  >
+                    تنشيط المنتج
+                  </Text>
+                  <Entypo name="eye" size={24} color="#FFF" />
+                </TouchableOpacity>
+              }
             </View>
           </View>
           : <View
@@ -1044,19 +1101,22 @@ const AddDetail = ({ route, navigation }) => {
                 keyExtractor={(item, index) => index.toString()}
                 ListEmptyComponent={handleEmptyProp()}
                 renderItem={({ item }) =>
+
+
                   <TouchableOpacity
-                    onPress={() =>
+                    onPress={() => {
+                      setOfferModal(!offers_modal);
                       navigation.navigate("OfferInfo", {
                         offer_id: item.id
-                      })}
+                      })
+                    }}
                     style={{
-                      flexDirection: "row-reverse",
+                      flexDirection: "row",
                       borderColor: "#DDDDDD",
                       borderWidth: 1,
                       borderRadius: 10,
                       padding: 10,
                       alignItems: "center",
-                      justifyContent: "flex-end",
                       marginVertical: 5
                     }}
                   >
@@ -1085,8 +1145,11 @@ const AddDetail = ({ route, navigation }) => {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                          // onPress={() =>
-                          //   _openChat(item.user_id, item.user.name)}
+                          onPress={() =>
+                            _openChat(
+                              item.user_id,
+                              item.user !== null ? item.user.name : "مستخدم محذوف"
+                            )}
                           style={{
                             backgroundColor: "green",
                             borderRadius: 5,
@@ -1105,7 +1168,7 @@ const AddDetail = ({ route, navigation }) => {
                           backgroundColor: render_order(item.status).color,
                           position: "absolute",
                           top: 0,
-                          left: 0,
+                          right: 0,
                           padding: 5,
                           borderTopRightRadius: 10
                         }}
@@ -1113,7 +1176,8 @@ const AddDetail = ({ route, navigation }) => {
                         <Text
                           style={{
                             fontFamily: "Regular",
-                            color: "#FFF"
+                            color: "#FFF",
+                            textAlign: 'right'
                           }}
                         >
                           {render_order(item.status).text}
@@ -1122,17 +1186,19 @@ const AddDetail = ({ route, navigation }) => {
 
                     <View
                       style={{
-                        width: "45%",
-                        alignItems: "flex-start",
+                        width: "80%",
+                        alignItems: "flex-end",
                         justifyContent: "center",
-                        paddingLeft: 10
+                        paddingLeft: 10,
+                        paddingRight: 60
                       }}
                     >
                       <Text
                         style={{
                           fontFamily: "Bold",
                           fontSize: 15,
-                          color: "#000"
+                          color: "#000",
+                          textAlign: 'right'
                         }}
                       >
                         {item.user.name}
@@ -1141,11 +1207,14 @@ const AddDetail = ({ route, navigation }) => {
                       <Text
                         style={{
                           fontFamily: "Bold",
-                          fontSize: 12,
-                          color: "#34ace0"
+                          fontSize: 15,
+                          color: "#34ace0",
+
+                          textAlign: 'right'
+
                         }}
                       >
-                        {item.amount}
+                        {item.amount}{' '}
                         ريال
                       </Text>
 
@@ -1157,11 +1226,7 @@ const AddDetail = ({ route, navigation }) => {
                           marginTop: 10
                         }}
                       >
-                        <MaterialIcons
-                          name="date-range"
-                          size={24}
-                          color="grey"
-                        />
+
 
                         <Text
                           style={{
@@ -1172,16 +1237,24 @@ const AddDetail = ({ route, navigation }) => {
                         >
                           {moment(item.created_at).format("MMM Do YY")}
                         </Text>
+
+                        <MaterialIcons
+                          name="date-range"
+                          size={24}
+                          color="grey"
+                        />
                       </View>
                     </View>
 
-                    <View style={{ width: "20%" }}>
+                    <View style={{ width: "20%", paddingTop: 30, alignItems: 'center' }}>
                       <Image
                         source={require("./../assets/man.png")}
                         style={{ width: 60, height: 60, resizeMode: "contain" }}
                       />
                     </View>
-                  </TouchableOpacity>}
+                  </TouchableOpacity>
+
+                }
               />
             </View>
           </View>

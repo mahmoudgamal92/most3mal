@@ -165,6 +165,9 @@ export const Bids = () => {
                 data={data}
                 showsVerticalScrollIndicator={false}
                 ListEmptyComponent={<EmptyComponent message='لم تقم بإضافة أي مزادات حتي الأن' />}
+                contentContainerStyle={{
+                    paddingBottom: 120
+                }}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
                     <TouchableOpacity

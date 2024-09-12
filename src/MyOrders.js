@@ -48,12 +48,40 @@ export default function MyOrders({ route, navigation }) {
   );
 
 
-
-  const render_order = (val) => {
+  const render_order = val => {
     switch (val) {
-      case "active":
+      case "waiting":
+        return {
+          color: "#54B7D3",
+          text: "بانتظار قبول العرض"
+        };
+
+      case "declined":
+        return {
+          color: "red",
+          text: "مرفوض من البائع "
+        };
+
+      case "pending":
+        return {
+          color: "grey",
+          text: "بإنتظار شحن الرصيد"
+        };
+
+      case "delivering":
         return {
           color: "green",
+          text: "جاري توصيل الطلب "
+        };
+
+      case "delivered":
+        return {
+          color: "green",
+          text: "تم إستلام الطلب"
+        };
+      case "active":
+        return {
+          color: "#54B7D3",
           text: "نـــشـط"
         };
 
@@ -62,11 +90,7 @@ export default function MyOrders({ route, navigation }) {
           color: "red",
           text: "غير نشط"
         };
-      case "delivered":
-        return {
-          color: "green",
-          text: "تم الاستلام"
-        };
+
 
       case "pending":
         return {
@@ -78,7 +102,6 @@ export default function MyOrders({ route, navigation }) {
           color: "green",
           text: "مكتمل"
         };
-
       default:
         return {
           color: "#119fbf",
@@ -226,7 +249,7 @@ export default function MyOrders({ route, navigation }) {
                 top: 0,
                 left: 0,
                 backgroundColor: render_order(item.status).color,
-                width: 80,
+                width: 100,
                 height: 30,
                 zIndex: 9999,
                 alignItems: 'center',
@@ -235,12 +258,12 @@ export default function MyOrders({ route, navigation }) {
                 <Text style={{
                   color: "#FFF",
                   fontFamily: 'Regular',
-                  fontSize: 11
+                  fontSize: 10
                 }}>
                   {render_order(item.status).text}
                 </Text>
               </View>
-              {item.status == 'pending' ?
+              {item.status == 'pending' || item.status == 'waiting' ?
                 <View
                   style={{
                     width: "30%",
@@ -329,7 +352,8 @@ export default function MyOrders({ route, navigation }) {
                   }}
                 />
               </View>
-            </TouchableOpacity>}
+            </TouchableOpacity>
+          }
         />
       </View>
 

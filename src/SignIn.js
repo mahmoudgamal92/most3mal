@@ -8,7 +8,7 @@ import {
   TextInput,
   ScrollView
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Feather,
@@ -29,6 +29,13 @@ export default function SignIn({ route, navigation }) {
   const [loading, setLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(true);
 
+  useEffect(() => {
+    _setLaunchInfo();
+  }, []);
+
+  const _setLaunchInfo = async () => {
+    AsyncStorage.setItem("alredyLaunched", 'true');
+  }
   const signUser = async () => {
     let formData = new FormData();
     formData.append("password", password);

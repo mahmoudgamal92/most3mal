@@ -27,7 +27,7 @@ const CustomDrawer = (props, { navigation }) => {
     try {
       AsyncStorage.getAllKeys()
         .then(keys => AsyncStorage.multiRemove(keys))
-        .then(() => props.navigation.replace("Splash"));
+        .then(() => props.navigation.replace("SignIn"));
     } catch (error) {
       alert("Erorr : " + error);
     }

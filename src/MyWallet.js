@@ -97,7 +97,7 @@ export default function MyWallet({ route, navigation }) {
 
   const orderWithdraw = async () => {
     if (data.current_balance == null || parseInt(amount) > parseInt(data.current_balance)) {
-      alert("لا يوجد لديك رصيد لسحب المبلغ المطلوب")
+      alert("لايوجد لديك رصيد كافي لسحب المبلغ المطلوب ..")
     }
 
     else {
@@ -168,7 +168,7 @@ export default function MyWallet({ route, navigation }) {
 
 
         <View
-          style={{ marginVertical: 40, width: "100%", paddingHorizontal: 60 }}
+          style={{ marginVertical: 20, width: "100%", paddingHorizontal: 60 }}
         >
           <Text
             style={{
@@ -195,7 +195,7 @@ export default function MyWallet({ route, navigation }) {
           </Text>
         </View>
 
-        <View style={{ width: "100%", flexDirection: "row" }}>
+        <View style={{ width: "100%", flexDirection: "row", marginBottom: 20 }}>
           <View style={{ width: "50%", paddingHorizontal: 10 }}>
             <TouchableOpacity
               onPress={() => setChargeModal(!charge_modal)}

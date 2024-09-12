@@ -109,6 +109,13 @@ export default function AuctionDetails({ route, navigation }) {
           text: "بانتظار قبول العرض"
         };
 
+
+      case "active":
+        return {
+          color: "green",
+          text: "نشط"
+        };
+
       case "declined":
         return {
           color: "red",
@@ -130,7 +137,7 @@ export default function AuctionDetails({ route, navigation }) {
       case "delivered":
         return {
           color: "green",
-          text: "تم توصيل الطلب "
+          text: "تم إستلام الطلب "
         };
 
       default:
@@ -450,7 +457,7 @@ export default function AuctionDetails({ route, navigation }) {
           paddingHorizontal: 20
         }}
       >
-        <View style={{ width: "20%", alignItems: "flex-end" }}>
+        <View style={{ width: "10%", alignItems: "flex-end" }}>
           <MaterialIcons
             name="arrow-forward-ios"
             size={30}
@@ -459,12 +466,13 @@ export default function AuctionDetails({ route, navigation }) {
           />
         </View>
 
-        <View style={{ width: "80%", alignItems: "flex-start" }}>
+        <View style={{ width: "90%" }}>
           <Text
             style={{
               color: "#FFF",
               fontFamily: "Regular",
-              fontSize: 18
+              textAlign: 'center',
+              fontSize: 16
             }}
           >
             {item.title}
@@ -476,6 +484,7 @@ export default function AuctionDetails({ route, navigation }) {
         {images?.length > 1
           ? <ScrollView
             horizontal
+            pagingEnabled
             style={{
               width: windowWidth,
               height: 280
@@ -604,22 +613,53 @@ export default function AuctionDetails({ route, navigation }) {
           style={{ width: "100%" }}
         >
           <View style={{ paddingHorizontal: 20 }}>
-            <Text style={{ fontFamily: "Bold", fontSize: 20, color: "#000", textAlign: 'right' }}>
+            <Text style={{ fontFamily: "Bold", fontSize: 20, color: "#F75B00", textAlign: 'right', marginVertical: 20 }}>
               {item.title}
             </Text>
           </View>
-          <View>
+
+          <View style={{ paddingHorizontal: 20, alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row-reverse' }}>
+            <Text style={{ fontFamily: "Bold", fontSize: 16, color: "#41A2D8" }}>
+              وصف الإعلان
+            </Text>
+            <Text style={{
+              fontFamily: "Regular",
+              color: '#FFF',
+              backgroundColor: render_order(item.status).color,
+              paddingHorizontal: 10,
+              paddingVertical: 2,
+              borderRadius: 5
+            }}>
+              {render_order(item.status).text}
+            </Text>
+          </View>
+
+
+          <View style={{ paddingHorizontal: 20, alignItems: 'flex-end' }}>
             <Text
-              style={{
-                color: "grey",
-                fontFamily: "Regular",
-                paddingHorizontal: 20,
-                marginTop: 20,
-                textAlign: 'right'
-              }}
+              style={{ color: "grey", fontFamily: "Regular", marginTop: 20 }}
             >
               {item.details}
             </Text>
+          </View>
+
+          <View style={{ paddingHorizontal: 20, marginVertical: 30, alignItems: 'flex-end' }}>
+            <Text style={{ fontFamily: "Bold", fontSize: 16, color: "#41A2D8" }}>
+              العنوان
+            </Text>
+
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginVertical: 10
+              }}
+            >
+              <Text style={{ color: "grey", fontFamily: "Bold" }}>
+                {item.address}
+              </Text>
+              <Entypo name="location-pin" size={24} color="grey" />
+            </View>
           </View>
           <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
             <Text
@@ -628,7 +668,8 @@ export default function AuctionDetails({ route, navigation }) {
                 color: "grey",
                 fontSize: 16,
                 marginBottom: 10,
-                textAlign: 'right'
+                textAlign: 'right',
+                color: "#41A2D8"
               }}
             >
               معلومات الناشر

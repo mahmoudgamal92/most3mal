@@ -54,7 +54,7 @@ export default function MyAdds({ route, navigation }) {
         switch (val) {
             case "active":
                 return {
-                    color: "#54B7D3",
+                    color: "green",
                     text: "نـــشـط"
                 };
 

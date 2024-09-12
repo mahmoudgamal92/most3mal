@@ -35,11 +35,11 @@ export default function EditAuction({ route, navigation }) {
     const [images, setImages] = useState([]);
     const [imageURI, setImageURI] = useState(null);
     const [title, setTitle] = useState(item.title);
-    const [description, setDescription] = useState("");
+    const [description, setDescription] = useState(item.details);
     const [address, setAddress] = useState("");
     const [loading, setLoading] = useState(false);
-    const [state, setState] = useState("");
-    const [city, setCity] = useState("");
+    const [state, setState] = useState(item.address.split(",")[1].toString());
+    const [city, setCity] = useState(item.address.split(",")[0].toString());
     const [latitude, setLatitude] = useState(24.7136);
     const [longitude, setLongitude] = useState(46.6753);
 
