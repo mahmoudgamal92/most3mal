@@ -6,6 +6,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import AuthStack from "./src/Navigation/AuthStack";
 
 export default function App() {
+  if (__DEV__) {
+    import("./ReactotronConfig")
+  }
   I18nManager.allowRTL(false);
   I18nManager.forceRTL(false);
   if (Text.defaultProps == null)

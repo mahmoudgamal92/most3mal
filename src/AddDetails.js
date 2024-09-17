@@ -257,7 +257,10 @@ const AddDetail = ({ route, navigation }) => {
             bottomOffset: 160,
             visibilityTime: 10000
           });
-          getadOffers();
+          navigation.navigate("OfferInfo", {
+            offer_id: json
+          });
+          //getadOffers();
         })
         .catch(error => console.error(error));
     } catch (error) {
@@ -330,6 +333,7 @@ const AddDetail = ({ route, navigation }) => {
         .then(response => response.json())
         .then(json => {
           if (json.success == true) {
+            setOfferModal(!offers_modal);
             navigation.navigate("ChatScreen", {
               chat_id: json.id
             });
@@ -575,35 +579,42 @@ const AddDetail = ({ route, navigation }) => {
               : <View style={{ width: "40%", justifyContent: "flex-end" }}>
                 <View>
                   {offers.find(obj => obj.user_id === user_id)
-                    ? <TouchableOpacity
-                      //onPress={() => setInputModal(true)}
-                      style={{
-                        width: "100%",
-                        flexDirection: "row",
-                        height: 40,
-                        backgroundColor: "#34ace0",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        borderRadius: 10,
-                        paddingHorizontal: 10
-                      }}
-                    >
-                      <Text
+                    ?
+                    <View>
+
+                      <TouchableOpacity
+                        //onPress={() => setInputModal(true)}
                         style={{
-                          color: "#FFF",
-                          fontFamily: "Bold",
-                          fontSize: 15
+                          width: "100%",
+                          flexDirection: "row",
+                          height: 40,
+                          backgroundColor: "#34ace0",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          borderRadius: 10,
+                          paddingHorizontal: 10
                         }}
                       >
-                        تم إضافة طلبك
-                      </Text>
+                        <Text
+                          style={{
+                            color: "#FFF",
+                            fontFamily: "Bold",
+                            fontSize: 15
+                          }}
+                        >
+                          تم إضافة طلبك
+                        </Text>
 
-                      <AntDesign
-                        name="checkcircle"
-                        size={24}
-                        color="#FFF"
-                      />
-                    </TouchableOpacity>
+                        <AntDesign
+                          name="checkcircle"
+                          size={24}
+                          color="#FFF"
+                        />
+                      </TouchableOpacity>
+
+
+                    </View>
+
                     : <TouchableOpacity
                       onPress={() => setInputModal(true)}
                       style={{
@@ -636,7 +647,28 @@ const AddDetail = ({ route, navigation }) => {
                 </View>
               </View>}
           </View>
+          {offers.find(obj => obj.user_id === user_id)
+            ?
+            <View style={{
+              width: '90%',
+              marginHorizontal: 20,
+              backgroundColor: '#8dc63f',
+              borderRadius: 10,
+              paddingHorizontal: 10,
+              paddingVertical: 5
 
+            }}>
+              <Text style={{
+                width: '100%',
+                fontFamily: 'Regular',
+                color: '#FFF',
+                fontSize: 13
+              }}>
+                إنتقل إلي قسم طلباتي من القائمة الرئيسية , لمتابعة حالة طلبك
+              </Text>
+            </View>
+
+            : null}
 
           <View style={{ paddingHorizontal: 20, alignItems: 'flex-end' }}>
             <Text style={{ fontFamily: "Bold", fontSize: 20, color: "#F75B00", textAlign: 'right', marginVertical: 20 }}>
@@ -1123,7 +1155,7 @@ const AddDetail = ({ route, navigation }) => {
                     {item.status == "waiting"
                       ? <View
                         style={{
-                          width: "35%",
+                          width: "40%",
                           alignItems: "center",
                           justifyContent: "space-between",
                           flexDirection: "row"
@@ -1186,11 +1218,11 @@ const AddDetail = ({ route, navigation }) => {
 
                     <View
                       style={{
-                        width: "80%",
+                        width: "60%",
                         alignItems: "flex-end",
                         justifyContent: "center",
                         paddingLeft: 10,
-                        paddingRight: 60
+                        paddingRight: 20
                       }}
                     >
                       <Text
@@ -1207,7 +1239,7 @@ const AddDetail = ({ route, navigation }) => {
                       <Text
                         style={{
                           fontFamily: "Bold",
-                          fontSize: 15,
+                          fontSize: 20,
                           color: "#34ace0",
 
                           textAlign: 'right'
@@ -1246,12 +1278,7 @@ const AddDetail = ({ route, navigation }) => {
                       </View>
                     </View>
 
-                    <View style={{ width: "20%", paddingTop: 30, alignItems: 'center' }}>
-                      <Image
-                        source={require("./../assets/man.png")}
-                        style={{ width: 60, height: 60, resizeMode: "contain" }}
-                      />
-                    </View>
+
                   </TouchableOpacity>
 
                 }

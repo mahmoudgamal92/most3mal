@@ -19,6 +19,7 @@ import {
   FontAwesome
 } from "@expo/vector-icons";
 import * as Location from "expo-location";
+import { useFocusEffect } from "@react-navigation/native";
 
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
@@ -33,6 +34,12 @@ export default function HomePage({ route, navigation }) {
   const [loading, setLoading] = useState(false);
   const [search_text, setSearchText] = useState("");
   const scrollViewRef = useRef(null);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setSearchText("");
+    }, [])
+  );
 
   useEffect(() => {
     getLocation();
@@ -196,11 +203,13 @@ export default function HomePage({ route, navigation }) {
                   height: 60,
                   textAlign: "right"
                 }}
+                value={search_text}
                 onChangeText={param => setSearchText(param)}
-                onSubmitEditing={() =>
+                onSubmitEditing={() => {
                   navigation.navigate("SearchResult", {
                     search_param: search_text
-                  })}
+                  })
+                }}
                 returnKeyType="search"
                 placeholder="ابحث في مستعمل . كوم"
               />

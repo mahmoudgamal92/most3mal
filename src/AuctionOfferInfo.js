@@ -7,7 +7,9 @@ import {
     StyleSheet,
     Modal,
     ScrollView,
-    TextInput
+    TextInput,
+    Platform,
+    Linking
 } from "react-native";
 import { Feather, MaterialIcons, FontAwesome5, MaterialCommunityIcons, Ionicons, Entypo } from "@expo/vector-icons";
 import Constants from "expo-constants";
@@ -847,11 +849,11 @@ export default function AuctionOfferInfo({ route, navigation }) {
                                     defaultRating={0}
                                     onFinishRating={rating => setRatingValue(rating)}
                                     reviews={[
-                                        "سيئ للغاية",
+                                        "سيئ",
                                         "مقبول",
-                                        "متوسط الجوده",
-                                        "جوده جيدة",
-                                        "جوده ممتازه"
+                                        "جيد",
+                                        "جيد جدا",
+                                        "ممتاز"
                                     ]}
                                     size={20}
                                 />
@@ -923,11 +925,11 @@ export default function AuctionOfferInfo({ route, navigation }) {
                                     isDisabled={true}
                                     count={5}
                                     reviews={[
-                                        "سيئ للغاية",
-                                        "على غير المستوي المرجو",
-                                        "متوسط الجوده",
-                                        "جوده جيدة",
-                                        "جوده ممتازة"
+                                        "سيئ",
+                                        "مقبول",
+                                        "جيد",
+                                        "جيد جدا",
+                                        "ممتاز"
                                     ]}
                                     size={20}
                                 />

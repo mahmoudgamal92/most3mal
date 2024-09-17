@@ -79,7 +79,29 @@ export default function Contact({ route, navigation }) {
         <View style={styles.container}>
             <StatusBar barStyle="default" backgroundColor="#34ace0" />
 
-            <DrawerScreenHeader screenTitle={"تواصل معنا"} />
+
+            <View
+                style={{
+                    width: "100%",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    height: 60,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: "#34ace0"
+                }}
+            >
+                <Text style={{ fontFamily: "Bold", color: "#FFF", fontSize: 16 }}>
+                    تواصل معنا
+                </Text>
+
+                <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    style={{ position: "absolute", right: 20 }}
+                >
+                    <MaterialIcons name="arrow-forward-ios" size={30} color="#FFF" />
+                </TouchableOpacity>
+            </View>
 
 
             <ScrollView

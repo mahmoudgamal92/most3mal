@@ -221,7 +221,7 @@ export default DrawerStack = () => {
 
 
 
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="Contact"
         component={Contact}
         options={{
@@ -250,7 +250,7 @@ export default DrawerStack = () => {
               </View>
             </View>
         }}
-      />
+      /> */}
 
 
       <Drawer.Screen

@@ -146,6 +146,17 @@ export const Bids = () => {
                     text: "مكتمل"
                 };
 
+
+            case "delivering":
+                return {
+                    color: "green",
+                    text: "جاري التوصيل"
+                };
+            case "delivered":
+                return {
+                    color: "green",
+                    text: "مكتمل"
+                };
             case "waiting":
                 return {
                     color: "green",
@@ -205,13 +216,12 @@ export const Bids = () => {
                                 {render_order(item.status).text}
                             </Text>
                         </View>
-
                         {item.status == 'waiting' ?
                             <>
                                 <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
                                     <TouchableOpacity
                                         onPress={() => {
-                                            Alert.alert('تأكيد الحذف!', 'هل أنت متأكد من حذف هذاالإعلان', [
+                                            Alert.alert('تأكيد الحذف!', 'هل أنت متأكد من حذف العرض', [
 
                                                 {
                                                     text: 'Cancel',

@@ -13,7 +13,8 @@ import {
   Modal,
   ImageBackground,
   SafeAreaView,
-  Dimensions
+  Dimensions,
+  Platform
 } from "react-native";
 import {
   FontAwesome,
@@ -131,7 +132,7 @@ export default function AuctionDetails({ route, navigation }) {
       case "delivering":
         return {
           color: "green",
-          text: "جاري توصيل الطلب "
+          text: "جاري إستلام الطلب "
         };
 
       case "delivered":

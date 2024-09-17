@@ -743,7 +743,7 @@ export default function OrderInfo({ route, navigation }) {
               </Text>
 
               <Text style={{ fontFamily: "Bold", color: "#119fbf" }}>
-                {orderItem.price} ر.س
+                السعر : {orderInfo.amount} ريال
               </Text>
             </View>
           </TouchableOpacity>
@@ -868,11 +868,11 @@ export default function OrderInfo({ route, navigation }) {
                   defaultRating={0}
                   onFinishRating={rating => setRatingValue(rating)}
                   reviews={[
-                    "سيئ للغاية",
+                    "سيئ",
                     "مقبول",
-                    "متوسط الجوده",
-                    "جوده جيدة",
-                    "جوده ممتازه"
+                    "جيد",
+                    "جيد جدا",
+                    "ممتاز"
                   ]}
                   size={20}
                 />
@@ -940,11 +940,11 @@ export default function OrderInfo({ route, navigation }) {
                   isDisabled={true}
                   count={5}
                   reviews={[
-                    "سيئ للغاية",
-                    "على غير المستوي المرجو",
-                    "متوسط الجوده",
-                    "جوده جيدة",
-                    "جوده ممتازة"
+                    "سيئ",
+                    "مقبول",
+                    "جيد",
+                    "جيد جدا",
+                    "ممتاز"
                   ]}
                   size={20}
                 />
@@ -992,14 +992,15 @@ export default function OrderInfo({ route, navigation }) {
                   style={{
                     fontFamily: "Bold"
                   }}
+                  defaultRating={orderInfo.rating_val}
                   isDisabled={true}
                   count={5}
                   reviews={[
-                    "سيئ للغاية",
-                    "على غير المستوي المرجو",
-                    "متوسط الجوده",
-                    "جوده جيدة",
-                    "جوده ممتازة"
+                    "سيئ",
+                    "مقبول",
+                    "جيد",
+                    "جيد جدا",
+                    "ممتاز"
                   ]}
                   size={20}
                 />

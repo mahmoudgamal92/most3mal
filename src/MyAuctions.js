@@ -214,7 +214,7 @@ export default function MyAuctions({ route, navigation }) {
                   onPress={() => {
                     Alert.alert(
                       "تأكيد !",
-                      'هل أنت متأكد من تغيير حالة هذاالإعلان',
+                      'هل أنت متأكد من تغيير حالة هذا المزاد',
                       [
                         {
                           text: "Cancel",

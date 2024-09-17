@@ -54,7 +54,7 @@ export default function Splash({ route, navigation }) {
       <View style={{ marginTop: 100 }}>
         <ActivityIndicator size={50} color="#FFF" />
         <Text style={{ fontFamily: "Bold", color: "#FFF", marginVertical: 20 }}>
-          12 - 09 - 2024
+          17 - 09 - 2024
         </Text>
       </View>
     </View>

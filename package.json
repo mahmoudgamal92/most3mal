@@ -54,7 +54,8 @@
     "typescript": "~5.3.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.0"
+    "@babel/core": "^7.24.0",
+    "reactotron-react-native": "^5.1.8"
   },
   "private": true
 }

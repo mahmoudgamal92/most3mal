@@ -263,7 +263,7 @@ export default function MyOrders({ route, navigation }) {
                   {render_order(item.status).text}
                 </Text>
               </View>
-              {item.status == 'pending' || item.status == 'waiting' ?
+              {item.status == 'waiting' ?
                 <View
                   style={{
                     width: "30%",
