@@ -15,11 +15,11 @@ import MapView, { Marker } from "react-native-maps";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MaterialIcons, FontAwesome, Feather } from "@expo/vector-icons";
 import styles from "./../../constants/style";
-import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
+import Toast from "react-native-toast-message";
 import toastConfig from "./../../constants/Toast";
 import { KeyboardAvoidingView } from "react-native";
 import api from "./../../constants/constants";
-import mime from 'mime';
+import { toEnglishNumber } from '@utils';
 
 export default function Create({ route, navigation }) {
   const { depart_id, cat_id } = route.params;
@@ -55,16 +55,7 @@ export default function Create({ route, navigation }) {
     }
   };
 
-  function toEnglishNumber(strNum) {
-    const arabicNumbers = "٠١٢٣٤٥٦٧٨٩".split("");
-    const englishNumbers = "0123456789".split("");
-    strNum = strNum.replace(
-      /[٠١٢٣٤٥٦٧٨٩]/g,
-      x => englishNumbers[arabicNumbers.indexOf(x)]
-    );
-    strNum = strNum.replace(/[^\d]/g, "");
-    return strNum;
-  }
+
 
   const goToMyLocation = async () => {
     mapRef.current.animateCamera({
@@ -76,22 +67,43 @@ export default function Create({ route, navigation }) {
       const user_id = await AsyncStorage.getItem("user_id");
 
       if (!user_id) {
-        alert("User ID not found.");
+
+        Toast.show({
+          type: "erorrToast",
+          text1: "User ID not found.",
+          bottomOffset: 80,
+          visibilityTime: 2000
+        });
         return;
       }
 
       if (title.length < 10) {
-        alert("لايمكن إضافة إعلان أقل من 10 حروف");
+        Toast.show({
+          type: "erorrToast",
+          text1: "لايمكن إضافة إعلان أقل من 10 حروف",
+          bottomOffset: 80,
+          visibilityTime: 2000
+        });
         return;
       }
 
       if (!description || !price) {
-        alert("لابد من إكمال البيانات كاملة");
+        Toast.show({
+          type: "erorrToast",
+          text1: "لابد من إكمال البيانات كاملة",
+          bottomOffset: 80,
+          visibilityTime: 2000
+        });
         return;
       }
 
       if (images.length == 0) {
-        alert("لابد من اختيار صوره للمنتج");
+        Toast.show({
+          type: "erorrToast",
+          text1: "لابد من اختيار صوره للمنتج",
+          bottomOffset: 80,
+          visibilityTime: 2000
+        });
         return;
       }
 
@@ -147,7 +159,6 @@ export default function Create({ route, navigation }) {
     } catch (error) {
       setLoading(false);
       console.error("Network request failed:", error);
-      alert("Network request failed. Please check your connection and try again.");
     }
   };
 

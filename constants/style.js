@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
   },
 
   toastContainer: {
-    flexDirection: "row",
+    flexDirection: "row-reverse",
     height: 80,
     width: "90%",
     backgroundColor: "#FFF",

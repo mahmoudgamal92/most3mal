@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Image,
   TouchableOpacity,
@@ -7,8 +7,6 @@ import {
   StyleSheet,
   Platform,
   Modal,
-  Alert,
-  ActivityIndicator,
   ScrollView,
   Linking,
   TextInput
@@ -23,12 +21,13 @@ import {
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AntDesign, FontAwesome, Entypo } from "@expo/vector-icons";
+import { AntDesign, Entypo } from "@expo/vector-icons";
 import moment from "moment";
 import MapView, { Marker } from "react-native-maps";
-import { Rating, AirbnbRating } from "react-native-ratings";
+import { AirbnbRating } from "react-native-ratings";
 import api from "./../constants/constants";
-
+import Toast from "react-native-toast-message";
+import toastConfig from "./../constants/Toast";
 export default function OrderInfo({ route, navigation }) {
   const { offer_id } = route.params;
 
@@ -41,7 +40,6 @@ export default function OrderInfo({ route, navigation }) {
   const [user_id, setUserID] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [deliver_modal, SetdeliverModal] = useState(false);
-  const [chat_loading, setChatLoading] = useState(false);
   const [rating_text, setRatingText] = useState("");
   const [rating_val, setRatingValue] = useState(0);
 
@@ -143,7 +141,6 @@ export default function OrderInfo({ route, navigation }) {
             setData([]);
           }
         })
-        // .finally(() => setLoading(false))
         .catch(error => console.error(error));
     } catch (error) {
       console.log(error);
@@ -165,7 +162,7 @@ export default function OrderInfo({ route, navigation }) {
     })
       .then(response => response.json())
       .then(json => {
-        //alert(JSON.stringify(json))
+        console.log(JSON.stringify(json))
         setProfile(json.data[0]);
       })
       .catch(error => {
@@ -237,7 +234,12 @@ export default function OrderInfo({ route, navigation }) {
         .then(response => response.json())
         .then(json => {
           SetdeliverModal(false);
-          alert("تم إستلام الطلب  بنجاح");
+          Toast.show({
+            type: "successToast",
+            text1: "تم إستلام الطلب  بنجاح",
+            bottomOffset: 80,
+            visibilityTime: 2000
+          });
           _retrieveData();
         })
         .catch(error => console.error(error));
@@ -269,7 +271,12 @@ export default function OrderInfo({ route, navigation }) {
         .then(response => response.json())
         .then(json => {
           setModalVisible(false);
-          alert("تم الإيداع بنجاح");
+          Toast.show({
+            type: "successToast",
+            text1: "تم الإيداع بنجاح",
+            bottomOffset: 80,
+            visibilityTime: 2000
+          });
           _retrieveData();
         })
         .catch(error => console.error(error));
@@ -299,7 +306,12 @@ export default function OrderInfo({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
-          alert("شكرا على تقييمك");
+          Toast.show({
+            type: "successToast",
+            text1: "شكرا على تقييمك",
+            bottomOffset: 80,
+            visibilityTime: 2000
+          });
           _retrieveData();
         })
         .catch(error => console.error(error));
@@ -1026,7 +1038,6 @@ export default function OrderInfo({ route, navigation }) {
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
             setModalVisible(!modalVisible);
           }}
         >
@@ -1241,6 +1252,8 @@ export default function OrderInfo({ route, navigation }) {
           </View>
         </Modal>
       </View>
+      <Toast config={toastConfig} />
+
     </View>
   );
 }

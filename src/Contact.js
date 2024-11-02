@@ -17,8 +17,8 @@ import { FontAwesome5, MaterialIcons, FontAwesome, MaterialCommunityIcons, Simpl
 import styles from "../constants/style";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "./../constants/constants";
-import DrawerScreenHeader from "./../components/DrawerScreenHeader";
-
+import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+import toastConfig from "./../constants/Toast";
 export default function Contact({ route, navigation }) {
 
     const [body, setBody] = useState("");
@@ -30,7 +30,12 @@ export default function Contact({ route, navigation }) {
 
     const _contactManagment = async () => {
         if (contact_email == "" || body == "") {
-            alert("من فضلك قم بإدخال البيانات كاملة");
+            Toast.show({
+                type: "erorrToast",
+                text1: "من فضلك قم بإدخال البيانات كاملة",
+                bottomOffset: 80,
+                visibilityTime: 2000
+            });
         }
         else {
             setLoading(true);
@@ -55,11 +60,22 @@ export default function Contact({ route, navigation }) {
                 .then(json => {
                     setLoading(false);
                     if (json.success == true) {
-                        alert("تم الإرسال للإدارة , سيتم الرد في أقرب وقت");
+                        Toast.show({
+                            type: "successToast",
+                            text1: "تم الإرسال للإدارة , سيتم الرد في أقرب وقت",
+                            bottomOffset: 80,
+                            visibilityTime: 2000
+                        });
                         setBody("");
                         setContactEmail("");
                     } else {
-                        alert("هناك خطأ في البيانات المدخلة");
+
+                        Toast.show({
+                            type: "erorrToast",
+                            text1: "هناك خطأ في البيانات المدخلة",
+                            bottomOffset: 80,
+                            visibilityTime: 2000
+                        });
                     }
                 })
                 .catch(error => {
@@ -194,6 +210,7 @@ export default function Contact({ route, navigation }) {
                     </View>
                 </View>
             </ScrollView>
+            <Toast config={toastConfig} />
         </View>
     );
 }

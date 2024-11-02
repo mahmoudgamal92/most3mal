@@ -45,14 +45,12 @@ export default function ProfilePage({ navigation, route }) {
     })
       .then(response => response.json())
       .then(json => {
-        //alert(JSON.stringify(json))
+        console.log(JSON.stringify(json))
         setLoading(false);
         setData(json.data[0]);
-        console.log(api.media_url + json.data[0].image)
       })
       .catch(error => {
         setLoading(false);
-        console.error(error);
       });
   };
 
@@ -60,12 +58,12 @@ export default function ProfilePage({ navigation, route }) {
     try {
       AsyncStorage.getAllKeys()
         .then(keys => AsyncStorage.multiRemove(keys))
-        .then(() => navigation.replace("Splash"));
+        .then(() => navigation.replace("SignIn"));
     } catch (error) {
-      console.log(error);
-      alert("Erorr : " + error);
+      console.log("Erorr : " + error);
     }
   };
+
 
   return (
     <View style={styles.container}>

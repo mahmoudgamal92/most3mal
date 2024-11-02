@@ -30,7 +30,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import toastConfig from "./../constants/Toast";
 import api from "../constants/constants";
-
+import { toEnglishNumber } from '@utils';
 export default function AuctionDetails({ route, navigation }) {
   const { item } = route.params;
   const [user_id, setUserID] = useState(null);
@@ -79,17 +79,6 @@ export default function AuctionDetails({ route, navigation }) {
     setReportModal(!report_modal);
   };
 
-  function toEnglishNumber(strNum) {
-    const arabicNumbers = "٠١٢٣٤٥٦٧٨٩".split("");
-    const englishNumbers = "0123456789".split("");
-    strNum = strNum.replace(
-      /[٠١٢٣٤٥٦٧٨٩]/g,
-      x => englishNumbers[arabicNumbers.indexOf(x)]
-    );
-    strNum = strNum.replace(/[^\d]/g, "");
-    return strNum;
-  }
-
   const getReturnValues = countDown => {
     // calculate time left
     const days = Math.floor(countDown / (1000 * 60 * 60 * 24));
@@ -109,7 +98,17 @@ export default function AuctionDetails({ route, navigation }) {
           color: "#54B7D3",
           text: "بانتظار قبول العرض"
         };
+      case "inactive":
+        return {
+          color: "red",
+          text: "غير نشط"
+        };
 
+      case "cancelled":
+        return {
+          color: "red",
+          text: "ملغي"
+        };
 
       case "active":
         return {
@@ -621,7 +620,7 @@ export default function AuctionDetails({ route, navigation }) {
 
           <View style={{ paddingHorizontal: 20, alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row-reverse' }}>
             <Text style={{ fontFamily: "Bold", fontSize: 16, color: "#41A2D8" }}>
-              وصف الإعلان
+              وصف المزاد
             </Text>
             <Text style={{
               fontFamily: "Regular",
@@ -697,11 +696,6 @@ export default function AuctionDetails({ route, navigation }) {
                 </Text>
 
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  {/* <AntDesign name="star" size={20} color="#F7D000" />
-                  <AntDesign name="star" size={20} color="#F7D000" />
-                  <AntDesign name="star" size={20} color="#F7D000" />
-                  <AntDesign name="star" size={20} color="#F7D000" />
-                  <AntDesign name="star" size={20} color="#F7D000" /> */}
                   <Text style={{
                     fontFamily: 'Regular',
                     fontSize: 12,

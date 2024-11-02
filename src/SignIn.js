@@ -153,10 +153,15 @@ export default function SignIn({ route, navigation }) {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={{ marginTop: 20 }}
+          style={{ marginTop: 20, flexDirection: 'row', alignItems: 'center' }}
           onPress={() => navigation.navigate("SignUp")}
         >
-          <Text style={{ fontFamily: "Bold" }}>ليس لديك حساب ؟ سجل الأن</Text>
+
+
+          <Text style={{ fontFamily: "Bold", color: '#FF8420', fontSize: 16 }}> سجل الأن</Text>
+          <Text style={{ fontFamily: "Bold", }}>ليس لديك حساب ؟ </Text>
+
+
         </TouchableOpacity>
 
 

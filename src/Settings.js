@@ -3,21 +3,14 @@ import {
     Text,
     View,
     TouchableOpacity,
-    Image,
-    StyleSheet,
     Linking
 } from "react-native";
 import {
-    SimpleLineIcons,
-    MaterialCommunityIcons,
     AntDesign,
     FontAwesome,
     MaterialIcons,
     FontAwesome5,
     Entypo,
-    Feather,
-    Octicons,
-    Ionicons
 } from "@expo/vector-icons";
 import styles from "../constants/style";
 import { StatusBar } from "expo-status-bar";
@@ -41,10 +34,7 @@ export default function Settings({ route, navigation }) {
         })
             .then(response => response.json())
             .then(json => {
-                //console.log(json.data);
                 setValues(json.data);
-
-                //facebook.forEach(item => console.log(item.val));
             }
             )
             .catch(error => {
@@ -59,7 +49,6 @@ export default function Settings({ route, navigation }) {
         return item[0].val;
     }
 
-
     // LogOut Function
     const _removeSession = async () => {
         try {
@@ -68,23 +57,9 @@ export default function Settings({ route, navigation }) {
                 .then(() => navigation.replace("Splash"));
         } catch (error) {
             console.log(error);
-            alert("Erorr : " + error);
+            console.log("Erorr : " + error);
         }
     };
-
-
-    //   const switchLang = async () => {
-    //     if (translate.locale == 'ar') {
-    //       translate.locale = 'en';
-    //       await AsyncStorage.setItem("lang", "en");
-    //     }
-    //     else {
-    //       translate.locale = 'ar';
-    //       await AsyncStorage.setItem("lang", "ar");
-    //     }
-    //     navigation.replace("Splash");
-    //   }
-
 
     return (
         <View style={styles.container}>
@@ -141,13 +116,6 @@ export default function Settings({ route, navigation }) {
                     </View>
                 </TouchableOpacity>
 
-
-
-
-
-
-
-
                 <TouchableOpacity
                     onPress={() => navigation.navigate('PrivacyPolicy')}
                     style={{
@@ -168,12 +136,8 @@ export default function Settings({ route, navigation }) {
                                 color: "#143656",
                                 marginHorizontal: 10
                             }}>
-
                             سياسة الخصوصية
-
                         </Text>
-
-
                         <MaterialIcons
                             name="privacy-tip"
                             size={24}

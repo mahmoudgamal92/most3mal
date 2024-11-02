@@ -114,7 +114,8 @@ export default function SignUp({ route, navigation }) {
 
   return (
     <ScrollView
-      contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
+      contentContainerStyle={{ alignItems: "center", justifyContent: "center", }}
+      showVerticalScrollIndicatior={false}
     >
       <StatusBar style="auto" />
       <View style={styles.loginBox}>
@@ -227,7 +228,7 @@ export default function SignUp({ route, navigation }) {
             <Text style={styles.btnText}>إنشاء حساب</Text>
           </TouchableOpacity>}
         <TouchableOpacity
-          style={{ marginTop: 20 }}
+          style={{ marginTop: 20, marginBottom: 400 }}
           onPress={() => navigation.navigate("SignIn")}
         >
           <Text style={{ fontFamily: "Bold" }}>

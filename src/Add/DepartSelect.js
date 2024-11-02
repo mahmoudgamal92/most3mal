@@ -10,6 +10,8 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { MaterialIcons, Feather } from '@expo/vector-icons';
+import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
+import toastConfig from "./../../constants/Toast";
 import api from "./../../constants/constants";
 
 import styles from "./../../constants/style";
@@ -132,7 +134,13 @@ export default function CatSelect({ route, navigation }) {
                     <TouchableOpacity
                         onPress={() => {
                             {
-                                current_item == 0 ? alert("الرجاء اختيار القسم") :
+                                current_item == 0 ?
+                                    Toast.show({
+                                        type: "erorrToast",
+                                        text1: "الرجاء اختيار القسم",
+                                        bottomOffset: 80,
+                                        visibilityTime: 2000
+                                    }) :
                                     navigation.navigate("CatSelect",
                                         {
                                             depart_id: current_item,
@@ -158,6 +166,7 @@ export default function CatSelect({ route, navigation }) {
                     </TouchableOpacity>
                 </View>
             </View>
+            <Toast config={toastConfig} />
         </View>
     );
 }

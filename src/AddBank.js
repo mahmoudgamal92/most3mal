@@ -63,11 +63,23 @@ export default function AddBank({ route, navigation }) {
             .then(json => {
                 setLoading(false);
                 if (json.success == true) {
-                    alert("تم إضافة الحساب بنجاح ");
-                    navigation.goBack();
-                    console.log(json);
+
+                    Toast.show({
+                        type: "successToast",
+                        text1: "تم إضافة الحساب بنجاح ",
+                        bottomOffset: 80,
+                        visibilityTime: 2000
+                    });
+                    setTimeout(() => {
+                        navigation.goBack();
+                    }, 2000);
                 } else {
-                    alert("هناك خطأ في البيانات المدخلة");
+                    Toast.show({
+                        type: "erorrToast",
+                        text1: "هناك خطأ في البيانات المدخلة",
+                        bottomOffset: 80,
+                        visibilityTime: 2000
+                    });
                 }
             })
             .catch(error => {

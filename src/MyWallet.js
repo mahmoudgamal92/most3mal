@@ -22,7 +22,8 @@ import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-
+import Toast from "react-native-toast-message";
+import toastConfig from "./../constants/Toast";
 export default function MyWallet({ route, navigation }) {
   const [data, setData] = useState([]);
   const [payments, setPayments] = useState([]);
@@ -63,7 +64,7 @@ export default function MyWallet({ route, navigation }) {
     })
       .then(response => response.json())
       .then(json => {
-        //alert(JSON.stringify(json))
+        console.log(JSON.stringify(json))
         setData(json.data[0]);
       })
       .catch(error => {
@@ -97,7 +98,12 @@ export default function MyWallet({ route, navigation }) {
 
   const orderWithdraw = async () => {
     if (data.current_balance == null || parseInt(amount) > parseInt(data.current_balance)) {
-      alert("لايوجد لديك رصيد كافي لسحب المبلغ المطلوب ..")
+      Toast.show({
+        type: "erorrToast",
+        text1: "لايوجد لديك رصيد كافي لسحب المبلغ المطلوب ..",
+        topOffset: 120,
+        visibilityTime: 2000
+      });
     }
 
     else {
@@ -583,6 +589,7 @@ export default function MyWallet({ route, navigation }) {
           </View>
         </View>
       </Modal>
+      <Toast config={toastConfig} />
     </View>
   );
 }

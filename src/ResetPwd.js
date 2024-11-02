@@ -1,10 +1,6 @@
 import {
-  Animated,
-  Image,
-  SafeAreaView,
   Text,
   View,
-  StyleSheet,
   StatusBar,
   TouchableOpacity,
   ActivityIndicator,
@@ -19,8 +15,8 @@ import { MaterialIcons, Feather, SimpleLineIcons } from "@expo/vector-icons";
 import styles from "../constants/style";
 import api from "./../constants/constants";
 import Constants from "expo-constants";
-import DrawerScreenHeader from "./../components/DrawerScreenHeader";
-
+import Toast from 'react-native-toast-message';
+import toastConfig from "./../constants/Toast";
 export default function ResetPwd({ route, navigation }) {
   const [password, setPassword] = useState("");
   const [new_password, setNewPassword] = useState("");
@@ -29,9 +25,12 @@ export default function ResetPwd({ route, navigation }) {
 
   const ResetPwd = async () => {
     if (password == "" || new_password == "" || confirm_password == "") {
-      alert(
-        "من فضلك ادخل كلمة المرور القديمة وكلمة المرور الجديدة وتأكيد كلمة المرور"
-      );
+      Toast.show({
+        type: "erorrToast",
+        text1: "من فضلك ادخل كلمة المرور القديمة وكلمة المرور الجديدة وتأكيد كلمة المرور",
+        bottomOffset: 80,
+        visibilityTime: 2000
+      });
       return;
     } else {
       const user_id = await AsyncStorage.getItem("user_id");
@@ -54,10 +53,17 @@ export default function ResetPwd({ route, navigation }) {
         .then(json => {
           setLoading(false);
           if (json.success == true) {
-            alert("تم تغيير كلمة المرور بنجاح");
-            navigation.goBack();
+            Toast.show({
+              type: "successToast",
+              text1: "تم تغيير كلمة المرور بنجاح",
+              bottomOffset: 80,
+              visibilityTime: 2000
+            });
+            setTimeout(() => {
+              navigation.goBack();
+            }, 2000);
           } else {
-            alert(JSON.stringify(json));
+            console.log(JSON.stringify(json));
           }
         })
         .catch(error => {
@@ -184,6 +190,7 @@ export default function ResetPwd({ route, navigation }) {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <Toast config={toastConfig} />
     </KeyboardAvoidingView>
   );
 }

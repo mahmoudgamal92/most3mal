@@ -21,6 +21,7 @@ import {
 } from "@expo/vector-icons";
 import styles from "./../../constants/style";
 import api from "./../../constants/constants";
+import { toEnglishNumber } from '@utils';
 
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import toastConfig from "./../../constants/Toast";
@@ -70,16 +71,6 @@ export default function Create({ navigation, route }) {
     }
   };
 
-  function toEnglishNumber(strNum) {
-    const arabicNumbers = "٠١٢٣٤٥٦٧٨٩".split("");
-    const englishNumbers = "0123456789".split("");
-    strNum = strNum.replace(
-      /[٠١٢٣٤٥٦٧٨٩]/g,
-      x => englishNumbers[arabicNumbers.indexOf(x)]
-    );
-    strNum = strNum.replace(/[^\d]/g, "");
-    return strNum;
-  }
 
   const goToMyLocation = async () => {
     mapRef.current.animateCamera({
@@ -89,11 +80,20 @@ export default function Create({ navigation, route }) {
 
   const NewAdd = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
-
     if (title.length < 10) {
-      alert("لايمكن إضافة إعلان أقل من 10 حروف");
+      Toast.show({
+        type: "errorToast",
+        text1: "لايمكن إضافة إعلان أقل من 10 حروف",
+        bottomOffset: 80,
+        visibilityTime: 2000
+      });
     } else if (description == "" || price == "") {
-      alert("لابد من إكمال البيانات كاملة");
+      Toast.show({
+        type: "errorToast",
+        text1: "لابد من إكمال البيانات كاملة",
+        bottomOffset: 80,
+        visibilityTime: 2000
+      });
     } else {
       const user_token = await AsyncStorage.getItem("user_token");
       setLoading(true);

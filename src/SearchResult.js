@@ -1,26 +1,15 @@
 import {
-    Animated,
-    Image,
-    SafeAreaView,
     Text,
     View,
     StyleSheet,
     ImageBackground,
     TouchableOpacity,
-    TextInput,
-    Dimensions,
-    Linking,
-    ActivityIndicator,
-    ScrollView,
     FlatList
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
 import {
-    Ionicons,
     MaterialIcons,
-    FontAwesome5,
     Entypo,
-    MaterialCommunityIcons
 } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
@@ -57,7 +46,7 @@ export default function SearchResult({ route, navigation }) {
                 .then(json => {
                     setData(json.data);
                     setLoading(false);
-                    //alert(JSON.stringify(json));
+                    console.log(JSON.stringify(json));
                 })
                 .catch(error => console.error(error));
         } catch (error) {

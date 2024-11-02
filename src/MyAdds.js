@@ -1,24 +1,15 @@
 import {
-    Animated,
     Image,
-    SafeAreaView,
     Text,
     View,
     StyleSheet,
     ImageBackground,
     TouchableOpacity,
-    TextInput,
-    Dimensions,
-    Linking,
-    ActivityIndicator,
-    ScrollView,
     FlatList,
     Alert
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
 import {
-    Ionicons,
-    MaterialIcons,
     FontAwesome5,
     Entypo,
     AntDesign
@@ -29,7 +20,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from '@react-navigation/native';
 import api from "./../constants/constants";
 
-import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+import Toast from 'react-native-toast-message';
 import toastConfig from "./../constants/Toast";
 
 
@@ -104,7 +95,7 @@ export default function MyAdds({ route, navigation }) {
                 .then(json => {
                     setData(json.data);
                     setLoading(false);
-                    //alert(JSON.stringify(json));
+                    console.log(JSON.stringify(json));
                 })
                 .catch(error => console.error(error));
         } catch (error) {
@@ -136,7 +127,13 @@ export default function MyAdds({ route, navigation }) {
             })
                 .then(response => response.json())
                 .then(json => {
-                    alert("تم  تغيير حالة الاعلان بنجاح");
+
+                    Toast.show({
+                        type: "successToast",
+                        text1: "تم  تغيير حالة الاعلان بنجاح",
+                        bottomOffset: 80,
+                        visibilityTime: 2000
+                    });
                     _retrieveData();
                 })
                 .catch(error => console.error(error));

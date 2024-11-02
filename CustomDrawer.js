@@ -5,23 +5,17 @@ import {
   StyleSheet,
   Image,
   Text,
-  Linking,
-  Touchable,
   TouchableOpacity,
 } from 'react-native';
 import {
   DrawerContentScrollView,
   DrawerItemList,
-  DrawerItem,
 } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AntDesign, Ionicons } from '@expo/vector-icons';
 import Constants from "expo-constants";
 import { StatusBar } from 'native-base';
 
 const CustomDrawer = (props, { navigation }) => {
-
-  // This Comment Added to test Github Push
 
   const _removeSession = async () => {
     try {
@@ -29,7 +23,7 @@ const CustomDrawer = (props, { navigation }) => {
         .then(keys => AsyncStorage.multiRemove(keys))
         .then(() => props.navigation.replace("SignIn"));
     } catch (error) {
-      alert("Erorr : " + error);
+      console.log("Erorr : " + error);
     }
   };
 

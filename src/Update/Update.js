@@ -20,6 +20,7 @@ import styles from "./../../constants/style";
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import toastConfig from "./../../constants/Toast";
 import { KeyboardAvoidingView } from "react-native";
+import { toEnglishNumber } from '@utils';
 
 export default function UpdateAdd({ route, navigation }) {
     const [image, setImage] = useState(null);
@@ -55,14 +56,6 @@ export default function UpdateAdd({ route, navigation }) {
     };
 
 
-    function toEnglishNumber(strNum) {
-        const arabicNumbers = "٠١٢٣٤٥٦٧٨٩".split("");
-        const englishNumbers = "0123456789".split("");
-        strNum = strNum.replace(/[٠١٢٣٤٥٦٧٨٩]/g, (x) => englishNumbers[arabicNumbers.indexOf(x)]);
-        strNum = strNum.replace(/[^\d]/g, "");
-        return strNum;
-    }
-
 
     const goToMyLocation = async () => {
         mapRef.current.animateCamera({ center: { "latitude": latitude, "longitude": longitude } });
@@ -71,10 +64,8 @@ export default function UpdateAdd({ route, navigation }) {
 
     const NewAdd = async () => {
         if (title.length < 10) {
-            alert("لايمكن إضافة إعلان أقل من 10 حروف");
         }
         else if (description == "" || price == "") {
-            alert("لابد من إكمال البيانات كاملة");
         }
         else {
             const user_token = await AsyncStorage.getItem("user_token");
@@ -99,11 +90,9 @@ export default function UpdateAdd({ route, navigation }) {
                 .then(response => response.json())
                 .then(json => {
                     if (json.status == true) {
-                        alert("تم اضافة الإعلان بنجاح")
                         navigation.pop(3);
                     }
                     else {
-                        alert("هناك خطأ في إضافة الإعلان")
                     }
                 }
                 )
@@ -114,8 +103,6 @@ export default function UpdateAdd({ route, navigation }) {
                 );
         }
     }
-
-
 
     const pickImage = async () => {
         try {

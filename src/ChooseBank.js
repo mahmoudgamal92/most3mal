@@ -17,7 +17,8 @@ import { MaterialIcons, AntDesign, SimpleLineIcons, FontAwesome } from '@expo/ve
 import Constants from "expo-constants";
 import api from "./../constants/constants";
 import { useFocusEffect } from "@react-navigation/native";
-
+import Toast from "react-native-toast-message";
+import toastConfig from "./../constants/Toast";
 export default function ChooseBank({ route, navigation }) {
     const [loading, setLoading] = useState(false);
     const [selected_id, setSelectedId] = useState("");
@@ -110,9 +111,6 @@ export default function ChooseBank({ route, navigation }) {
         }
     }
 
-
-
-
     const _orderWithdraw = async () => {
 
         const user_id = await AsyncStorage.getItem("user_id");
@@ -141,9 +139,12 @@ export default function ChooseBank({ route, navigation }) {
             })
                 .then(response => response.json())
                 .then(json => {
-                    alert(
-                        "تم تسجيل طلب سحب الرصيد , سيتم خصم الرصيد عند التحويل من الإدارة"
-                    );
+                    Toast.show({
+                        type: "successToast",
+                        text1: "تم تسجيل طلب سحب الرصيد , سيتم خصم الرصيد عند التحويل من الإدارة",
+                        bottomOffset: 80,
+                        visibilityTime: 2000
+                    });
                     navigation.replace("MyWallet");
                 })
                 .catch(error => console.error(error));
@@ -280,6 +281,8 @@ export default function ChooseBank({ route, navigation }) {
                     </TouchableOpacity>
                 </View>
             }
+            <Toast config={toastConfig} />
+
         </View>
     );
 }

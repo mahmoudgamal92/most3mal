@@ -47,7 +47,6 @@ export default function Favourite({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
-          //alert(JSON.stringify(json));
           setData(json.data);
           setLoading(false);
         })
@@ -76,7 +75,6 @@ export default function Favourite({ route, navigation }) {
       })
         .then(response => response.json())
         .then(responseJson => {
-         // alert(responseJson.message);
           _retrieveData();
         });
     } catch (error) {
@@ -159,63 +157,63 @@ export default function Favourite({ route, navigation }) {
             }}
           >
             {item.ad !== null
-              ?  <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("AddDetails", {
-                  item: item
-                });
-              }}
-              style={styles.itemContainer}
-            >
-              <ImageBackground
-                imageStyle={styles.itemImg}
-                source={{ uri: api.media_url + item.images.split(",")[0] }}
-              >
-                <View style={styles.itemContent} />
-              </ImageBackground>
-
-              <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
-                <Text
-                  style={{
-                    fontFamily: "Bold",
-                    color: "#000",
-                    textAlign: "left",
-                    fontSize: 12
-                  }}
-                >
-                  {item.title}
-                </Text>
-              </View>
-
-              <View style={{ paddingHorizontal: 10 }}>
-                <Text
-                  style={{
-                    fontFamily: "Bold",
-                    color: "#34ace0",
-                    textAlign: "left",
-                    fontSize: 16
-                  }}
-                >
-                  {item.price} SR
-                </Text>
-              </View>
-
-              <View
-                style={{
-                  width: "100%",
-                  flexDirection: "row-reverse",
-                  justifyContent: "space-between",
-                  paddingHorizontal: 10,
-                  marginVertical: 10,
-                  alignItems: "center"
+              ? <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("AddDetails", {
+                    item: item
+                  });
                 }}
+                style={styles.itemContainer}
               >
-                <Text style={{ fontFamily: "Bold", color: "grey" }}>
-                  {moment(item.created_at).startOf("day").fromNow()}
-                </Text>
-                <AntDesign name="shoppingcart" size={24} color="grey" />
-              </View>
-            </TouchableOpacity>
+                <ImageBackground
+                  imageStyle={styles.itemImg}
+                  source={{ uri: api.media_url + item.images.split(",")[0] }}
+                >
+                  <View style={styles.itemContent} />
+                </ImageBackground>
+
+                <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
+                  <Text
+                    style={{
+                      fontFamily: "Bold",
+                      color: "#000",
+                      textAlign: "left",
+                      fontSize: 12
+                    }}
+                  >
+                    {item.title}
+                  </Text>
+                </View>
+
+                <View style={{ paddingHorizontal: 10 }}>
+                  <Text
+                    style={{
+                      fontFamily: "Bold",
+                      color: "#34ace0",
+                      textAlign: "left",
+                      fontSize: 16
+                    }}
+                  >
+                    {item.price} SR
+                  </Text>
+                </View>
+
+                <View
+                  style={{
+                    width: "100%",
+                    flexDirection: "row-reverse",
+                    justifyContent: "space-between",
+                    paddingHorizontal: 10,
+                    marginVertical: 10,
+                    alignItems: "center"
+                  }}
+                >
+                  <Text style={{ fontFamily: "Bold", color: "grey" }}>
+                    {moment(item.created_at).startOf("day").fromNow()}
+                  </Text>
+                  <AntDesign name="shoppingcart" size={24} color="grey" />
+                </View>
+              </TouchableOpacity>
               : null}
           </View>}
       />

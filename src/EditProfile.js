@@ -63,15 +63,22 @@ export default function EditProfile({ route, navigation }) {
         })
             .then(response => response.json())
             .then(responseJson => {
-                //alert(JSON.stringify(responseJson));
 
                 if (responseJson.success == true) {
-                    // alert(JSON.stringify(responseJson));
                     setLoading(false);
-                    alert("تم تعديل الحساب بنجاح");
-                    // navigation.goBack();
+                    Toast.show({
+                        type: "successToast",
+                        text1: "تم تعديل الحساب بنجاح",
+                        bottomOffset: 80,
+                        visibilityTime: 2000
+                    });
                 } else {
-                    alert("حدث خطأ ما");
+                    Toast.show({
+                        type: "erorrToast",
+                        text1: "حدث خطأ ما",
+                        bottomOffset: 80,
+                        visibilityTime: 2000
+                    });
                     setLoading(false);
                 }
             });

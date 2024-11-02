@@ -33,16 +33,6 @@ const OtpScreen = ({ route, navigation }) => {
     }, 3000);
   };
 
-
-  // const _saveCredintials = async item => {
-  //   AsyncStorage.setItem("user_token", item.token);
-  //   AsyncStorage.setItem("user_id", item.id.toString());
-  //   AsyncStorage.setItem("user_name", item.name);
-  //   alert("تم التأكد من هويتك بنجاح , يمكنك الأن إعادة تعيين كلمة المرور ");
-  //   navigation.replace("ResetPwd");
-  // };
-
-
   const handleOtpComplete = otp => {
     if (otp == code) {
       Toast.show({

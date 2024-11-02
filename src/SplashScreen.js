@@ -3,6 +3,9 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Image, ActivityIndicator, Text } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from '@react-navigation/native';
+
+import api from "./../constants/constants";
+
 export default function Splash({ route, navigation }) {
   useEffect(() => {
     _proceedProcess();
@@ -17,10 +20,7 @@ export default function Splash({ route, navigation }) {
   const _proceedProcess = async () => {
     const token = await AsyncStorage.getItem('user_token');
     if (token !== null) {
-      setTimeout(() => {
-        navigation.replace('DrawerStack');
-      }, 2000);
-
+      getProfile();
     }
     else {
       const alredyLaunched = await AsyncStorage.getItem('alredyLaunched');
@@ -37,7 +37,45 @@ export default function Splash({ route, navigation }) {
       }
 
     }
-  }
+  };
+
+
+  const getProfile = async () => {
+    const user_id = await AsyncStorage.getItem("user_id");
+    fetch(api.custom_url + "user/info.php?user_id=" + user_id, {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        "Content-type": "multipart/form-data;",
+        "cache-control": "no-cache",
+        "Accept-Encoding": "gzip, deflate, br",
+        Connection: "keep-alive"
+      }
+    })
+      .then(response => response.json())
+      .then(json => {
+        if (json.data[0].status == 'active') {
+          navigation.replace('DrawerStack');
+        }
+        else {
+          _removeSession();
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+
+
+  const _removeSession = async () => {
+    try {
+      AsyncStorage.getAllKeys()
+        .then(keys => AsyncStorage.multiRemove(keys))
+        .then(() => navigation.replace("SignIn"));
+    } catch (error) {
+      console.log("Erorr : " + error);
+    }
+  };
 
   return (
     <View style={styles.container}>

@@ -14,9 +14,7 @@ import React, { useState, useEffect } from "react";
 import {
     Ionicons,
     MaterialIcons,
-    SimpleLineIcons,
     FontAwesome,
-    Feather,
     AntDesign
 } from "@expo/vector-icons";
 import moment from 'moment';
@@ -26,7 +24,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from '@react-navigation/native';
 import api from "./../constants/constants";
 import DrawerScreenHeader from "./../components/DrawerScreenHeader";
-
+import Toast from "react-native-toast-message";
+import toastConfig from "./../constants/Toast";
 export default function MyOrders({ route, navigation }) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -89,7 +88,7 @@ export default function MyOrders({ route, navigation }) {
             })
                 .then(response => response.json())
                 .then(json => {
-                    //alert(JSON.stringify(json))
+                    console.log(JSON.stringify(json))
                     if (json.success == true) {
                         setData(json.data);
                         console.log(json.data)
@@ -122,7 +121,12 @@ export default function MyOrders({ route, navigation }) {
                     .then(response => response.json())
                     .then(responseJson => {
                         setInputModal(false);
-                        alert("تم تعديل العرض بنجاح");
+                        Toast.show({
+                            type: "successToast",
+                            text1: "تم تعديل العرض بنجاح",
+                            bottomOffset: 80,
+                            visibilityTime: 2000
+                        });
                         _retrieveData();
                     });
 
@@ -132,7 +136,12 @@ export default function MyOrders({ route, navigation }) {
         }
 
         else {
-            alert("لابد من إضافة السعر");
+            Toast.show({
+                type: "erorrToast",
+                text1: "لابد من إضافة السعر",
+                bottomOffset: 80,
+                visibilityTime: 2000
+            });
         }
     };
 
@@ -149,7 +158,12 @@ export default function MyOrders({ route, navigation }) {
             })
                 .then(response => response.json())
                 .then(responseJson => {
-                    alert("تم حذف العرض بنجاح");
+                    Toast.show({
+                        type: "successToast",
+                        text1: "تم حذف العرض بنجاح",
+                        bottomOffset: 80,
+                        visibilityTime: 2000
+                    });
                     _retrieveData();
                 });
 
@@ -401,8 +415,7 @@ export default function MyOrders({ route, navigation }) {
                     </View>
                 </View>
             </Modal>
-
-
+            <Toast config={toastConfig} />
         </View>
     );
 }

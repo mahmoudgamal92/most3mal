@@ -14,7 +14,8 @@ import React, { useState } from "react";
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import styles from "../constants/style";
 import api from "./../constants/constants";
-
+import Toast from "react-native-toast-message";
+import toastConfig from "./../constants/Toast";
 export default function AddAuction({ route, navigation }) {
 
     const [email, setEmail] = useState("");
@@ -22,7 +23,12 @@ export default function AddAuction({ route, navigation }) {
 
     const forgotPwd = async () => {
         if (email == "") {
-            alert("يجب ملئ جميع الحقول");
+            Toast.show({
+                type: "erorrToast",
+                text1: "يجب ملئ جميع الحقول",
+                bottomOffset: 80,
+                visibilityTime: 2000
+            });
             return;
         }
         else {
@@ -44,15 +50,18 @@ export default function AddAuction({ route, navigation }) {
                     setLoading(false);
 
                     if (json.success == true) {
-                        alert("تم إرسال كود التحقق علي بريد الإلكتروني ");
                         navigation.navigate("OtpScreen", {
                             code: json.code,
                             user: json.data
                         });
-                        // alert(JSON.stringify(json));
                     }
                     else {
-                        alert(json.messages);
+                        Toast.show({
+                            type: "erorrToast",
+                            text1: "Error sending Code",
+                            bottomOffset: 80,
+                            visibilityTime: 2000
+                        });
                     }
                 }
                 )
@@ -150,6 +159,8 @@ export default function AddAuction({ route, navigation }) {
                     </View>
                 </ScrollView>
             </View>
+            <Toast config={toastConfig} />
+
         </KeyboardAvoidingView>
 
     );

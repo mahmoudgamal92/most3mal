@@ -1,11 +1,6 @@
 import {
-    Animated,
-    Image,
-    SafeAreaView,
     Text,
     View,
-    StyleSheet,
-    StatusBar,
     TouchableOpacity,
     ActivityIndicator,
     TextInput,
@@ -14,8 +9,7 @@ import {
     Platform
 } from "react-native";
 import React, { useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { MaterialIcons, Feather, SimpleLineIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import styles from "../constants/style";
 import api from "./../constants/constants";
 import Constants from "expo-constants";
@@ -29,7 +23,12 @@ export default function NewPwd({ route, navigation }) {
 
     const ResetPwd = async () => {
         if (new_password == "" || confirm_password == "" || new_password !== confirm_password) {
-            alert("من فضلك إدخال  كلمة المرور بشكل صحيح و تأكيدها");
+            Toast.show({
+                type: "erorrToast",
+                text1: "من فضلك إدخال  كلمة المرور بشكل صحيح و تأكيدها",
+                bottomOffset: 80,
+                visibilityTime: 2000
+            });
             return;
         } else {
             setLoading(true);
@@ -60,7 +59,7 @@ export default function NewPwd({ route, navigation }) {
                             navigation.replace("SignIn")
                         }, 3000);
                     } else {
-                        alert(JSON.stringify(json));
+                        console.log(JSON.stringify(json));
 
                         Toast.show({
                             type: "erorrToast",
@@ -164,7 +163,6 @@ export default function NewPwd({ route, navigation }) {
                 </View>
             </ScrollView>
             <Toast config={toastConfig} />
-
         </KeyboardAvoidingView>
     );
 }

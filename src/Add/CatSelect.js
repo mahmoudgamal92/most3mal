@@ -11,7 +11,8 @@ import React, { useEffect, useState } from "react";
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import styles from "./../../constants/style";
 import api from "./../../constants/constants";
-
+import Toast from 'react-native-toast-message';
+import toastConfig from "./../../constants/Toast";
 export default function CatSelect({ route, navigation }) {
 
     const [data, setData] = useState([]);
@@ -26,7 +27,12 @@ export default function CatSelect({ route, navigation }) {
 
     const proceedToInsertion = (depart, cat) => {
         if (current_item == 0) {
-            alert("الرجاء اختيار الفئة");
+            Toast.show({
+                type: "erorrToast",
+                text1: "الرجاء اختيار الفئة",
+                bottomOffset: 80,
+                visibilityTime: 2000
+            });
         }
         else {
             // Real Estate
@@ -185,6 +191,7 @@ export default function CatSelect({ route, navigation }) {
 
                 </View>
             </View>
+            <Toast config={toastConfig} />
         </View>
     );
 }

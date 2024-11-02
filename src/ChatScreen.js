@@ -32,7 +32,7 @@ import Constants from "expo-constants";
 import BottomSheet from "@gorhom/bottom-sheet";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
-import moment from "moment";
+import moment from "moment-timezone";
 
 import api from "./../constants/constants";
 
@@ -286,7 +286,9 @@ export default function ChatScreen({ navigation, route }) {
                             fontSize: 10
                           }}
                         >
-                          {moment(item.created_at).startOf("day").fromNow()}
+                          {
+                            moment.tz(item.created_at, 'America/Denver').tz('Asia/Riyadh').fromNow()
+                          }
                         </Text>
                       </View>
                       :
@@ -341,7 +343,8 @@ export default function ChatScreen({ navigation, route }) {
                             fontSize: 10
                           }}
                         >
-                          {moment(item.created_at).startOf("day").fromNow()}
+                          {moment.tz(item.created_at, 'America/Denver').tz('Asia/Riyadh').fromNow()
+                          }
                         </Text>
                       </View>
                       :

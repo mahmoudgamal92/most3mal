@@ -14,9 +14,7 @@ import React, { useState, useEffect } from "react";
 import {
     Ionicons,
     MaterialIcons,
-    SimpleLineIcons,
     FontAwesome,
-    Feather,
     AntDesign
 } from "@expo/vector-icons";
 import moment from 'moment';
@@ -25,7 +23,8 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { EmptyComponent } from './../index';
 import api from "./../../../constants/constants";
-
+import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
+import toastConfig from "./../../../constants/Toast";
 
 export const Bids = () => {
     const [data, setData] = useState([]);
@@ -83,7 +82,12 @@ export const Bids = () => {
                     .then(response => response.json())
                     .then(responseJson => {
                         setInputModal(false);
-                        alert("تم تعديل العرض بنجاح");
+                        Toast.show({
+                            type: "successToast",
+                            text1: "تم تعديل العرض بنجاح",
+                            bottomOffset: 80,
+                            visibilityTime: 2000
+                        });
                         _retrieveData();
                     });
 
@@ -93,7 +97,13 @@ export const Bids = () => {
         }
 
         else {
-            alert("لابد من إضافة السعر");
+
+            Toast.show({
+                type: "erorrToast",
+                text1: "لابد من إضافة السعر",
+                bottomOffset: 80,
+                visibilityTime: 2000
+            });
         }
     };
 
@@ -110,7 +120,12 @@ export const Bids = () => {
             })
                 .then(response => response.json())
                 .then(responseJson => {
-                    alert("تم حذف العرض بنجاح");
+                    Toast.show({
+                        type: "successToast",
+                        text1: "تم حذف العرض بنجاح",
+                        bottomOffset: 80,
+                        visibilityTime: 2000
+                    });
                     _retrieveData();
                 });
 
@@ -252,10 +267,14 @@ export const Bids = () => {
 
                         <View style={{
                             width: "50%",
-                            alignItems: "flex-start",
+                            alignItems: "flex-end",
                             justifyContent: "center",
+                            paddingRight: 10
                         }}>
 
+                            <Text style={{ fontFamily: "Bold", fontSize: 12, textAlign: 'right' }}>
+                                {item.auction.title}
+                            </Text>
                             <Text style={{ fontFamily: "Bold", fontSize: 12, color: "#34ace0", textAlign: 'right' }}>
                                 العرض :   {item.amount} ربال
                             </Text>
@@ -402,8 +421,7 @@ export const Bids = () => {
                     </View>
                 </View>
             </Modal>
-
-
+            <Toast config={toastConfig} />
         </View>
     );
 }

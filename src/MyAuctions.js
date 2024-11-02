@@ -56,7 +56,7 @@ export default function MyAuctions({ route, navigation }) {
         .then(json => {
           setData(json.data);
           setLoading(false);
-          // alert(JSON.stringify(json));
+          console.log(JSON.stringify(json));
         })
         .catch(error => console.error(error));
     } catch (error) {
@@ -66,7 +66,6 @@ export default function MyAuctions({ route, navigation }) {
 
 
   const updateStatus = async (id, status) => {
-
     let url = api.dynamic_url + "auctions/" + id;
     const body = JSON.stringify({
       "status": status == "active" ? "inactive" : "active",
@@ -85,7 +84,12 @@ export default function MyAuctions({ route, navigation }) {
       })
         .then(response => response.json())
         .then(json => {
-          alert("تم  تغيير حالة الاعلان بنجاح");
+          Toast.show({
+            type: "successToast",
+            text1: "تم  تغيير حالة المزاد بنجاح",
+            bottomOffset: 80,
+            visibilityTime: 2000
+          });
           _retrieveData();
         })
         .catch(error => console.error(error));
@@ -108,6 +112,11 @@ export default function MyAuctions({ route, navigation }) {
           text: "غير نشط"
         };
 
+      case "cancelled":
+        return {
+          color: "red",
+          text: "ملغي"
+        };
 
       case "pending":
         return {

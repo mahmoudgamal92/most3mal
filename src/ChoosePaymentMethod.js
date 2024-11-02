@@ -68,8 +68,7 @@ export default function ChoosePaymentMethod({ route, navigation }) {
                     }
                     else {
                         setLoading(false);
-                        alert(JSON.stringify(json));
-
+                        console.log(JSON.stringify(json));
                     }
                 })
                 .catch(error => console.error(error));

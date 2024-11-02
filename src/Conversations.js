@@ -46,7 +46,6 @@ export default function Conversations({ route, navigation }) {
         .then(json => {
           setData(json.data);
           setLoading(false);
-          //alert(JSON.stringify(json));
         })
         .catch(error => console.error(error));
     } catch (error) {

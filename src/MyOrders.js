@@ -114,7 +114,6 @@ export default function MyOrders({ route, navigation }) {
   const _retrieveData = async () => {
     const user_id = await AsyncStorage.getItem("user_id");
     setLoading(true);
-    //alert(user_id);
     let url = api.custom_url + "user/offers.php?ads=true&user_id=" + user_id;
     try {
       fetch(url, {
@@ -125,7 +124,7 @@ export default function MyOrders({ route, navigation }) {
           if (json.success == true) {
             setData(json.data);
           } else {
-            //   alert(JSON.stringify(json));
+            console.log(JSON.stringify(json));
             setData([]);
           }
         })
@@ -177,14 +176,24 @@ export default function MyOrders({ route, navigation }) {
           .then(response => response.json())
           .then(responseJson => {
             setInputModal(false);
-            alert("تم تعديل العرض بنجاح");
+            Toast.show({
+              type: "successToast",
+              text1: "تم تعديل العرض بنجاح",
+              topOffset: 120,
+              visibilityTime: 2000
+            });
             _retrieveData();
           });
       } catch (error) {
         console.log(error);
       }
     } else {
-      alert("لابد من إضافة السعر");
+      Toast.show({
+        type: "erorrToast",
+        text1: "لابد من إضافة السعر",
+        topOffset: 120,
+        visibilityTime: 2000
+      });
     }
   };
 

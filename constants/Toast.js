@@ -15,7 +15,7 @@ const toastConfig = {
         </View>
       </View>
 
-      <View style={{ paddingHorizontal: 5, width: "80%" }}>
+      <View style={{ paddingHorizontal: 5, width: "80%", alignItems: "flex-end", justifyContent: "flex-end" }}>
         <Text style={{ fontFamily: "Bold", color: "#000" }}>خطأ</Text>
         <Text style={{ fontFamily: "Regular", color: "grey", fontSize: 13 }}>
           {text1}
@@ -25,7 +25,7 @@ const toastConfig = {
 
 
 
- // Error Toast
+  // Error Toast
   //##############################################
   successToast: ({ text1, text2 }) =>
     <View style={styles.toastContainer}>
@@ -36,7 +36,7 @@ const toastConfig = {
         </View>
       </View>
 
-      <View style={{ paddingHorizontal: 5, width: "80%" }}>
+      <View style={{ paddingHorizontal: 5, width: "80%", alignItems: "flex-end", justifyContent: "flex-end" }}>
         <Text style={{ fontFamily: "Bold", color: "#000" }}>تم التنفيذ</Text>
         <Text style={{ fontFamily: "Regular", color: "grey", fontSize: 13 }}>
           {text1}
@@ -75,7 +75,7 @@ const toastConfig = {
 
 
 
-   // Showing Success Modal
+  // Showing Success Modal
   //##############################################
   usersModal: ({ text1, text2 }) =>
     <View style={styles.modalContainer}>

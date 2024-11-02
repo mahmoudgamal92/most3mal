@@ -19,10 +19,9 @@ import {
   Feather
 } from "@expo/vector-icons";
 import styles from "../constants/style";
-import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
+
+import Toast from "react-native-toast-message";
 import toastConfig from "./../constants/Toast";
-import api from "./../constants/constants";
-import mime from 'mime';
 
 import moment from "moment";
 import MapView, { Marker } from "react-native-maps";
@@ -97,7 +96,12 @@ export default function CreateAuction({ route, navigation }) {
 
   const _insertAuction = async () => {
     if (images.length == 0) {
-      alert("لابد من اختيار صوره للمنتج");
+      Toast.show({
+        type: "erorrToast",
+        text1: "لابد من اختيار صوره للمنتج",
+        bottomOffset: 80,
+        visibilityTime: 2000
+      });
       return;
     }
     const user_id = await AsyncStorage.getItem("user_id");
@@ -401,6 +405,8 @@ export default function CreateAuction({ route, navigation }) {
         </ScrollView>
         <Toast config={toastConfig} />
       </View>
+      <Toast config={toastConfig} />
+
     </KeyboardAvoidingView>
   );
 }
